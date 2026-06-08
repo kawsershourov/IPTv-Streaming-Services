@@ -5,17 +5,14 @@ declare(strict_types=1);
  * Authentication: registration, login/logout, current-user, route guards.
  */
 
-/** The logged-in user row, or null. Cached per request. */
+/** The logged-in user row, or null. Cached per request (reset via auth_reset_cache()). */
 function current_user(): ?array
 {
-    static $cached = false;
-    static $user = null;
-
-    if ($cached) {
-        return $user;
+    if (array_key_exists('__current_user', $GLOBALS)) {
+        return $GLOBALS['__current_user'];
     }
-    $cached = true;
 
+    $user = null;
     $id = $_SESSION['user_id'] ?? null;
     if ($id) {
         $user = User::find((int) $id);
@@ -25,7 +22,15 @@ function current_user(): ?array
             unset($_SESSION['user_id']);
         }
     }
+
+    $GLOBALS['__current_user'] = $user;
     return $user;
+}
+
+/** Invalidate the cached current user (after login/logout within one request). */
+function auth_reset_cache(): void
+{
+    unset($GLOBALS['__current_user']);
 }
 
 function auth_check(): bool
@@ -53,6 +58,7 @@ function attempt_login(string $email, string $password): array
     // Rotate session id on privilege change to prevent fixation.
     session_regenerate_id(true);
     $_SESSION['user_id'] = (int) $user['id'];
+    auth_reset_cache();
     return [true, null];
 }
 
@@ -81,6 +87,7 @@ function register_user(string $name, string $email, string $password): array
 
 function logout_user(): void
 {
+    auth_reset_cache();
     $_SESSION = [];
     if (ini_get('session.use_cookies')) {
         $p = session_get_cookie_params();

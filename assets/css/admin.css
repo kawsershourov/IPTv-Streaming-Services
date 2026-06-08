@@ -1,0 +1,66 @@
+/* SunPlex.live — admin panel styles (extends site.css variables) */
+
+body.admin { background: var(--bg); }
+
+.admin-top {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px; padding: 0 20px;
+    background: var(--bg-2); border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 50;
+}
+.admin-top .brand { font-size: 20px; font-weight: 800; }
+.admin-top-right { display: flex; gap: 10px; align-items: center; }
+
+.admin-body { display: flex; min-height: calc(100vh - 60px); }
+.admin-side { width: 210px; flex-shrink: 0; background: var(--bg-2); border-right: 1px solid var(--border); padding: 16px 10px; }
+.admin-side nav { display: flex; flex-direction: column; gap: 2px; }
+.admin-side a { padding: 10px 14px; border-radius: 8px; color: var(--muted); font-weight: 600; font-size: 14px; }
+.admin-side a:hover { background: var(--panel); color: var(--text); }
+.admin-side a.active { background: linear-gradient(90deg, rgba(255,138,0,.18), rgba(43,139,255,.14)); color: var(--text); }
+
+.admin-main { flex: 1; padding: 24px 28px; max-width: 1100px; }
+.admin-main h1 { margin: 0 0 18px; font-size: 24px; }
+
+/* Stat cards */
+.stat-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-bottom: 26px; }
+.stat { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+.stat .num { font-size: 30px; font-weight: 800; }
+.stat .label { color: var(--muted); font-size: 13px; }
+
+/* Tables */
+.table-wrap { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); overflow: auto; }
+table.data { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.data th, table.data td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+table.data th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .4px; }
+table.data tr:last-child td { border-bottom: none; }
+table.data .row-actions { display: flex; gap: 8px; }
+.tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 5px; }
+.tag-on { background: rgba(46,160,87,.16); color: #76e39a; }
+.tag-off { background: rgba(138,147,166,.16); color: var(--muted); }
+.tag-prem { background: var(--premium); color: #3a2c00; }
+
+/* Toolbar */
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 10px; flex-wrap: wrap; }
+
+/* Admin forms */
+.admin-form { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; max-width: 640px; }
+.admin-form .form label { color: var(--text); }
+.admin-form .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.admin-form .check { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 14px; }
+.admin-form .check input { width: auto; margin: 0; }
+.form-actions { display: flex; gap: 10px; margin-top: 8px; }
+
+.mini-select { padding: 6px 8px; font-size: 13px; background: var(--bg-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; }
+.admin-form textarea { font-family: inherit; resize: vertical; }
+
+.btn-sm { padding: 6px 12px; font-size: 13px; }
+.btn-danger { background: transparent; border: 1px solid rgba(255,59,92,.5); color: #ff8ea0; }
+.btn-danger:hover { background: rgba(255,59,92,.12); }
+
+/* Admin login */
+.admin-login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+
+@media (max-width: 720px) {
+    .admin-side { width: 64px; }
+    .admin-side a { font-size: 0; padding: 12px; text-align: center; }
+}
