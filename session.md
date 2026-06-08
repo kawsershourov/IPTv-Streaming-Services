@@ -68,6 +68,9 @@ dropdown, search, and every controller button. Central helper `app/player.php` â
 `uvp_base_config()` + `uvp_player_script()`; `index.php`/`watch.php` now build the player from it
 (no hardcoded props). Player fields removed from Settings (skin/size moved to Player). 23 `player_*`
 settings added to seed + DB. Verified: admin save instantly changes the live player config.
+Also added a **Colors** section (HEX theming): `useHEXColorsForSkin` + button/time/playlist/
+thumbnail/search/dropdown-selector/preloader colors (prop names verified in the engine; see
+`player_color_map()` in `app/player.php`). 15 color settings added to seed + DB.
 
 ### 2026-06-08 â€” Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):

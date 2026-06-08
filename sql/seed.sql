@@ -118,4 +118,20 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('player_show_time',              'yes'),
 ('player_show_next_prev',         'yes'),
 ('player_show_loop_button',       'no'),
-('player_show_shuffle_button',    'no');
+('player_show_shuffle_button',    'no'),
+-- Player colors
+('player_use_hex_colors',         'yes'),
+('player_buttons_color',          '#ffffff'),
+('player_time_color',             '#ffffff'),
+('player_playlist_bg_color',      '#11151f'),
+('player_playlist_name_color',    '#ffffff'),
+('player_thumb_normal_bg',        '#161b27'),
+('player_thumb_hover_bg',         '#1d2433'),
+('player_channel_title_color',    '#ffffff'),
+('player_search_bg_color',        '#0b0e14'),
+('player_search_text_color',      '#ffffff'),
+('player_selector_bg_selected',   '#ff8a00'),
+('player_selector_text_normal',   '#ffffff'),
+('player_selector_text_selected', '#1a1206'),
+('player_preloader_bg',           '#000000'),
+('player_preloader_fill',         '#ff8a00');

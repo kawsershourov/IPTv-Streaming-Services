@@ -50,6 +50,10 @@ table.data .row-actions { display: flex; gap: 8px; }
 .admin-form .check input { width: auto; margin: 0; }
 .form-actions { display: flex; gap: 10px; margin-top: 8px; }
 
+.color-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin: 10px 0 4px; }
+.color-field { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; color: var(--text); }
+.color-field input[type=color] { width: 46px; height: 30px; padding: 2px; border: 1px solid var(--border); border-radius: 6px; background: transparent; cursor: pointer; flex-shrink: 0; }
+
 .mini-select { padding: 6px 8px; font-size: 13px; background: var(--bg-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; }
 .admin-form textarea { font-family: inherit; resize: vertical; }
 

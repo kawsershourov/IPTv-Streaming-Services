@@ -35,6 +35,43 @@ function player_setting_defaults(): array
         'player_show_next_prev'         => 'yes',
         'player_show_loop_button'       => 'no',
         'player_show_shuffle_button'    => 'no',
+        // Colors
+        'player_use_hex_colors'         => 'yes',
+        'player_buttons_color'          => '#ffffff',
+        'player_time_color'             => '#ffffff',
+        'player_playlist_bg_color'      => '#11151f',
+        'player_playlist_name_color'    => '#ffffff',
+        'player_thumb_normal_bg'        => '#161b27',
+        'player_thumb_hover_bg'         => '#1d2433',
+        'player_channel_title_color'    => '#ffffff',
+        'player_search_bg_color'        => '#0b0e14',
+        'player_search_text_color'      => '#ffffff',
+        'player_selector_bg_selected'   => '#ff8a00',
+        'player_selector_text_normal'   => '#ffffff',
+        'player_selector_text_selected' => '#1a1206',
+        'player_preloader_bg'           => '#000000',
+        'player_preloader_fill'         => '#ff8a00',
+    ];
+}
+
+/** Color setting keys => UVP prop names (only these are saved as colors). */
+function player_color_map(): array
+{
+    return [
+        'player_buttons_color'          => 'normalHEXButtonsColor',
+        'player_time_color'             => 'timeColor',
+        'player_playlist_bg_color'      => 'playlistBackgroundColor',
+        'player_playlist_name_color'    => 'playlistNameColor',
+        'player_thumb_normal_bg'        => 'thumbnailNormalBackgroundColor',
+        'player_thumb_hover_bg'         => 'thumbnailHoverBackgroundColor',
+        'player_channel_title_color'    => 'youtubeAndFolderVideoTitleColor',
+        'player_search_bg_color'        => 'searchInputBackgroundColor',
+        'player_search_text_color'      => 'searchInputColor',
+        'player_selector_bg_selected'   => 'mainSelectorBackgroundSelectedColor',
+        'player_selector_text_normal'   => 'mainSelectorTextNormalColor',
+        'player_selector_text_selected' => 'mainSelectorTextSelectedColor',
+        'player_preloader_bg'           => 'preloaderBackgroundColor',
+        'player_preloader_fill'         => 'preloaderFillColor',
     ];
 }
 
@@ -90,7 +127,12 @@ function uvp_base_config(): array
         'showNextAndPrevButtonsInController' => player_yn('player_show_next_prev'),
         'showLoopButton'        => player_yn('player_show_loop_button'),
         'showShuffleButton'     => player_yn('player_show_shuffle_button'),
-    ];
+        // Colors
+        'useHEXColorsForSkin'   => player_yn('player_use_hex_colors'),
+    ] + array_combine(
+        array_values(player_color_map()),
+        array_map('player_setting', array_keys(player_color_map()))
+    );
 }
 
 /** Render a `new FWDUVPlayer({...})` call from a full config array. */

@@ -12,6 +12,25 @@ $toggles = [
     'player_show_playlist_by_default' => 'Show the channel playlist by default',
     'player_use_playlists_select_box' => 'Show the playlists dropdown (All Channels / categories)',
     'player_show_search'              => 'Show the playlist search box',
+    'player_use_hex_colors'           => 'Recolor controller buttons with the “Controller buttons” color',
+];
+
+// Color setting => label (keys come from player_color_map()).
+$colorLabels = [
+    'player_buttons_color'          => 'Controller buttons',
+    'player_time_color'             => 'Time text',
+    'player_playlist_bg_color'      => 'Playlist background',
+    'player_playlist_name_color'    => 'Playlist title text',
+    'player_thumb_normal_bg'        => 'Channel item background',
+    'player_thumb_hover_bg'         => 'Channel item (hover)',
+    'player_channel_title_color'    => 'Channel name text',
+    'player_search_bg_color'        => 'Search box background',
+    'player_search_text_color'      => 'Search box text',
+    'player_selector_bg_selected'   => 'Dropdown selected background',
+    'player_selector_text_normal'   => 'Dropdown text',
+    'player_selector_text_selected' => 'Dropdown selected text',
+    'player_preloader_bg'           => 'Loader background',
+    'player_preloader_fill'         => 'Loader fill',
 ];
 $buttons = [
     'player_show_fullscreen_button'   => 'Fullscreen button',
@@ -50,8 +69,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Setting::set($key, isset($_POST[$key]) ? 'yes' : 'no');
     }
 
+    // Colors (validate #rrggbb, fall back to default).
+    $defaults = player_setting_defaults();
+    foreach (array_keys(player_color_map()) as $ck) {
+        $val = strtolower(trim($_POST[$ck] ?? ''));
+        Setting::set($ck, preg_match('/^#[0-9a-f]{6}$/', $val) ? $val : $defaults[$ck]);
+    }
+
     flash('success', 'Player settings saved.');
     redirect('admin/player.php');
+}
+
+/** Render a color-picker row for a player setting. */
+function player_color_input(string $key, string $label): void
+{
+    echo '<label class="color-field">' . e($label)
+       . '<input type="color" name="' . e($key) . '" value="' . e(player_setting($key)) . '"></label>';
 }
 
 /** Render a yes/no checkbox row for a player setting. */
@@ -114,6 +147,12 @@ require __DIR__ . '/includes/header.php';
         <h2 style="font-size:16px;margin:18px 0 12px;">Controller buttons</h2>
         <div style="columns:2;-webkit-columns:2;">
             <?php foreach ($buttons as $key => $label) { player_check($key, $label); } ?>
+        </div>
+
+        <h2 style="font-size:16px;margin:18px 0 12px;">Colors</h2>
+        <?php player_check('player_use_hex_colors', $toggles['player_use_hex_colors']); ?>
+        <div class="color-grid">
+            <?php foreach ($colorLabels as $key => $label) { player_color_input($key, $label); } ?>
         </div>
 
         <div class="form-actions" style="margin-top:16px;"><button class="btn btn-primary">Save player settings</button></div>
