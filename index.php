@@ -56,7 +56,14 @@ $renderItem = static function (array $ch) use ($me, $thumbFor): string {
     $attrs = 'data-thumb-source="' . e($thumbFor($ch)) . '" '
            . 'data-is-live="' . ((int) $ch['is_live'] === 1 ? 'yes' : 'no') . '" ';
     if ($watchable) {
-        $attrs .= 'data-video-source="' . e($ch['stream_url']) . '"';
+        // UVP skips reloading when the new source string equals the current one, so two
+        // channels sharing the same URL won't both play. Make direct-media sources unique
+        // with a #fragment (dropped by the browser before fetching, so the stream is intact).
+        $src = $ch['stream_url'];
+        if (in_array($ch['stream_type'], ['hls', 'dash', 'mp4'], true) && strpos($src, '#') === false) {
+            $src .= '#uvp' . (int) $ch['id'];
+        }
+        $attrs .= 'data-video-source="' . e($src) . '"';
     } else {
         // No stream URL emitted — selecting this item redirects to the watch page.
         $attrs .= 'data-video-source="' . e($watchUrl) . '" '

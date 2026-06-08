@@ -106,8 +106,15 @@ require __DIR__ . '/app/includes/header.php';
             </div>
             <div id="uvp_cat">
                 <?php foreach ($playable as $ch): ?>
+                    <?php
+                    // Unique #fragment so two channels with the same URL both reload/play.
+                    $vsrc = $ch['stream_url'];
+                    if (in_array($ch['stream_type'], ['hls', 'dash', 'mp4'], true) && strpos($vsrc, '#') === false) {
+                        $vsrc .= '#uvp' . (int) $ch['id'];
+                    }
+                    ?>
                     <a data-thumb-source="<?= e($thumbFor($ch)) ?>"
-                       data-video-source="<?= e($ch['stream_url']) ?>"
+                       data-video-source="<?= e($vsrc) ?>"
                        data-is-live="<?= ((int) $ch['is_live'] === 1) ? 'yes' : 'no' ?>">
                         <div data-video-short-description><?= e($ch['name']) ?></div>
                     </a>
