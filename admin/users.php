@@ -16,11 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($op === 'role') {
+        $newRole = in_array($_POST['role'] ?? '', ['user', 'editor', 'admin'], true) ? $_POST['role'] : null;
         if ($userId === (int) $me['id']) {
             flash('error', 'You cannot change your own role.');
+        } elseif (!$newRole) {
+            flash('error', 'Invalid role.');
         } else {
-            User::setRole($userId, $target['role'] === 'admin' ? 'user' : 'admin');
-            flash('success', 'Role updated for ' . $target['name'] . '.');
+            User::setRole($userId, $newRole);
+            flash('success', $target['name'] . ' is now ' . $newRole . '.');
         }
     } elseif ($op === 'status') {
         if ($userId === (int) $me['id']) {
@@ -61,7 +64,22 @@ require __DIR__ . '/includes/header.php';
             <tr>
                 <td><?= e($u['name']) ?><?= $self ? ' <span class="muted">(you)</span>' : '' ?></td>
                 <td class="muted"><?= e($u['email']) ?></td>
-                <td><?= $u['role'] === 'admin' ? '<span class="tag tag-prem">admin</span>' : 'user' ?></td>
+                <td>
+                    <?php if ($self): ?>
+                        <span class="tag tag-prem"><?= e($u['role']) ?></span>
+                    <?php else: ?>
+                        <form method="post" action="<?= e(url('admin/users.php')) ?>" style="display:flex;gap:6px;">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="op" value="role">
+                            <input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
+                            <select name="role" class="mini-select" onchange="this.form.submit()">
+                                <?php foreach (['user', 'editor', 'admin'] as $r): ?>
+                                    <option value="<?= $r ?>" <?= $u['role'] === $r ? 'selected' : '' ?>><?= $r ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </form>
+                    <?php endif; ?>
+                </td>
                 <td><?= $u['status'] === 'active' ? '<span class="tag tag-on">active</span>' : '<span class="tag tag-off">suspended</span>' ?></td>
                 <td>
                     <?php if ($sub): ?>
@@ -84,10 +102,6 @@ require __DIR__ . '/includes/header.php';
                 </td>
                 <td><div class="row-actions">
                     <?php if (!$self): ?>
-                        <form method="post" action="<?= e(url('admin/users.php')) ?>">
-                            <?= csrf_field() ?><input type="hidden" name="op" value="role"><input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
-                            <button class="btn btn-outline btn-sm"><?= $u['role'] === 'admin' ? 'Make user' : 'Make admin' ?></button>
-                        </form>
                         <form method="post" action="<?= e(url('admin/users.php')) ?>">
                             <?= csrf_field() ?><input type="hidden" name="op" value="status"><input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
                             <button class="btn btn-danger btn-sm"><?= $u['status'] === 'active' ? 'Suspend' : 'Activate' ?></button>

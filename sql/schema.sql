@@ -19,7 +19,7 @@ CREATE TABLE `users` (
   `name`          VARCHAR(120) NOT NULL,
   `email`         VARCHAR(190) NOT NULL,
   `password_hash` VARCHAR(255) NOT NULL,
-  `role`          ENUM('user','admin') NOT NULL DEFAULT 'user',
+  `role`          ENUM('user','editor','admin') NOT NULL DEFAULT 'user',
   `status`        ENUM('active','suspended') NOT NULL DEFAULT 'active',
   `created_at`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),

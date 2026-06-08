@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/../app/bootstrap.php';
 
-if (is_admin()) {
+if (is_staff()) {
     redirect('admin/index.php');
 }
 
@@ -12,12 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
     $email = trim($_POST['email'] ?? '');
     [$ok, $err] = attempt_login($email, $_POST['password'] ?? '');
-    if ($ok && is_admin()) {
+    if ($ok && is_staff()) {
         flash('success', 'Welcome back.');
         redirect('admin/index.php');
     }
-    if ($ok && !is_admin()) {
-        // Authenticated but not an admin — drop the session.
+    if ($ok && !is_staff()) {
+        // Authenticated but not staff — drop the session.
         logout_user();
         session_start();
         $errors[] = 'That account does not have admin access.';

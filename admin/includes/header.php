@@ -5,14 +5,15 @@
  */
 $activeNav = $activeNav ?? '';
 $nav = [
-    ''           => ['Dashboard',  'index.php'],
-    'categories' => ['Categories', 'categories.php'],
-    'channels'   => ['Channels',   'channels.php'],
-    'users'      => ['Users',      'users.php'],
-    'plans'      => ['Plans',      'plans.php'],
-    'player'     => ['Player',     'player.php'],
-    'settings'   => ['Settings',   'settings.php'],
+    ''           => ['Dashboard',  'index.php',     'staff'],
+    'categories' => ['Categories', 'categories.php', 'staff'],
+    'channels'   => ['Channels',   'channels.php',  'staff'],
+    'users'      => ['Users',      'users.php',     'admin'],
+    'plans'      => ['Plans',      'plans.php',     'admin'],
+    'player'     => ['Player',     'player.php',    'admin'],
+    'settings'   => ['Settings',   'settings.php',  'admin'],
 ];
+$isAdminUser = is_admin();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +36,8 @@ $nav = [
 <div class="admin-body">
     <aside class="admin-side">
         <nav>
-            <?php foreach ($nav as $slug => [$label, $file]): ?>
+            <?php foreach ($nav as $slug => [$label, $file, $level]): ?>
+                <?php if ($level === 'admin' && !$isAdminUser) { continue; } ?>
                 <a href="<?= e(url('admin/' . $file)) ?>" class="<?= $activeNav === $slug ? 'active' : '' ?>"><?= e($label) ?></a>
             <?php endforeach; ?>
         </nav>

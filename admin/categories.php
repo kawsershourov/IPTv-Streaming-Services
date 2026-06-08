@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/../app/bootstrap.php';
-require_admin();
+require_staff();
 
 $action = $_GET['action'] ?? 'list';
 $id     = (int) ($_GET['id'] ?? 0);

@@ -44,6 +44,13 @@ function is_admin(): bool
     return $u !== null && $u['role'] === 'admin';
 }
 
+/** Staff = admin or editor (can reach the admin panel; editors are content-only). */
+function is_staff(): bool
+{
+    $u = current_user();
+    return $u !== null && in_array($u['role'], ['admin', 'editor'], true);
+}
+
 /** Attempt login. Returns [ok(bool), error(string|null)]. */
 function attempt_login(string $email, string $password): array
 {
@@ -112,6 +119,16 @@ function require_admin(): void
     if (!is_admin()) {
         $_SESSION['_intended'] = $_SERVER['REQUEST_URI'] ?? '';
         flash('error', 'Admin access required.');
+        redirect('admin/login.php');
+    }
+}
+
+/** Require staff (admin or editor), else redirect to admin login. */
+function require_staff(): void
+{
+    if (!is_staff()) {
+        $_SESSION['_intended'] = $_SERVER['REQUEST_URI'] ?? '';
+        flash('error', 'Staff access required.');
         redirect('admin/login.php');
     }
 }
