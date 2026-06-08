@@ -35,10 +35,16 @@ function url(string $path = ''): string
     return $base . '/' . ltrim($path, '/');
 }
 
-/** Build an asset URL under /assets. */
+/** Build an asset URL under /assets, with a cache-busting ?v=<mtime> so updates load immediately. */
 function asset(string $path): string
 {
-    return url('assets/' . ltrim($path, '/'));
+    $rel  = 'assets/' . ltrim($path, '/');
+    $url  = url($rel);
+    $file = BASE_DIR . '/' . $rel;
+    if (is_file($file)) {
+        $url .= '?v=' . filemtime($file);
+    }
+    return $url;
 }
 
 /** Redirect to an app path and stop. */

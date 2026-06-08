@@ -64,7 +64,24 @@ table.data .row-actions { display: flex; gap: 8px; }
 /* Admin login */
 .admin-login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
 
-@media (max-width: 720px) {
-    .admin-side { width: 64px; }
-    .admin-side a { font-size: 0; padding: 12px; text-align: center; }
+/* ---------- Responsive ---------- */
+@media (max-width: 880px) {
+    /* Sidebar becomes a horizontal, scrollable top bar with labels intact. */
+    .admin-body { flex-direction: column; min-height: 0; }
+    .admin-side { width: 100%; border-right: none; border-bottom: 1px solid var(--border); padding: 8px 10px; }
+    .admin-side nav { flex-direction: row; gap: 4px; overflow-x: auto; scrollbar-width: thin; }
+    .admin-side a { white-space: nowrap; padding: 9px 14px; }
+    .admin-main { padding: 18px 16px; max-width: 100%; }
+    .admin-form .row2 { grid-template-columns: 1fr; }
+    .admin-form { max-width: 100%; }
+}
+
+@media (max-width: 600px) {
+    .admin-top { height: auto; padding: 10px 14px; flex-wrap: wrap; gap: 8px; }
+    .admin-main { padding: 14px 12px; }
+    .admin-main h1 { font-size: 20px; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .toolbar { flex-direction: column; align-items: stretch; }
+    table.data th, table.data td { padding: 9px 10px; }
+    .admin-form .col2, .color-grid { grid-template-columns: 1fr; }
 }

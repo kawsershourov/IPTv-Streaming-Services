@@ -100,7 +100,10 @@ Site favicon: `site_icon` setting + `favicon_tag()`. Header logo sized by `site_
 Responsive overhaul: shared `--container` (1600px) for header + player so they match width; fluid
 `--gutter`; hamburger mobile menu (.nav-toggle/.header-menu, toggle JS in site.js); breakpoints at
 1100/1024/860/640/420 + landscape; player drops its playlist to the bottom on phones
-(uvp_player_script matchMedia override).
+(uvp_player_script matchMedia override). `asset()` now appends `?v=<filemtime>` (cache-busting) so
+CSS/JS changes load immediately — the earlier "hamburger not working" was a stale-cache issue.
+Admin panel responsive: sidebar becomes a horizontal scrollable bar on small screens, forms/grids
+stack, tables scroll (admin.css media queries 880/600).
 
 ### 2026-06-08 — Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):
