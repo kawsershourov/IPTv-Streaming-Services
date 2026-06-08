@@ -168,6 +168,20 @@ img { max-width: 100%; display: block; }
 
 .watch-more { margin-top: 22px; }
 
+/* ---------- Plans ---------- */
+.plans-note { margin: -6px 0 22px; }
+.plan-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.plan-card { position: relative; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px 22px; text-align: center; }
+.plan-card.plan-paid { border-color: rgba(255,138,0,.5); }
+.plan-card.plan-current { outline: 2px solid var(--plex); }
+.plan-flag { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: var(--plex); color: #fff; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 20px; }
+.plan-card h2 { margin: 4px 0 10px; font-size: 20px; }
+.plan-price { margin: 0 0 14px; }
+.plan-price .amount { font-size: 30px; font-weight: 800; }
+.plan-price .per { color: var(--muted); font-size: 13px; }
+.plan-desc { color: var(--muted); font-size: 14px; min-height: 40px; margin: 0 0 16px; }
+.plans-disclaimer { margin-top: 26px; font-size: 12px; text-align: center; }
+
 /* ---------- Misc ---------- */
 .empty { color: var(--muted); text-align: center; padding: 40px 0; }
 

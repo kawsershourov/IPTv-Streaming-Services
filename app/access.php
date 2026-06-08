@@ -6,6 +6,16 @@ declare(strict_types=1);
  */
 
 /**
+ * Is the subscription/plans feature switched on site-wide?
+ * When OFF: no plans UI anywhere and every signed-in user can watch all channels
+ * (premium flags are ignored). When ON: premium channels require a paid plan.
+ */
+function subscriptions_enabled(): bool
+{
+    return Setting::get('subscriptions_enabled', '1') === '1';
+}
+
+/**
  * Does the user currently hold an active, non-expired *paid* subscription?
  * A free (price 0) plan does NOT unlock premium content.
  */
@@ -26,6 +36,10 @@ function can_watch(array $channel, ?array $user): bool
     if ($user === null) {
         return false;
     }
+    // Subscriptions disabled => everything is open to signed-in users.
+    if (!subscriptions_enabled()) {
+        return true;
+    }
     if ((int) $channel['is_premium'] === 0) {
         return true;
     }
@@ -40,6 +54,9 @@ function watch_block_reason(array $channel, ?array $user): ?string
 {
     if ($user === null) {
         return 'login';
+    }
+    if (!subscriptions_enabled()) {
+        return null;
     }
     if ((int) $channel['is_premium'] === 1 && !has_active_subscription((int) $user['id'])) {
         return 'subscribe';

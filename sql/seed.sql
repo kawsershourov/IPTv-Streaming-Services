@@ -88,9 +88,10 @@ SELECT id,'History TV','history-tv',@hls3,'hls',1,0,2 FROM categories WHERE slug
 -- Settings
 -- ---------------------------------------------------------------------------
 INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
-('site_name',          'SunPlex'),
-('site_tagline',       'Live TV & Streaming'),
-('registration_open',  '1'),
-('default_skin',       'minimal_skin_dark'),
-('player_width',       '960'),
-('player_height',      '540');
+('site_name',             'SunPlex'),
+('site_tagline',          'Live TV & Streaming'),
+('registration_open',     '1'),
+('subscriptions_enabled', '1'),
+('default_skin',          'minimal_skin_dark'),
+('player_width',          '960'),
+('player_height',         '540');

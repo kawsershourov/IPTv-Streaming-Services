@@ -12,7 +12,9 @@ require __DIR__ . '/app/includes/header.php';
         <p>Stream hundreds of live channels — sports, news, movies and local favourites — in one place.</p>
         <?php if (!current_user()): ?>
             <a href="<?= e(url('register.php')) ?>" class="btn btn-primary btn-lg">Start Watching</a>
-            <a href="<?= e(url('plans.php')) ?>" class="btn btn-outline btn-lg">View Plans</a>
+            <?php if (subscriptions_enabled()): ?>
+                <a href="<?= e(url('plans.php')) ?>" class="btn btn-outline btn-lg">View Plans</a>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
 </section>

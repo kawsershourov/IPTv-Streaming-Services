@@ -20,6 +20,7 @@ require __DIR__ . '/app/includes/header.php';
             <p><strong>Member since:</strong> <?= e(fmt_date($me['created_at'])) ?></p>
         </div>
 
+        <?php if (subscriptions_enabled()): ?>
         <div class="card">
             <h2>Subscription</h2>
             <?php if ($sub): ?>
@@ -36,6 +37,7 @@ require __DIR__ . '/app/includes/header.php';
                 <?= $isPremium ? 'Change plan' : 'Upgrade to Premium' ?>
             </a>
         </div>
+        <?php endif; ?>
     </div>
 
     <p class="account-actions"><a href="<?= e(url('logout.php')) ?>" class="btn btn-outline">Log out</a></p>
