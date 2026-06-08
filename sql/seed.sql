@@ -111,7 +111,7 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('player_thumb_width',            '40'),
 ('player_thumb_height',           '40'),
 ('player_channel_name_size',      '13'),
-('player_channel_name_align',     'center'),
+('player_channel_name_align',     'left'),
 ('player_show_search',            'yes'),
 ('player_show_fullscreen_button', 'yes'),
 ('player_show_volume_button',     'yes'),

@@ -76,9 +76,11 @@ $justify   = $nameAlign === 'center' ? 'center' : ($nameAlign === 'right' ? 'fle
 // The engine sizes/positions the title box responsively (right of the logo, width tracks the
 // playlist width). Don't override its width/left — only flex-center the text inside it so it
 // stays dynamic when the playlist width changes.
+// 10px gap between the logo and the name, only when the name is left-aligned.
+$nameGap = $nameAlign === 'left' ? '10' : '0';
 $nameCss = '.fwduvp-playlist-thumbnail-dark-text,.fwduvp-playlist-thumbnail-white-text{'
          . 'display:flex !important;align-items:center !important;justify-content:' . $justify . ' !important;}'
-         . '.sp-chname{font-size:' . $nameSize . 'px !important;line-height:1.2;}';
+         . '.sp-chname{font-size:' . $nameSize . 'px !important;line-height:1.2;margin-left:' . $nameGap . 'px;}';
 
 $pageTitle = '';
 $bodyClass = 'page-home';
@@ -95,9 +97,9 @@ require __DIR__ . '/app/includes/header.php';
 <!-- UVP data island (hidden) -->
 <div style="display:none">
     <div id="uvp_playlists">
-        <div data-source="pl_all" data-thumbnail-path="<?= e($thumbFor($allChannels[0])) ?>">All Channels</div>
+        <div data-source="pl_all" data-thumbnail-path="<?= e($thumbFor($allChannels[0])) ?>" data-playlist-name="All Channels">All Channels</div>
         <?php if ($showPlaylists): foreach ($catChannels as $cid => $grp): ?>
-            <div data-source="pl_<?= (int) $cid ?>" data-thumbnail-path="<?= e($thumbFor($grp['channels'][0])) ?>"><?= e($grp['cat']['name']) ?></div>
+            <div data-source="pl_<?= (int) $cid ?>" data-thumbnail-path="<?= e($thumbFor($grp['channels'][0])) ?>" data-playlist-name="<?= e($grp['cat']['name']) ?>"><?= e($grp['cat']['name']) ?></div>
         <?php endforeach; endif; ?>
     </div>
 
