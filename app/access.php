@@ -16,6 +16,16 @@ function subscriptions_enabled(): bool
 }
 
 /**
+ * Can guests (not logged in) watch channels?
+ * When ON: visitors can watch without an account (free channels if subscriptions
+ * are also on; everything if subscriptions are off). When OFF: login is required.
+ */
+function guest_access_enabled(): bool
+{
+    return Setting::get('guest_access', '0') === '1';
+}
+
+/**
  * Does the user currently hold an active, non-expired *paid* subscription?
  * A free (price 0) plan does NOT unlock premium content.
  */
@@ -34,7 +44,12 @@ function has_active_subscription(int $userId): bool
 function can_watch(array $channel, ?array $user): bool
 {
     if ($user === null) {
-        return false;
+        // Guests: only when guest access is enabled.
+        if (!guest_access_enabled()) {
+            return false;
+        }
+        // With subscriptions off everything is open; with subs on, free channels only.
+        return !subscriptions_enabled() || (int) $channel['is_premium'] === 0;
     }
     // Subscriptions disabled => everything is open to signed-in users.
     if (!subscriptions_enabled()) {
@@ -53,7 +68,15 @@ function can_watch(array $channel, ?array $user): bool
 function watch_block_reason(array $channel, ?array $user): ?string
 {
     if ($user === null) {
-        return 'login';
+        // Guests must log in unless guest access is on.
+        if (!guest_access_enabled()) {
+            return 'login';
+        }
+        // Guest access on: free channels allowed; premium (when subs on) needs login.
+        if (subscriptions_enabled() && (int) $channel['is_premium'] === 1) {
+            return 'login';
+        }
+        return null;
     }
     if (!subscriptions_enabled()) {
         return null;

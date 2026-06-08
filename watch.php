@@ -30,7 +30,10 @@ if (!$channel || $channel['status'] !== 'active') {
     exit;
 }
 
-require_login();
+// Guests may watch only when guest access is enabled; otherwise require login.
+if (!guest_access_enabled()) {
+    require_login();
+}
 $me = current_user();
 
 $category = Category::find((int) $channel['category_id']);
@@ -81,6 +84,13 @@ require __DIR__ . '/app/includes/header.php';
             <p>Upgrade to a premium plan to watch <strong><?= e($channel['name']) ?></strong> and all premium channels.</p>
             <a href="<?= e(url('plans.php')) ?>" class="btn btn-primary btn-lg">View plans</a>
             <a href="<?= e(url('')) ?>" class="btn btn-outline btn-lg">Back to home</a>
+        </div>
+    <?php elseif ($reason === 'login'): ?>
+        <div class="upsell">
+            <h2>Log in to watch this channel</h2>
+            <p><strong><?= e($channel['name']) ?></strong> is a premium channel. Sign in or create an account to continue.</p>
+            <a href="<?= e(url('login.php')) ?>" class="btn btn-primary btn-lg">Log in</a>
+            <a href="<?= e(url('register.php')) ?>" class="btn btn-outline btn-lg">Sign up</a>
         </div>
     <?php else: ?>
         <div class="player-stage">

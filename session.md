@@ -37,8 +37,10 @@
   in `app/models/`.
 - **Auth:** `current_user()` (cached; reset with `auth_reset_cache()` after login/logout),
   `require_login()`, `require_admin()`, CSRF via `csrf_field()`/`csrf_verify()`.
-- **Access:** `subscriptions_enabled()` gate; `can_watch($channel,$user)` and
-  `watch_block_reason()` in `app/access.php`. Premium needs a PAID active sub (price>0).
+- **Access:** `subscriptions_enabled()` + `guest_access_enabled()` gates;
+  `can_watch($channel,$user)` and `watch_block_reason()` in `app/access.php`. Premium needs a PAID
+  active sub (price>0). Guest access ON = visitors watch without login (free channels when subs on,
+  everything when subs off); premium prompts login. Both toggles live in admin Settings.
 - **UVP embed (verified, in `watch.php`):** global `FWDUVPlayer` constructor; playlists come
   from HTML markup — `#playlists > div[data-source=<videosId>][data-thumbnail-path]`, then
   `#<videosId> > a[data-thumb-source][data-video-source][data-is-live]` with a child carrying
