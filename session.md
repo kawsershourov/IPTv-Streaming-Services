@@ -90,6 +90,12 @@ per-category playlists when the dropdown is on). Channel cards: admin `player_th
 active item = `player_thumb_hover_bg` (relabelled). Channel name: wrapped in `.sp-chname` span with
 injected `<style>` from `player_channel_name_size` + `player_channel_name_align` (default center 13px).
 Bottom playlist bar = the existing Search + loop/shuffle/next-prev toggles.
+Player extracted to reusable `app/includes/channel_player.php` (+ `player_head_assets()` in
+app/player.php); home uses all channels, **category.php now shows the same player layout scoped to
+one category's channels** (replaced the old grid). Playlist header name fixed via `data-playlist-name`.
+Duplicate stream URLs: append a unique `#uvp<id>` fragment so both channels reload/play.
+Site logo: `site_logo` setting + upload in admin Settings (`upload_image()` helper) shown in the
+header (falls back to the SunPlex text).
 
 ### 2026-06-08 — Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):

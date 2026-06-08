@@ -9,6 +9,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     Setting::set('registration_open',     isset($_POST['registration_open']) ? '1' : '0');
     Setting::set('guest_access',          isset($_POST['guest_access']) ? '1' : '0');
     Setting::set('subscriptions_enabled', isset($_POST['subscriptions_enabled']) ? '1' : '0');
+
+    // Site logo: remove, or upload a new one.
+    if (isset($_POST['remove_logo'])) {
+        Setting::set('site_logo', '');
+    } elseif ($logo = upload_image('site_logo_file', 'site')) {
+        Setting::set('site_logo', $logo);
+    }
+
     flash('success', 'Settings saved.');
     redirect('admin/settings.php');
 }
@@ -19,10 +27,21 @@ require __DIR__ . '/includes/header.php';
 ?>
 <h1>Settings</h1>
 <div class="admin-form">
-    <form method="post" action="<?= e(url('admin/settings.php')) ?>" class="form">
+    <form method="post" action="<?= e(url('admin/settings.php')) ?>" class="form" enctype="multipart/form-data">
         <?= csrf_field() ?>
         <label>Site name <input type="text" name="site_name" value="<?= e(Setting::get('site_name', 'SunPlex')) ?>"></label>
         <label>Tagline <input type="text" name="site_tagline" value="<?= e(Setting::get('site_tagline', '')) ?>"></label>
+
+        <?php $siteLogo = Setting::get('site_logo', ''); ?>
+        <label>Site logo (header) <input type="file" name="site_logo_file" accept="image/*"></label>
+        <?php if ($siteLogo): ?>
+            <p class="muted" style="margin:-8px 0 6px;">Current logo:
+                <img src="<?= e($siteLogo) ?>" alt="logo" style="height:28px;vertical-align:middle;background:#11151f;padding:3px 6px;border-radius:6px;">
+            </p>
+            <label class="check"><input type="checkbox" name="remove_logo"> Remove logo (use the text “SunPlex” instead)</label>
+        <?php else: ?>
+            <p class="muted" style="margin:-8px 0 16px;font-size:13px;">No logo set — the text “SunPlex” shows in the header.</p>
+        <?php endif; ?>
 
         <label class="check"><input type="checkbox" name="registration_open" <?= Setting::get('registration_open', '1') === '1' ? 'checked' : '' ?>> Allow new user registration</label>
 

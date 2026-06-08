@@ -19,8 +19,13 @@ $fullTitle = isset($pageTitle) && $pageTitle !== '' ? "$pageTitle — $siteName"
 <body class="<?= e($bodyClass ?? '') ?>">
 <header class="site-header">
     <div class="wrap header-inner">
+        <?php $siteLogo = Setting::get('site_logo', ''); ?>
         <a class="brand" href="<?= e(url('')) ?>">
-            <span class="brand-sun">Sun</span><span class="brand-plex">Plex</span>
+            <?php if ($siteLogo): ?>
+                <img class="brand-logo" src="<?= e($siteLogo) ?>" alt="<?= e($siteName) ?>">
+            <?php else: ?>
+                <span class="brand-sun">Sun</span><span class="brand-plex">Plex</span>
+            <?php endif; ?>
         </a>
         <nav class="main-nav">
             <a href="<?= e(url('')) ?>">Home</a>

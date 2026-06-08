@@ -168,3 +168,22 @@ function uvp_player_script(array $config): string
 {
     return 'new FWDUVPlayer(' . json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
 }
+
+/** <head> assets for any page that embeds the player: UVP CSS + channel-name styling. */
+function player_head_assets(): string
+{
+    $base  = url('player');
+    $size  = max(8, (int) player_setting('player_channel_name_size'));
+    $align = in_array(player_setting('player_channel_name_align'), ['left', 'center', 'right'], true)
+        ? player_setting('player_channel_name_align') : 'left';
+    $justify = $align === 'center' ? 'center' : ($align === 'right' ? 'flex-end' : 'flex-start');
+    $gap = $align === 'left' ? '10' : '0';
+
+    $css = '.fwduvp-playlist-thumbnail-dark-text,.fwduvp-playlist-thumbnail-white-text{'
+         . 'display:flex !important;align-items:center !important;justify-content:' . $justify . ' !important;}'
+         . '.sp-chname{font-size:' . $size . 'px !important;line-height:1.2;margin-left:' . $gap . 'px;}';
+
+    return '<link rel="stylesheet" href="' . e($base . '/css/fwduvp.css') . '">'
+         . '<link rel="stylesheet" href="' . e($base . '/css/fwd_ui.css') . '">'
+         . '<style>' . $css . '</style>';
+}

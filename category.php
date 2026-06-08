@@ -1,4 +1,8 @@
 <?php
+/**
+ * Category page = same live-TV player as the home page, but the playlist shows
+ * only this category's channels.
+ */
 require __DIR__ . '/app/bootstrap.php';
 
 $slug = trim((string) ($_GET['cat'] ?? ''));
@@ -16,22 +20,18 @@ if (!$category || (int) $category['is_active'] === 0) {
 $channels = Channel::activeByCategory((int) $category['id']);
 
 $pageTitle = $category['name'];
+$bodyClass = 'page-home';
+$headExtra = player_head_assets();
 require __DIR__ . '/app/includes/header.php';
-?>
-<section class="category-page">
-    <div class="row-head">
-        <h1><?= e($category['name']) ?></h1>
-        <a class="row-more" href="<?= e(url('')) ?>">&lsaquo; Home</a>
-    </div>
 
-    <?php if ($channels): ?>
-        <div class="card-grid">
-            <?php foreach ($channels as $channel): ?>
-                <?php require __DIR__ . '/app/includes/channel_card.php'; ?>
-            <?php endforeach; ?>
-        </div>
-    <?php else: ?>
-        <p class="empty">No channels in this category yet.</p>
-    <?php endif; ?>
-</section>
-<?php require __DIR__ . '/app/includes/footer.php'; ?>
+if ($channels) {
+    $pp_channels = $channels;
+    $pp_groups   = [];                 // single playlist = this category only
+    $pp_name     = $category['name'];
+    $pp_instance = 'sunplexCat';
+    require __DIR__ . '/app/includes/channel_player.php';
+} else {
+    echo '<p class="empty">No channels in this category yet.</p>';
+}
+
+require __DIR__ . '/app/includes/footer.php';

@@ -93,6 +93,35 @@ function csrf_verify(): void
     }
 }
 
+/**
+ * Handle an uploaded image from $_FILES[$field]; returns a web path or null.
+ * Saves into /uploads/logos with a random name. Flashes an error on failure.
+ */
+function upload_image(string $field, string $prefix = 'img'): ?string
+{
+    if (empty($_FILES[$field]['name']) || ($_FILES[$field]['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+        return null;
+    }
+    if ($_FILES[$field]['error'] !== UPLOAD_ERR_OK) {
+        flash('error', 'Upload failed.');
+        return null;
+    }
+    $tmp     = $_FILES[$field]['tmp_name'];
+    $info    = @getimagesize($tmp);
+    $allowed = ['image/png' => 'png', 'image/jpeg' => 'jpg', 'image/gif' => 'gif', 'image/webp' => 'webp', 'image/svg+xml' => 'svg'];
+    $mime    = $info['mime'] ?? @mime_content_type($tmp);
+    if (!isset($allowed[$mime])) {
+        flash('error', 'Image must be PNG, JPG, GIF, WEBP, or SVG.');
+        return null;
+    }
+    $name = $prefix . '_' . bin2hex(random_bytes(5)) . '.' . $allowed[$mime];
+    if (!move_uploaded_file($tmp, BASE_DIR . '/uploads/logos/' . $name)) {
+        flash('error', 'Could not store the upload.');
+        return null;
+    }
+    return url('uploads/logos/' . $name);
+}
+
 /* --------------------------------------------------------------------- */
 /* Flash messages                                                         */
 /* --------------------------------------------------------------------- */
