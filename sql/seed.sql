@@ -106,8 +106,12 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('player_playlist_right_width',   '320'),
 ('player_show_playlist_by_default','yes'),
 ('player_show_playlists_popup',    'no'),
-('player_show_playlists_button',   'yes'),
-('player_use_playlists_select_box','yes'),
+('player_show_playlists_button',   'no'),
+('player_use_playlists_select_box','no'),
+('player_thumb_width',            '40'),
+('player_thumb_height',           '40'),
+('player_channel_name_size',      '13'),
+('player_channel_name_align',     'center'),
 ('player_show_search',            'yes'),
 ('player_show_fullscreen_button', 'yes'),
 ('player_show_volume_button',     'yes'),
@@ -143,4 +147,5 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('player_selector_text_normal',   '#ffffff'),
 ('player_selector_text_selected', '#1a1206'),
 ('player_preloader_bg',           '#000000'),
-('player_preloader_fill',         '#ff8a00');
+('player_preloader_fill',         '#ff8a00'),
+('player_thumb_disabled_bg',      '#241a1a');

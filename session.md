@@ -82,6 +82,14 @@ in `uvp_base_config()`. Then split the playlist-on-load into two independent tog
 are separate: `showPlaylistByDefault`=right-side list vs `showPlaylistsByDefault`=popup window):
 `player_show_playlist_by_default` (right list, default ON) and `player_show_playlists_popup`
 (selector popup, default OFF) — so the right list always shows but no popup animates on reload.
+Home list overhaul: default to a single **All Channels** list (no category dropdown:
+`player_show_playlists_button`/`player_use_playlists_select_box` default OFF; index.php only renders
+per-category playlists when the dropdown is on). Channel cards: admin `player_thumb_width/height`
+(default 40, ~half) -> thumbnailWidth/Height; locked/premium item color
+`player_thumb_disabled_bg` -> thumbnailDisabledBackgroundColor (engine default was red #FF0000);
+active item = `player_thumb_hover_bg` (relabelled). Channel name: wrapped in `.sp-chname` span with
+injected `<style>` from `player_channel_name_size` + `player_channel_name_align` (default center 13px).
+Bottom playlist bar = the existing Search + loop/shuffle/next-prev toggles.
 
 ### 2026-06-08 — Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):

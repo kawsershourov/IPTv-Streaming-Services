@@ -24,7 +24,8 @@ $colorLabels = [
     'player_playlist_bg_color'      => 'Playlist background',
     'player_playlist_name_color'    => 'Playlist title text',
     'player_thumb_normal_bg'        => 'Channel item background',
-    'player_thumb_hover_bg'         => 'Channel item (hover)',
+    'player_thumb_hover_bg'         => 'Channel item active / selected',
+    'player_thumb_disabled_bg'      => 'Channel item locked (premium)',
     'player_channel_title_color'    => 'Channel name text',
     'player_search_bg_color'        => 'Search box background',
     'player_search_text_color'      => 'Search box text',
@@ -79,6 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     Setting::set('player_playlist_position', ($_POST['player_playlist_position'] ?? 'right') === 'bottom' ? 'bottom' : 'right');
     Setting::set('player_playlist_right_width', (string) max(160, (int) ($_POST['player_playlist_right_width'] ?? 320)));
+
+    Setting::set('player_thumb_width',  (string) max(20, (int) ($_POST['player_thumb_width'] ?? 40)));
+    Setting::set('player_thumb_height', (string) max(20, (int) ($_POST['player_thumb_height'] ?? 40)));
+    Setting::set('player_channel_name_size', (string) max(8, (int) ($_POST['player_channel_name_size'] ?? 13)));
+    Setting::set('player_channel_name_align', in_array($_POST['player_channel_name_align'] ?? '', ['left', 'center', 'right'], true) ? $_POST['player_channel_name_align'] : 'center');
 
     foreach (array_merge(array_keys($toggles), array_keys($buttons)) as $key) {
         Setting::set($key, isset($_POST[$key]) ? 'yes' : 'no');
@@ -154,6 +160,20 @@ require __DIR__ . '/includes/header.php';
                 </select>
             </label>
             <label>Right playlist width (px) <input type="number" name="player_playlist_right_width" value="<?= e(player_setting('player_playlist_right_width')) ?>"></label>
+        </div>
+        <div class="row2">
+            <label>Channel card width (px) <input type="number" name="player_thumb_width" value="<?= e(player_setting('player_thumb_width')) ?>"></label>
+            <label>Channel card height (px) <input type="number" name="player_thumb_height" value="<?= e(player_setting('player_thumb_height')) ?>"></label>
+        </div>
+        <div class="row2">
+            <label>Channel name font size (px) <input type="number" name="player_channel_name_size" value="<?= e(player_setting('player_channel_name_size')) ?>"></label>
+            <label>Channel name alignment
+                <select name="player_channel_name_align">
+                    <?php foreach (['left', 'center', 'right'] as $a): ?>
+                        <option value="<?= $a ?>" <?= player_setting('player_channel_name_align') === $a ? 'selected' : '' ?>><?= ucfirst($a) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
         </div>
         <?php player_check('player_show_playlist_by_default', $toggles['player_show_playlist_by_default']); ?>
         <?php player_check('player_show_playlists_popup', $toggles['player_show_playlists_popup']); ?>

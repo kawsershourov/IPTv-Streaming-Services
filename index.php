@@ -26,6 +26,9 @@ foreach ($categories as $cat) {
 }
 $allChannels = array_values($allChannels);
 
+// Categories dropdown / playlists feature (off = a single "All Channels" list).
+$showPlaylists = player_yn('player_show_playlists_button') === 'yes';
+
 $playerBase     = url('player');
 $mainFolderPath = $playerBase . '/content';
 $skin           = Setting::get('default_skin', config('site.default_skin', 'minimal_skin_dark'));
@@ -60,13 +63,21 @@ $renderItem = static function (array $ch) use ($me, $thumbFor): string {
                .  'data-redirect-url="' . e($watchUrl) . '" data-redirect-target="_self"';
     }
     $lock = $watchable ? '' : ' 🔒';
-    return '<a ' . $attrs . '><div data-video-short-description>' . e($ch['name']) . $lock . '</div></a>';
+    return '<a ' . $attrs . '><div data-video-short-description>'
+         . '<span class="sp-chname">' . e($ch['name']) . $lock . '</span></div></a>';
 };
+
+// Channel-name styling (font size + alignment) from admin Player settings.
+$nameSize  = max(8, (int) player_setting('player_channel_name_size'));
+$nameAlign = in_array(player_setting('player_channel_name_align'), ['left', 'center', 'right'], true)
+    ? player_setting('player_channel_name_align') : 'center';
 
 $pageTitle = '';
 $bodyClass = 'page-home';
 $headExtra = '<link rel="stylesheet" href="' . e($playerBase . '/css/fwduvp.css') . '">'
-           . '<link rel="stylesheet" href="' . e($playerBase . '/css/fwd_ui.css') . '">';
+           . '<link rel="stylesheet" href="' . e($playerBase . '/css/fwd_ui.css') . '">'
+           . '<style>.sp-chname{display:block;width:100%;text-align:' . $nameAlign
+           . ';font-size:' . $nameSize . 'px !important;line-height:1.3;}</style>';
 require __DIR__ . '/app/includes/header.php';
 ?>
 <?php if ($allChannels): ?>
@@ -78,19 +89,19 @@ require __DIR__ . '/app/includes/header.php';
 <div style="display:none">
     <div id="uvp_playlists">
         <div data-source="pl_all" data-thumbnail-path="<?= e($thumbFor($allChannels[0])) ?>">All Channels</div>
-        <?php foreach ($catChannels as $cid => $grp): ?>
+        <?php if ($showPlaylists): foreach ($catChannels as $cid => $grp): ?>
             <div data-source="pl_<?= (int) $cid ?>" data-thumbnail-path="<?= e($thumbFor($grp['channels'][0])) ?>"><?= e($grp['cat']['name']) ?></div>
-        <?php endforeach; ?>
+        <?php endforeach; endif; ?>
     </div>
 
     <div id="pl_all">
         <?php foreach ($allChannels as $ch) { echo $renderItem($ch); } ?>
     </div>
-    <?php foreach ($catChannels as $cid => $grp): ?>
+    <?php if ($showPlaylists): foreach ($catChannels as $cid => $grp): ?>
         <div id="pl_<?= (int) $cid ?>">
             <?php foreach ($grp['channels'] as $ch) { echo $renderItem($ch); } ?>
         </div>
-    <?php endforeach; ?>
+    <?php endforeach; endif; ?>
 </div>
 
 <?php
