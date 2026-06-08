@@ -16,6 +16,7 @@ $fullTitle = isset($pageTitle) && $pageTitle !== '' ? "$pageTitle — $siteName"
     <?= favicon_tag() ?>
     <link rel="stylesheet" href="<?= e(asset('css/site.css')) ?>">
     <?= $headExtra ?? '' ?>
+    <?= Setting::get('head_code', '') // trusted admin-entered tracking/meta code ?>
 </head>
 <body class="<?= e($bodyClass ?? '') ?>">
 <header class="site-header">

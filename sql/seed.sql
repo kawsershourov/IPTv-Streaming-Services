@@ -97,6 +97,8 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('registration_open',     '1'),
 ('guest_access',          '0'),
 ('subscriptions_enabled', '1'),
+('head_code',             ''),
+('footer_code',           ''),
 -- Player (managed in Admin > Player)
 ('default_skin',                  'minimal_skin_dark'),
 ('player_autoplay',               'yes'),

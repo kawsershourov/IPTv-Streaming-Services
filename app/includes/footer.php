@@ -8,5 +8,6 @@
 </footer>
 
 <script src="<?= e(asset('js/site.js')) ?>"></script>
+<?= Setting::get('footer_code', '') // trusted admin-entered code ?>
 </body>
 </html>

@@ -25,6 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Setting::set('site_icon', $icon);
     }
 
+    // Tracking / custom code (trusted admin input — stored and output verbatim).
+    Setting::set('head_code',   (string) ($_POST['head_code'] ?? ''));
+    Setting::set('footer_code', (string) ($_POST['footer_code'] ?? ''));
+
     flash('success', 'Settings saved.');
     redirect('admin/settings.php');
 }
@@ -86,6 +90,17 @@ require __DIR__ . '/includes/header.php';
 
         <p class="muted" style="font-size:13px;">Player appearance and controls are managed on the
             <a href="<?= e(url('admin/player.php')) ?>">Player</a> page.</p>
+
+        <h2 style="font-size:16px;margin:18px 0 10px;">Tracking &amp; custom code</h2>
+        <label>Head code (Google Analytics, meta tags, etc.) — injected before &lt;/head&gt;
+            <textarea name="head_code" rows="5" spellcheck="false" style="font-family:monospace;font-size:13px;"><?= e(Setting::get('head_code', '')) ?></textarea>
+        </label>
+        <label>Footer code — injected before &lt;/body&gt;
+            <textarea name="footer_code" rows="4" spellcheck="false" style="font-family:monospace;font-size:13px;"><?= e(Setting::get('footer_code', '')) ?></textarea>
+        </label>
+        <p class="muted" style="margin:-8px 0 16px;font-size:12px;">
+            Paste your Google Analytics / Tag Manager snippet here. It runs on the public site only (not the admin panel).
+        </p>
 
         <div class="form-actions"><button class="btn btn-primary">Save settings</button></div>
     </form>
