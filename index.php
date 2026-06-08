@@ -103,7 +103,7 @@ $homeConfig = array_merge(uvp_base_config(), [
     'startAtVideo'                    => (int) $startIndex,
     'showPlaylistsButtonAndPlaylists' => 'yes',
     'usePlaylistsSelectBox'           => player_yn('player_use_playlists_select_box'),
-    'showPlaylistsByDefault'          => 'yes',
+    'showPlaylistsByDefault'          => player_yn('player_show_playlist_by_default'),
     'showPlaylistsSearchInput'        => player_yn('player_show_search'),
 ]);
 ?>

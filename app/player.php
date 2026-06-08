@@ -112,6 +112,11 @@ function uvp_base_config(): array
         'volume'                => (float) player_setting('player_volume'),
         'maxWidth'              => (int) player_setting('player_max_width'),
         'maxHeight'             => (int) player_setting('player_max_height'),
+        // Controller layout — engine default volumeScrubberHeight is only 10px, which
+        // makes the hover volume slider unusable; give it a proper height.
+        'controllerHeight'      => 50,
+        'volumeScrubberHeight'  => 80,
+        'showButtonsToolTips'   => 'yes',
         'backgroundColor'       => player_setting('player_bg_color'),
         'videoBackgroundColor'  => '#000000',
         'posterBackgroundColor' => '#000000',
