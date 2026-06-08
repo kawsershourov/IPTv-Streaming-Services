@@ -28,23 +28,28 @@ $fullTitle = isset($pageTitle) && $pageTitle !== '' ? "$pageTitle — $siteName"
                 <span class="brand-sun">Sun</span><span class="brand-plex">Plex</span>
             <?php endif; ?>
         </a>
-        <nav class="main-nav">
-            <a href="<?= e(url('')) ?>">Home</a>
-            <?php foreach ($navCategories as $cat): ?>
-                <a href="<?= e(url('category.php?cat=' . urlencode($cat['slug']))) ?>"><?= e($cat['name']) ?></a>
-            <?php endforeach; ?>
-        </nav>
-        <div class="header-auth">
-            <?php if ($me): ?>
-                <a href="<?= e(url('account.php')) ?>" class="btn btn-ghost"><?= e($me['name']) ?></a>
-                <?php if ($me['role'] === 'admin'): ?>
-                    <a href="<?= e(url('admin/')) ?>" class="btn btn-ghost">Admin</a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-controls="headerMenu" aria-expanded="false">
+            <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+        </button>
+        <div class="header-menu" id="headerMenu">
+            <nav class="main-nav">
+                <a href="<?= e(url('')) ?>">Home</a>
+                <?php foreach ($navCategories as $cat): ?>
+                    <a href="<?= e(url('category.php?cat=' . urlencode($cat['slug']))) ?>"><?= e($cat['name']) ?></a>
+                <?php endforeach; ?>
+            </nav>
+            <div class="header-auth">
+                <?php if ($me): ?>
+                    <a href="<?= e(url('account.php')) ?>" class="btn btn-ghost"><?= e($me['name']) ?></a>
+                    <?php if ($me['role'] === 'admin'): ?>
+                        <a href="<?= e(url('admin/')) ?>" class="btn btn-ghost">Admin</a>
+                    <?php endif; ?>
+                    <a href="<?= e(url('logout.php')) ?>" class="btn btn-outline">Logout</a>
+                <?php else: ?>
+                    <a href="<?= e(url('login.php')) ?>" class="btn btn-ghost">Login</a>
+                    <a href="<?= e(url('register.php')) ?>" class="btn btn-primary">Sign Up</a>
                 <?php endif; ?>
-                <a href="<?= e(url('logout.php')) ?>" class="btn btn-outline">Logout</a>
-            <?php else: ?>
-                <a href="<?= e(url('login.php')) ?>" class="btn btn-ghost">Login</a>
-                <a href="<?= e(url('register.php')) ?>" class="btn btn-primary">Sign Up</a>
-            <?php endif; ?>
+            </div>
         </div>
     </div>
 </header>

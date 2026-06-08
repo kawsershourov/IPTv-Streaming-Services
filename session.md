@@ -95,7 +95,12 @@ app/player.php); home uses all channels, **category.php now shows the same playe
 one category's channels** (replaced the old grid). Playlist header name fixed via `data-playlist-name`.
 Duplicate stream URLs: append a unique `#uvp<id>` fragment so both channels reload/play.
 Site logo: `site_logo` setting + upload in admin Settings (`upload_image()` helper) shown in the
-header (falls back to the SunPlex text).
+header (falls back to the SunPlex text). upload_image() supports png/jpg/jpeg/gif/webp/svg/ico/bmp/avif.
+Site favicon: `site_icon` setting + `favicon_tag()`. Header logo sized by `site_logo_width` (fits header).
+Responsive overhaul: shared `--container` (1600px) for header + player so they match width; fluid
+`--gutter`; hamburger mobile menu (.nav-toggle/.header-menu, toggle JS in site.js); breakpoints at
+1100/1024/860/640/420 + landscape; player drops its playlist to the bottom on phones
+(uvp_player_script matchMedia override).
 
 ### 2026-06-08 — Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):

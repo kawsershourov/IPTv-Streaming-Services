@@ -163,10 +163,15 @@ function uvp_base_config(): array
     );
 }
 
-/** Render a `new FWDUVPlayer({...})` call from a full config array. */
+/** Render a responsive `new FWDUVPlayer({...})` call from a full config array. */
 function uvp_player_script(array $config): string
 {
-    return 'new FWDUVPlayer(' . json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+    $json = json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    // On phones, move the channel playlist below the video so it gets full width.
+    return '(function(){var cfg=' . $json . ';'
+         . 'if(window.matchMedia&&window.matchMedia("(max-width:760px)").matches){'
+         . 'cfg.playlistPosition="bottom";cfg.playlistBottomHeight=240;}'
+         . 'new FWDUVPlayer(cfg);})();';
 }
 
 /** <head> assets for any page that embeds the player: UVP CSS + channel-name styling. */
