@@ -20,6 +20,7 @@ $nav = [
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e(($adminTitle ?? 'Admin') . ' — SunPlex Admin') ?></title>
+    <?= favicon_tag() ?>
     <link rel="stylesheet" href="<?= e(asset('css/site.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('css/admin.css')) ?>">
 </head>

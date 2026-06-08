@@ -17,6 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Setting::set('site_logo', $logo);
     }
 
+    // Site icon (favicon): remove, or upload a new one.
+    if (isset($_POST['remove_icon'])) {
+        Setting::set('site_icon', '');
+    } elseif ($icon = upload_image('site_icon_file', 'icon')) {
+        Setting::set('site_icon', $icon);
+    }
+
     flash('success', 'Settings saved.');
     redirect('admin/settings.php');
 }
@@ -33,7 +40,7 @@ require __DIR__ . '/includes/header.php';
         <label>Tagline <input type="text" name="site_tagline" value="<?= e(Setting::get('site_tagline', '')) ?>"></label>
 
         <?php $siteLogo = Setting::get('site_logo', ''); ?>
-        <label>Site logo (header) <input type="file" name="site_logo_file" accept="image/*"></label>
+        <label>Site logo (header) <input type="file" name="site_logo_file" accept="image/*,.ico,.svg"></label>
         <?php if ($siteLogo): ?>
             <p class="muted" style="margin:-8px 0 6px;">Current logo:
                 <img src="<?= e($siteLogo) ?>" alt="logo" style="height:28px;vertical-align:middle;background:#11151f;padding:3px 6px;border-radius:6px;">
@@ -42,6 +49,18 @@ require __DIR__ . '/includes/header.php';
         <?php else: ?>
             <p class="muted" style="margin:-8px 0 16px;font-size:13px;">No logo set — the text “SunPlex” shows in the header.</p>
         <?php endif; ?>
+
+        <?php $siteIcon = Setting::get('site_icon', ''); ?>
+        <label>Site icon / favicon <input type="file" name="site_icon_file" accept="image/*,.ico,.svg"></label>
+        <?php if ($siteIcon): ?>
+            <p class="muted" style="margin:-8px 0 6px;">Current icon:
+                <img src="<?= e($siteIcon) ?>" alt="icon" style="height:24px;vertical-align:middle;background:#11151f;padding:3px;border-radius:6px;">
+            </p>
+            <label class="check"><input type="checkbox" name="remove_icon"> Remove site icon</label>
+        <?php else: ?>
+            <p class="muted" style="margin:-8px 0 16px;font-size:13px;">No icon set — browsers use their default tab icon.</p>
+        <?php endif; ?>
+        <p class="muted" style="margin:-4px 0 16px;font-size:12px;">Supported: PNG, JPG, JPEG, GIF, WEBP, SVG, ICO, BMP, AVIF.</p>
 
         <label class="check"><input type="checkbox" name="registration_open" <?= Setting::get('registration_open', '1') === '1' ? 'checked' : '' ?>> Allow new user registration</label>
 

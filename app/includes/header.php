@@ -13,6 +13,7 @@ $fullTitle = isset($pageTitle) && $pageTitle !== '' ? "$pageTitle — $siteName"
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e($fullTitle) ?></title>
+    <?= favicon_tag() ?>
     <link rel="stylesheet" href="<?= e(asset('css/site.css')) ?>">
     <?= $headExtra ?? '' ?>
 </head>

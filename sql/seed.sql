@@ -92,6 +92,7 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('site_name',             'SunPlex'),
 ('site_tagline',          'Live TV & Streaming'),
 ('site_logo',             ''),
+('site_icon',             ''),
 ('registration_open',     '1'),
 ('guest_access',          '0'),
 ('subscriptions_enabled', '1'),

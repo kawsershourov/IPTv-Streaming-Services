@@ -95,7 +95,8 @@ function csrf_verify(): void
 
 /**
  * Handle an uploaded image from $_FILES[$field]; returns a web path or null.
- * Saves into /uploads/logos with a random name. Flashes an error on failure.
+ * Saves into /uploads/logos. Supports raster formats and SVG/ICO (which getimagesize
+ * can't read, so those are validated by extension + a light content sniff).
  */
 function upload_image(string $field, string $prefix = 'img'): ?string
 {
@@ -106,20 +107,44 @@ function upload_image(string $field, string $prefix = 'img'): ?string
         flash('error', 'Upload failed.');
         return null;
     }
-    $tmp     = $_FILES[$field]['tmp_name'];
-    $info    = @getimagesize($tmp);
-    $allowed = ['image/png' => 'png', 'image/jpeg' => 'jpg', 'image/gif' => 'gif', 'image/webp' => 'webp', 'image/svg+xml' => 'svg'];
-    $mime    = $info['mime'] ?? @mime_content_type($tmp);
-    if (!isset($allowed[$mime])) {
-        flash('error', 'Image must be PNG, JPG, GIF, WEBP, or SVG.');
+
+    $tmp = $_FILES[$field]['tmp_name'];
+    $ext = strtolower(pathinfo((string) $_FILES[$field]['name'], PATHINFO_EXTENSION));
+
+    $allowed = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ico', 'bmp', 'avif'];
+    if (!in_array($ext, $allowed, true)) {
+        flash('error', 'Unsupported image type. Use PNG, JPG, JPEG, GIF, WEBP, SVG, ICO, BMP, or AVIF.');
         return null;
     }
-    $name = $prefix . '_' . bin2hex(random_bytes(5)) . '.' . $allowed[$mime];
+
+    if ($ext === 'svg') {
+        $head = (string) @file_get_contents($tmp, false, null, 0, 2048);
+        if (stripos($head, '<svg') === false) {
+            flash('error', 'That SVG file looks invalid.');
+            return null;
+        }
+    } elseif ($ext !== 'ico') {
+        // Raster formats: confirm it's a real image.
+        if (@getimagesize($tmp) === false) {
+            flash('error', 'That file does not look like a valid image.');
+            return null;
+        }
+    }
+
+    $store = $ext === 'jpeg' ? 'jpg' : $ext;
+    $name  = $prefix . '_' . bin2hex(random_bytes(5)) . '.' . $store;
     if (!move_uploaded_file($tmp, BASE_DIR . '/uploads/logos/' . $name)) {
         flash('error', 'Could not store the upload.');
         return null;
     }
     return url('uploads/logos/' . $name);
+}
+
+/** <link rel="icon"> tag for the configured site icon, or empty string. */
+function favicon_tag(): string
+{
+    $icon = Setting::get('site_icon', '');
+    return $icon ? '<link rel="icon" href="' . e($icon) . '">' : '';
 }
 
 /* --------------------------------------------------------------------- */

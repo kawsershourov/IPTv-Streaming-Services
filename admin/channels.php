@@ -5,31 +5,10 @@ require_admin();
 $action = $_GET['action'] ?? 'list';
 $id     = (int) ($_GET['id'] ?? 0);
 
-/** Handle an optional logo upload; returns a web path or null. */
+/** Handle an optional channel logo upload; returns a web path or null. */
 function handle_logo_upload(): ?string
 {
-    if (empty($_FILES['logo_file']['name']) || ($_FILES['logo_file']['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
-        return null;
-    }
-    if ($_FILES['logo_file']['error'] !== UPLOAD_ERR_OK) {
-        flash('error', 'Logo upload failed.');
-        return null;
-    }
-    $tmp  = $_FILES['logo_file']['tmp_name'];
-    $info = @getimagesize($tmp);
-    $allowed = ['image/png' => 'png', 'image/jpeg' => 'jpg', 'image/gif' => 'gif', 'image/webp' => 'webp', 'image/svg+xml' => 'svg'];
-    $mime = $info['mime'] ?? mime_content_type($tmp);
-    if (!isset($allowed[$mime])) {
-        flash('error', 'Logo must be PNG, JPG, GIF, WEBP, or SVG.');
-        return null;
-    }
-    $name = 'ch_' . bin2hex(random_bytes(6)) . '.' . $allowed[$mime];
-    $dest = BASE_DIR . '/uploads/logos/' . $name;
-    if (!move_uploaded_file($tmp, $dest)) {
-        flash('error', 'Could not store the uploaded logo.');
-        return null;
-    }
-    return url('uploads/logos/' . $name);
+    return upload_image('logo_file', 'ch');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
