@@ -1,43 +1,142 @@
 <?php
+/**
+ * Home page = full FWD UVP player with an "All Channels" + per-category dropdown,
+ * a right-side vertical playlist, and search (the sunplex.live live-TV layout).
+ *
+ * Gating-safe: channels the viewer may watch carry the real stream URL; channels
+ * they may NOT watch carry no stream — instead a data-redirect-url sends them to
+ * watch.php (login / upsell). The player auto-starts on the first watchable channel.
+ */
 require __DIR__ . '/app/bootstrap.php';
 
-$groups = Channel::groupedByCategory();
+$me = current_user();
+$categories = Category::active();
+
+// Build category => channels, and a flat "all" list (de-duplicated by id, in category order).
+$catChannels = [];
+$allChannels = [];
+foreach ($categories as $cat) {
+    $chs = Channel::activeByCategory((int) $cat['id']);
+    if ($chs) {
+        $catChannels[(int) $cat['id']] = ['cat' => $cat, 'channels' => $chs];
+        foreach ($chs as $ch) {
+            $allChannels[(int) $ch['id']] = $ch;
+        }
+    }
+}
+$allChannels = array_values($allChannels);
+
+$playerBase     = url('player');
+$mainFolderPath = $playerBase . '/content';
+$skin           = Setting::get('default_skin', config('site.default_skin', 'minimal_skin_dark'));
+$fallbackThumb  = $playerBase . '/content/logo.png';
+
+$thumbFor = static function (array $ch) use ($fallbackThumb): string {
+    $logo = trim((string) ($ch['logo'] ?? ''));
+    return $logo !== '' ? $logo : $fallbackThumb;
+};
+
+// First watchable channel in the "All Channels" list — the player starts there so
+// autoplay never lands on a redirect item.
+$startIndex = 0;
+foreach ($allChannels as $i => $ch) {
+    if (can_watch($ch, $me)) {
+        $startIndex = $i;
+        break;
+    }
+}
+
+/** Render one playlist <a> item (real stream if watchable, else a redirect to watch.php). */
+$renderItem = static function (array $ch) use ($me, $thumbFor): string {
+    $watchable = can_watch($ch, $me);
+    $watchUrl  = url('watch.php?c=' . urlencode($ch['slug']));
+    $attrs = 'data-thumb-source="' . e($thumbFor($ch)) . '" '
+           . 'data-is-live="' . ((int) $ch['is_live'] === 1 ? 'yes' : 'no') . '" ';
+    if ($watchable) {
+        $attrs .= 'data-video-source="' . e($ch['stream_url']) . '"';
+    } else {
+        // No stream URL emitted — selecting this item redirects to the watch page.
+        $attrs .= 'data-video-source="' . e($watchUrl) . '" '
+               .  'data-redirect-url="' . e($watchUrl) . '" data-redirect-target="_self"';
+    }
+    $lock = $watchable ? '' : ' 🔒';
+    return '<a ' . $attrs . '><div data-video-short-description>' . e($ch['name']) . $lock . '</div></a>';
+};
 
 $pageTitle = '';
+$bodyClass = 'page-home';
+$headExtra = '<link rel="stylesheet" href="' . e($playerBase . '/css/fwduvp.css') . '">'
+           . '<link rel="stylesheet" href="' . e($playerBase . '/css/fwd_ui.css') . '">';
 require __DIR__ . '/app/includes/header.php';
 ?>
-<section class="hero">
-    <div class="hero-inner">
-        <h1>Live TV, Sports &amp; Entertainment</h1>
-        <p>Stream hundreds of live channels — sports, news, movies and local favourites — in one place.</p>
-        <?php if (!current_user()): ?>
-            <a href="<?= e(url('register.php')) ?>" class="btn btn-primary btn-lg">Start Watching</a>
-            <?php if (subscriptions_enabled()): ?>
-                <a href="<?= e(url('plans.php')) ?>" class="btn btn-outline btn-lg">View Plans</a>
-            <?php endif; ?>
-        <?php endif; ?>
+<?php if ($allChannels): ?>
+<div class="home-player">
+    <div id="player_holder"></div>
+</div>
+
+<!-- UVP data island (hidden) -->
+<div style="display:none">
+    <div id="uvp_playlists">
+        <div data-source="pl_all" data-thumbnail-path="<?= e($thumbFor($allChannels[0])) ?>">All Channels</div>
+        <?php foreach ($catChannels as $cid => $grp): ?>
+            <div data-source="pl_<?= (int) $cid ?>" data-thumbnail-path="<?= e($thumbFor($grp['channels'][0])) ?>"><?= e($grp['cat']['name']) ?></div>
+        <?php endforeach; ?>
     </div>
-</section>
 
-<?php foreach ($groups as $group): ?>
-    <?php if (empty($group['channels'])) { continue; } ?>
-    <section class="channel-row">
-        <div class="row-head">
-            <h2><?= e($group['category']['name']) ?></h2>
-            <a class="row-more" href="<?= e(url('category.php?cat=' . urlencode($group['category']['slug']))) ?>">
-                See all &rsaquo;
-            </a>
+    <div id="pl_all">
+        <?php foreach ($allChannels as $ch) { echo $renderItem($ch); } ?>
+    </div>
+    <?php foreach ($catChannels as $cid => $grp): ?>
+        <div id="pl_<?= (int) $cid ?>">
+            <?php foreach ($grp['channels'] as $ch) { echo $renderItem($ch); } ?>
         </div>
-        <div class="card-scroller">
-            <?php foreach ($group['channels'] as $channel): ?>
-                <?php require __DIR__ . '/app/includes/channel_card.php'; ?>
-            <?php endforeach; ?>
-        </div>
-    </section>
-<?php endforeach; ?>
+    <?php endforeach; ?>
+</div>
 
-<?php if (!array_filter($groups, fn ($g) => !empty($g['channels']))): ?>
+<script src="<?= e($playerBase . '/js/FWDUVP.js') ?>"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof FWDUVPUtils !== 'undefined' && FWDUVPUtils.checkIfHasTransofrms) {
+        FWDUVPUtils.checkIfHasTransofrms();
+    }
+    new FWDUVPlayer({
+        instanceName: 'sunplexHome',
+        parentId: 'player_holder',
+        playlistsId: 'uvp_playlists',
+        mainFolderPath: <?= json_encode($mainFolderPath) ?>,
+        skinPath: <?= json_encode($skin) ?>,
+        displayType: 'responsive',
+        autoScale: 'yes',
+        useVectorIcons: 'no',
+        playsinline: 'yes',
+        autoPlay: 'yes',
+        maxWidth: 1920,
+        maxHeight: 820,
+        volume: 0.8,
+        backgroundColor: '#000000',
+        videoBackgroundColor: '#000000',
+        posterBackgroundColor: '#000000',
+        // Playlists / right-side channel list + dropdown + search (the live-TV layout)
+        showPlaylistsButtonAndPlaylists: 'yes',
+        usePlaylistsSelectBox: 'yes',
+        showPlaylistsByDefault: 'yes',
+        showPlaylistsSearchInput: 'yes',
+        showPlaylistButtonAndPlaylist: 'yes',
+        showPlaylistByDefault: 'yes',
+        playlistPosition: 'right',
+        playlistRightWidth: 320,
+        showThumbnail: 'yes',
+        showPlaylistName: 'yes',
+        showSearchInput: 'yes',
+        startAtPlaylist: 0,
+        startAtVideo: <?= (int) $startIndex ?>,
+        showShareButton: 'no',
+        showEmbedButton: 'no',
+        showDownloadButton: 'no'
+    });
+});
+</script>
+<?php else: ?>
     <p class="empty">No channels available yet. Check back soon.</p>
 <?php endif; ?>
-
 <?php require __DIR__ . '/app/includes/footer.php'; ?>

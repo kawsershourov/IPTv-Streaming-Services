@@ -16,7 +16,7 @@ $fullTitle = isset($pageTitle) && $pageTitle !== '' ? "$pageTitle — $siteName"
     <link rel="stylesheet" href="<?= e(asset('css/site.css')) ?>">
     <?= $headExtra ?? '' ?>
 </head>
-<body>
+<body class="<?= e($bodyClass ?? '') ?>">
 <header class="site-header">
     <div class="wrap header-inner">
         <a class="brand" href="<?= e(url('')) ?>">

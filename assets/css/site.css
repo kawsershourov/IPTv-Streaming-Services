@@ -150,6 +150,11 @@ img { max-width: 100%; display: block; }
 .badge-premium { /* allow inline use */ }
 .account .badge-premium { background: var(--premium); color: #3a2c00; padding: 2px 8px; border-radius: 5px; font-size: 11px; }
 
+/* ---------- Home player (live-TV layout) ---------- */
+body.page-home main.site-main { max-width: 1680px; padding-top: 16px; }
+.home-player { width: 100%; }
+.home-player #player_holder { width: 100%; background: #000; }
+
 /* ---------- Watch page ---------- */
 .watch-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
 .watch-head h1 { margin: 0; font-size: 22px; }

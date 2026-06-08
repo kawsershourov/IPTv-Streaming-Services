@@ -61,6 +61,15 @@
 
 ## Sessions
 
+### 2026-06-08 — Session 2 (home = live-TV player)
+**Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):
+big video + right-side vertical playlist + "All Channels"/per-category dropdown + search.
+Gating-safe via per-item `data-redirect-url` — watchable channels carry the real stream, locked
+ones (🔒) carry only a redirect to `watch.php` (login/upsell); autoplay starts on the first
+watchable channel. Files: `index.php` (rewritten), `header.php` (`$bodyClass`), `site.css`
+(`.home-player`). Verified: 0 locked items contain a stream URL. Category grids still live at
+`category.php`.
+
 ### 2026-06-08 — Session 1
 **Done:** Analyzed live `sunplex.live` (WordPress + UVP plugin IPTV). Planned and built the entire
 platform Phases 1–10. Created the public GitHub repo `IPTv-Streaming-Services` and pushed every
