@@ -105,6 +105,7 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('player_playlist_position',      'right'),
 ('player_playlist_right_width',   '320'),
 ('player_show_playlist_by_default','yes'),
+('player_show_playlists_popup',    'no'),
 ('player_use_playlists_select_box','yes'),
 ('player_show_search',            'yes'),
 ('player_show_fullscreen_button', 'yes'),

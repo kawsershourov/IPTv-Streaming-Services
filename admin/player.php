@@ -9,7 +9,8 @@ $skins = ['minimal_skin_dark', 'minimal_skin_white', 'classic_skin_dark', 'class
 $toggles = [
     'player_autoplay'                 => 'Autoplay on load',
     'player_use_vector_icons'         => 'Use vector icons (instead of graphic skin icons)',
-    'player_show_playlist_by_default' => 'Open the channel playlist on page load (otherwise it stays closed until the playlist button is clicked)',
+    'player_show_playlist_by_default' => 'Show the right-side channel playlist on load (always visible)',
+    'player_show_playlists_popup'     => 'Open the playlists selector popup window on load (the animated overlay) — usually OFF',
     'player_use_playlists_select_box' => 'Show the playlists dropdown (All Channels / categories)',
     'player_show_search'              => 'Show the playlist search box',
     'player_use_hex_colors'           => 'Recolor controller buttons with the “Controller buttons” color',
@@ -154,6 +155,7 @@ require __DIR__ . '/includes/header.php';
             <label>Right playlist width (px) <input type="number" name="player_playlist_right_width" value="<?= e(player_setting('player_playlist_right_width')) ?>"></label>
         </div>
         <?php player_check('player_show_playlist_by_default', $toggles['player_show_playlist_by_default']); ?>
+        <?php player_check('player_show_playlists_popup', $toggles['player_show_playlists_popup']); ?>
         <?php player_check('player_use_playlists_select_box', $toggles['player_use_playlists_select_box']); ?>
         <?php player_check('player_show_search', $toggles['player_show_search']); ?>
 

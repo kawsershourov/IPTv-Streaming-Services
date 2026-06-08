@@ -78,7 +78,10 @@ hardcoded in index/watch). 25 toggles total on the Player page.
 Fixes: home `showPlaylistsByDefault` now follows the `player_show_playlist_by_default` toggle
 (so admins can stop the playlist popping open on reload); volume hover slider fixed by setting
 `volumeScrubberHeight:80` (engine default was 10) + `controllerHeight:50` + `showButtonsToolTips:yes`
-in `uvp_base_config()`.
+in `uvp_base_config()`. Then split the playlist-on-load into two independent toggles (engine props
+are separate: `showPlaylistByDefault`=right-side list vs `showPlaylistsByDefault`=popup window):
+`player_show_playlist_by_default` (right list, default ON) and `player_show_playlists_popup`
+(selector popup, default OFF) — so the right list always shows but no popup animates on reload.
 
 ### 2026-06-08 — Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):
