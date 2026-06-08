@@ -14,6 +14,7 @@ $fullTitle = isset($pageTitle) && $pageTitle !== '' ? "$pageTitle — $siteName"
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e($fullTitle) ?></title>
     <link rel="stylesheet" href="<?= e(asset('css/site.css')) ?>">
+    <?= $headExtra ?? '' ?>
 </head>
 <body>
 <header class="site-header">

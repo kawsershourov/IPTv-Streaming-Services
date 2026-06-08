@@ -150,6 +150,24 @@ img { max-width: 100%; display: block; }
 .badge-premium { /* allow inline use */ }
 .account .badge-premium { background: var(--premium); color: #3a2c00; padding: 2px 8px; border-radius: 5px; font-size: 11px; }
 
+/* ---------- Watch page ---------- */
+.watch-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+.watch-head h1 { margin: 0; font-size: 22px; }
+.watch-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; background: var(--panel-2); border: 1px solid var(--border); color: var(--muted); }
+.chip-live { background: var(--live); color: #fff; border-color: transparent; }
+.chip-premium { background: var(--premium); color: #3a2c00; border-color: transparent; }
+
+.player-stage { width: 100%; max-width: 1100px; margin: 0 auto 22px; }
+#player_holder { width: 100%; background: #000; border-radius: var(--radius); overflow: hidden; }
+
+.upsell { max-width: 640px; margin: 10px auto 26px; text-align: center; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 36px 28px; box-shadow: var(--shadow); }
+.upsell h2 { margin: 0 0 10px; }
+.upsell p { color: var(--muted); margin: 0 0 20px; }
+.upsell .btn { margin: 0 6px; }
+
+.watch-more { margin-top: 22px; }
+
 /* ---------- Misc ---------- */
 .empty { color: var(--muted); text-align: center; padding: 40px 0; }
 
