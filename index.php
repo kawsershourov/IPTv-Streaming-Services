@@ -71,15 +71,20 @@ $renderItem = static function (array $ch) use ($me, $thumbFor): string {
 $nameSize  = max(8, (int) player_setting('player_channel_name_size'));
 $nameAlign = in_array(player_setting('player_channel_name_align'), ['left', 'center', 'right'], true)
     ? player_setting('player_channel_name_align') : 'center';
+$justify   = $nameAlign === 'center' ? 'center' : ($nameAlign === 'right' ? 'flex-end' : 'flex-start');
+
+// The engine's title box shrinks to its text and sits next to the logo, so text-align
+// can't center it across the row. Force it full-width and flex-center (both axes).
+$nameCss = '.fwduvp-playlist-thumbnail-dark-text,.fwduvp-playlist-thumbnail-white-text{'
+         . 'left:0 !important;width:100% !important;box-sizing:border-box !important;padding:0 12px !important;'
+         . 'display:flex !important;align-items:center !important;justify-content:' . $justify . ' !important;}'
+         . '.sp-chname{font-size:' . $nameSize . 'px !important;line-height:1.3;}';
 
 $pageTitle = '';
 $bodyClass = 'page-home';
 $headExtra = '<link rel="stylesheet" href="' . e($playerBase . '/css/fwduvp.css') . '">'
            . '<link rel="stylesheet" href="' . e($playerBase . '/css/fwd_ui.css') . '">'
-           . '<style>.sp-chname{display:block;width:100%;text-align:' . $nameAlign
-           . ';font-size:' . $nameSize . 'px !important;line-height:1.3;}'
-           . '.fwduvp-playlist-thumbnail-dark-text,.fwduvp-playlist-thumbnail-white-text{display:flex !important;align-items:center !important;}'
-           . '</style>';
+           . '<style>' . $nameCss . '</style>';
 require __DIR__ . '/app/includes/header.php';
 ?>
 <?php if ($allChannels): ?>
