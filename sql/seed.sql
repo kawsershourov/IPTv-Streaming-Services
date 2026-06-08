@@ -88,11 +88,34 @@ SELECT id,'History TV','history-tv',@hls3,'hls',1,0,2 FROM categories WHERE slug
 -- Settings
 -- ---------------------------------------------------------------------------
 INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
+-- Site
 ('site_name',             'SunPlex'),
 ('site_tagline',          'Live TV & Streaming'),
 ('registration_open',     '1'),
 ('guest_access',          '0'),
 ('subscriptions_enabled', '1'),
-('default_skin',          'minimal_skin_dark'),
-('player_width',          '960'),
-('player_height',         '540');
+-- Player (managed in Admin > Player)
+('default_skin',                  'minimal_skin_dark'),
+('player_autoplay',               'yes'),
+('player_volume',                 '0.8'),
+('player_max_width',              '1280'),
+('player_max_height',             '720'),
+('player_bg_color',               '#000000'),
+('player_use_vector_icons',       'no'),
+('player_playlist_position',      'right'),
+('player_playlist_right_width',   '320'),
+('player_show_playlist_by_default','yes'),
+('player_use_playlists_select_box','yes'),
+('player_show_search',            'yes'),
+('player_show_fullscreen_button', 'yes'),
+('player_show_volume_button',     'yes'),
+('player_show_playbackrate_button','no'),
+('player_show_rewind_button',     'no'),
+('player_show_share_button',      'no'),
+('player_show_embed_button',      'no'),
+('player_show_download_button',   'no'),
+('player_show_info_button',       'yes'),
+('player_show_time',              'yes'),
+('player_show_next_prev',         'yes'),
+('player_show_loop_button',       'no'),
+('player_show_shuffle_button',    'no');

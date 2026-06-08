@@ -10,6 +10,7 @@ $nav = [
     'channels'   => ['Channels',   'channels.php'],
     'users'      => ['Users',      'users.php'],
     'plans'      => ['Plans',      'plans.php'],
+    'player'     => ['Player',     'player.php'],
     'settings'   => ['Settings',   'settings.php'],
 ];
 ?>

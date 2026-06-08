@@ -61,6 +61,14 @@
 
 ## Sessions
 
+### 2026-06-08 — Session 3 (player settings in admin)
+**Done:** New **Admin → Player** page (`admin/player.php`) manages all UVP options: skin, bg color,
+max width/height, vector icons, autoplay, volume, playlist position/width, show-by-default, playlists
+dropdown, search, and every controller button. Central helper `app/player.php` →
+`uvp_base_config()` + `uvp_player_script()`; `index.php`/`watch.php` now build the player from it
+(no hardcoded props). Player fields removed from Settings (skin/size moved to Player). 23 `player_*`
+settings added to seed + DB. Verified: admin save instantly changes the live player config.
+
 ### 2026-06-08 — Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):
 big video + right-side vertical playlist + "All Channels"/per-category dropdown + search.

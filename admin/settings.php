@@ -2,9 +2,6 @@
 require __DIR__ . '/../app/bootstrap.php';
 require_admin();
 
-$skins = ['minimal_skin_dark', 'minimal_skin_white', 'classic_skin_dark', 'classic_skin_white',
-          'metal_skin_dark', 'metal_skin_white', 'modern_skin_dark', 'modern_skin_white'];
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
     Setting::set('site_name',             trim($_POST['site_name'] ?? 'SunPlex'));
@@ -12,10 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     Setting::set('registration_open',     isset($_POST['registration_open']) ? '1' : '0');
     Setting::set('guest_access',          isset($_POST['guest_access']) ? '1' : '0');
     Setting::set('subscriptions_enabled', isset($_POST['subscriptions_enabled']) ? '1' : '0');
-    $skin = in_array($_POST['default_skin'] ?? '', $skins, true) ? $_POST['default_skin'] : 'minimal_skin_dark';
-    Setting::set('default_skin', $skin);
-    Setting::set('player_width',  (string) max(320, (int) ($_POST['player_width'] ?? 960)));
-    Setting::set('player_height', (string) max(180, (int) ($_POST['player_height'] ?? 540)));
     flash('success', 'Settings saved.');
     redirect('admin/settings.php');
 }
@@ -50,20 +43,8 @@ require __DIR__ . '/includes/header.php';
             When OFF, the plans page and premium gating are disabled and every signed-in member can watch all channels.
         </p>
 
-        <div class="row2">
-            <label>Default player skin
-                <select name="default_skin">
-                    <?php foreach ($skins as $s): ?>
-                        <option value="<?= e($s) ?>" <?= Setting::get('default_skin', 'minimal_skin_dark') === $s ? 'selected' : '' ?>><?= e($s) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </label>
-            <div></div>
-        </div>
-        <div class="row2">
-            <label>Player width (px) <input type="number" name="player_width" value="<?= e(Setting::get('player_width', '960')) ?>"></label>
-            <label>Player height (px) <input type="number" name="player_height" value="<?= e(Setting::get('player_height', '540')) ?>"></label>
-        </div>
+        <p class="muted" style="font-size:13px;">Player appearance and controls are managed on the
+            <a href="<?= e(url('admin/player.php')) ?>">Player</a> page.</p>
 
         <div class="form-actions"><button class="btn btn-primary">Save settings</button></div>
     </form>

@@ -93,47 +93,28 @@ require __DIR__ . '/app/includes/header.php';
     <?php endforeach; ?>
 </div>
 
+<?php
+// Build the player config from admin Player settings + home-page layout (multi-playlist + dropdown).
+$homeConfig = array_merge(uvp_base_config(), [
+    'instanceName'                    => 'sunplexHome',
+    'parentId'                        => 'player_holder',
+    'playlistsId'                     => 'uvp_playlists',
+    'startAtPlaylist'                 => 0,
+    'startAtVideo'                    => (int) $startIndex,
+    'showPlaylistsButtonAndPlaylists' => 'yes',
+    'usePlaylistsSelectBox'           => player_yn('player_use_playlists_select_box'),
+    'showPlaylistsByDefault'          => 'yes',
+    'showPlaylistsSearchInput'        => player_yn('player_show_search'),
+    'showPlaylistButtonAndPlaylist'   => 'yes',
+]);
+?>
 <script src="<?= e($playerBase . '/js/FWDUVP.js') ?>"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     if (typeof FWDUVPUtils !== 'undefined' && FWDUVPUtils.checkIfHasTransofrms) {
         FWDUVPUtils.checkIfHasTransofrms();
     }
-    new FWDUVPlayer({
-        instanceName: 'sunplexHome',
-        parentId: 'player_holder',
-        playlistsId: 'uvp_playlists',
-        mainFolderPath: <?= json_encode($mainFolderPath) ?>,
-        skinPath: <?= json_encode($skin) ?>,
-        displayType: 'responsive',
-        autoScale: 'yes',
-        useVectorIcons: 'no',
-        playsinline: 'yes',
-        autoPlay: 'yes',
-        maxWidth: 1920,
-        maxHeight: 820,
-        volume: 0.8,
-        backgroundColor: '#000000',
-        videoBackgroundColor: '#000000',
-        posterBackgroundColor: '#000000',
-        // Playlists / right-side channel list + dropdown + search (the live-TV layout)
-        showPlaylistsButtonAndPlaylists: 'yes',
-        usePlaylistsSelectBox: 'yes',
-        showPlaylistsByDefault: 'yes',
-        showPlaylistsSearchInput: 'yes',
-        showPlaylistButtonAndPlaylist: 'yes',
-        showPlaylistByDefault: 'yes',
-        playlistPosition: 'right',
-        playlistRightWidth: 320,
-        showThumbnail: 'yes',
-        showPlaylistName: 'yes',
-        showSearchInput: 'yes',
-        startAtPlaylist: 0,
-        startAtVideo: <?= (int) $startIndex ?>,
-        showShareButton: 'no',
-        showEmbedButton: 'no',
-        showDownloadButton: 'no'
-    });
+    <?= uvp_player_script($homeConfig) ?>
 });
 </script>
 <?php else: ?>

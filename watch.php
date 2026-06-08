@@ -115,39 +115,25 @@ require __DIR__ . '/app/includes/header.php';
             </div>
         </div>
 
+        <?php
+        // Player config from admin Player settings + single-category playlist layout.
+        $watchConfig = array_merge(uvp_base_config(), [
+            'instanceName'                    => 'sunplexPlayer',
+            'parentId'                        => 'player_holder',
+            'playlistsId'                     => 'uvp_playlists',
+            'startAtPlaylist'                 => 0,
+            'startAtVideo'                    => (int) $startIndex,
+            'showPlaylistsButtonAndPlaylists' => 'no',
+            'showPlaylistButtonAndPlaylist'   => 'yes',
+        ]);
+        ?>
         <script src="<?= e($playerBase . '/js/FWDUVP.js') ?>"></script>
         <script>
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof FWDUVPUtils !== 'undefined' && FWDUVPUtils.checkIfHasTransofrms) {
                 FWDUVPUtils.checkIfHasTransofrms();
             }
-            new FWDUVPlayer({
-                instanceName: 'sunplexPlayer',
-                parentId: 'player_holder',
-                playlistsId: 'uvp_playlists',
-                mainFolderPath: <?= json_encode($mainFolderPath) ?>,
-                skinPath: <?= json_encode($skin) ?>,
-                displayType: 'responsive',
-                autoScale: 'yes',
-                useVectorIcons: 'no',
-                playsinline: 'yes',
-                autoPlay: 'yes',
-                maxWidth: 1280,
-                maxHeight: 720,
-                volume: 0.8,
-                backgroundColor: '#000000',
-                videoBackgroundColor: '#000000',
-                posterBackgroundColor: '#000000',
-                showPlaylistsButtonAndPlaylists: 'no',
-                showPlaylistButtonAndPlaylist: 'yes',
-                showPlaylistByDefault: 'yes',
-                playlistPosition: 'right',
-                startAtPlaylist: 0,
-                startAtVideo: <?= (int) $startIndex ?>,
-                showShareButton: 'no',
-                showEmbedButton: 'no',
-                showDownloadButton: 'no'
-            });
+            <?= uvp_player_script($watchConfig) ?>
         });
         </script>
     <?php endif; ?>
