@@ -20,10 +20,10 @@ $fullTitle = isset($pageTitle) && $pageTitle !== '' ? "$pageTitle — $siteName"
 <body class="<?= e($bodyClass ?? '') ?>">
 <header class="site-header">
     <div class="wrap header-inner">
-        <?php $siteLogo = Setting::get('site_logo', ''); $logoH = (int) Setting::get('site_logo_height', '38'); ?>
+        <?php $siteLogo = Setting::get('site_logo', ''); $logoW = (int) Setting::get('site_logo_width', '160'); ?>
         <a class="brand" href="<?= e(url('')) ?>">
             <?php if ($siteLogo): ?>
-                <img class="brand-logo" src="<?= e($siteLogo) ?>" alt="<?= e($siteName) ?>" style="height:<?= $logoH ?>px;">
+                <img class="brand-logo" src="<?= e($siteLogo) ?>" alt="<?= e($siteName) ?>" style="max-width:<?= $logoW ?>px;">
             <?php else: ?>
                 <span class="brand-sun">Sun</span><span class="brand-plex">Plex</span>
             <?php endif; ?>

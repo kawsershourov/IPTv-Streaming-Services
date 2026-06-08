@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($logo = upload_image('site_logo_file', 'site')) {
         Setting::set('site_logo', $logo);
     }
-    Setting::set('site_logo_height', (string) max(16, min(120, (int) ($_POST['site_logo_height'] ?? 38))));
+    Setting::set('site_logo_width', (string) max(40, min(400, (int) ($_POST['site_logo_width'] ?? 160))));
 
     // Site icon (favicon): remove, or upload a new one.
     if (isset($_POST['remove_icon'])) {
@@ -44,13 +44,14 @@ require __DIR__ . '/includes/header.php';
         <label>Site logo (header) <input type="file" name="site_logo_file" accept="image/*,.ico,.svg"></label>
         <?php if ($siteLogo): ?>
             <p class="muted" style="margin:-8px 0 6px;">Current logo:
-                <img src="<?= e($siteLogo) ?>" alt="logo" style="height:<?= (int) Setting::get('site_logo_height', '38') ?>px;vertical-align:middle;background:#11151f;padding:3px 6px;border-radius:6px;">
+                <img src="<?= e($siteLogo) ?>" alt="logo" style="max-width:<?= (int) Setting::get('site_logo_width', '160') ?>px;max-height:46px;vertical-align:middle;background:#11151f;padding:3px 6px;border-radius:6px;">
             </p>
             <label class="check"><input type="checkbox" name="remove_logo"> Remove logo (use the text “SunPlex” instead)</label>
         <?php else: ?>
             <p class="muted" style="margin:-8px 0 16px;font-size:13px;">No logo set — the text “SunPlex” shows in the header.</p>
         <?php endif; ?>
-        <label>Logo height in header (px) <input type="number" name="site_logo_height" min="16" max="120" value="<?= e(Setting::get('site_logo_height', '38')) ?>"></label>
+        <label>Logo width in header (px) <input type="number" name="site_logo_width" min="40" max="400" value="<?= e(Setting::get('site_logo_width', '160')) ?>"></label>
+        <p class="muted" style="margin:-8px 0 16px;font-size:12px;">The logo scales to this width and always fits the header height.</p>
 
         <?php $siteIcon = Setting::get('site_icon', ''); ?>
         <label>Site icon / favicon <input type="file" name="site_icon_file" accept="image/*,.ico,.svg"></label>
