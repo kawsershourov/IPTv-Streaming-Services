@@ -73,12 +73,12 @@ $nameAlign = in_array(player_setting('player_channel_name_align'), ['left', 'cen
     ? player_setting('player_channel_name_align') : 'center';
 $justify   = $nameAlign === 'center' ? 'center' : ($nameAlign === 'right' ? 'flex-end' : 'flex-start');
 
-// The engine's title box shrinks to its text and sits next to the logo, so text-align
-// can't center it across the row. Force it full-width and flex-center (both axes).
+// The engine sizes/positions the title box responsively (right of the logo, width tracks the
+// playlist width). Don't override its width/left — only flex-center the text inside it so it
+// stays dynamic when the playlist width changes.
 $nameCss = '.fwduvp-playlist-thumbnail-dark-text,.fwduvp-playlist-thumbnail-white-text{'
-         . 'left:0 !important;width:100% !important;box-sizing:border-box !important;padding:0 12px !important;'
          . 'display:flex !important;align-items:center !important;justify-content:' . $justify . ' !important;}'
-         . '.sp-chname{font-size:' . $nameSize . 'px !important;line-height:1.3;}';
+         . '.sp-chname{font-size:' . $nameSize . 'px !important;line-height:1.2;}';
 
 $pageTitle = '';
 $bodyClass = 'page-home';
