@@ -7,6 +7,20 @@ backend for channels, categories, users, and subscription-based access.
 > Replaces the old WordPress (`spcorelive` theme) + UVP plugin setup with a lightweight,
 > self-contained app that runs directly under XAMPP.
 
+**Repository:** https://github.com/kawsershourov/IPTv-Streaming-Services
+
+---
+
+## Features
+
+- Live HLS (`.m3u8`) playback via the official FWD UVP v11.0 JS engine (`/player`)
+- Category rows + channel grid (sunplex.live-style dark theme)
+- User accounts: register, login, logout, password reset
+- Subscription plans with premium/expiry gating — and a **site-wide on/off toggle**
+  (off = every signed-in member watches everything; no plan UI shown)
+- Admin panel: dashboard + CRUD for categories, channels (with logo upload),
+  users (role/status, grant plan), plans, and settings
+
 ---
 
 ## Tech stack

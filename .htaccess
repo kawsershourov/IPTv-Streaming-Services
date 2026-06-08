@@ -1,0 +1,23 @@
+# SunPlex.live — front controller / hardening
+
+DirectoryIndex index.php
+
+# No directory listings.
+Options -Indexes
+
+# Block dotfiles (.git, .env, .htaccess, etc.) from being served.
+<IfModule mod_authz_core.c>
+    <FilesMatch "^\.">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+    <FilesMatch "^\.">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</IfModule>
+
+# Belt-and-suspenders: never serve the .git directory or SQL dumps.
+RedirectMatch 404 /\.git(/|$)
+RedirectMatch 404 /sql/.*\.sql$
