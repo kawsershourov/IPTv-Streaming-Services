@@ -42,9 +42,9 @@ img { max-width: 100%; display: block; }
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--border);
 }
-.header-inner { display: flex; align-items: center; gap: 22px; height: 64px; }
+.header-inner { display: flex; align-items: center; gap: 22px; min-height: 64px; padding: 6px 0; }
 .brand { font-size: 24px; font-weight: 800; letter-spacing: .3px; display: flex; align-items: center; }
-.brand-logo { height: 38px; width: auto; max-width: 240px; max-height: 52px; object-fit: contain; display: block; }
+.brand-logo { height: 38px; width: auto; max-width: 300px; object-fit: contain; display: block; }
 .brand-sun  { background: linear-gradient(90deg, var(--sun), var(--sun-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .brand-plex { color: var(--plex); }
 
