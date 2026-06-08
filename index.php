@@ -77,7 +77,9 @@ $bodyClass = 'page-home';
 $headExtra = '<link rel="stylesheet" href="' . e($playerBase . '/css/fwduvp.css') . '">'
            . '<link rel="stylesheet" href="' . e($playerBase . '/css/fwd_ui.css') . '">'
            . '<style>.sp-chname{display:block;width:100%;text-align:' . $nameAlign
-           . ';font-size:' . $nameSize . 'px !important;line-height:1.3;}</style>';
+           . ';font-size:' . $nameSize . 'px !important;line-height:1.3;}'
+           . '.fwduvp-playlist-thumbnail-dark-text,.fwduvp-playlist-thumbnail-white-text{display:flex !important;align-items:center !important;}'
+           . '</style>';
 require __DIR__ . '/app/includes/header.php';
 ?>
 <?php if ($allChannels): ?>
