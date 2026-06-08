@@ -5,10 +5,14 @@ declare(strict_types=1);
  * Subscription / content access rules.
  */
 
-/** Does the user currently hold an active, non-expired subscription? */
+/**
+ * Does the user currently hold an active, non-expired *paid* subscription?
+ * A free (price 0) plan does NOT unlock premium content.
+ */
 function has_active_subscription(int $userId): bool
 {
-    return Subscription::activeForUser($userId) !== null;
+    $sub = Subscription::activeForUser($userId);
+    return $sub !== null && (float) $sub['plan_price'] > 0;
 }
 
 /**
