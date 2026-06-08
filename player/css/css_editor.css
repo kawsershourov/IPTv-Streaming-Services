@@ -1,0 +1,50 @@
+/**
+ * CSS editor.
+ *
+ * @package fwduvp
+ * @since fwduvp 1.0
+ */
+
+.fwduvp{
+ 	font-size: 10px;
+ 	margin: 20px 0 0;
+}
+
+.fwduvp{
+ 	font-size: 12px;
+}
+
+.fwduvp #css_text{
+	width: 100%;
+	font-size: 12px;
+}
+
+.fwduvp input.text{
+ 	margin-bottom:12px;
+ 	width:95%;
+ 	padding: .4em;
+}
+
+.fwduvp form{
+	margin-top: 20px;
+	margin-right: 20px;
+}
+
+.fwduvp .main{
+	height: 650px;
+	padding: 20px;
+	overflow: auto;
+}
+
+.fwduvp .main label{
+	font-size: 12px;
+}
+
+.fwduvp #update_btn{
+	cursor: pointer;
+	margin-top: 20px;
+}
+
+.fwduvp .fwd-updated-p{
+	padding: 8px;
+}

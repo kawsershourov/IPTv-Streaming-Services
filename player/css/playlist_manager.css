@@ -1,0 +1,825 @@
+/**
+ * Playlist manager CSS.
+ *
+ * @package fwduvp
+ * @since fwduvp 1.0
+ */
+
+/* General. */
+.fwduvp{
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 10px; 
+}
+
+.fwduvp p{
+	font-size: 12px;
+}
+
+.fwduvp input.text{
+ 	margin-bottom:12px;
+ 	width:95%;
+ 	padding: .4em; 
+}
+
+.fwduvp fieldset{
+	padding:0;
+	border:0;
+	margin-top:25px;
+}
+
+.fwduvp td{
+	width:100%;
+	padding:0;
+}
+
+.fwduvp .fwd_editor_class{
+	height: 200px !important;
+}
+   
+.fwduvp .main-playlist{
+ 	margin-top: 8px;
+ 	margin-bottom: 8px;
+}
+
+.fwduvp .playlist{
+	margin-top: 8px;
+	margin-bottom: 8px;
+	position:relative;
+}
+
+.fwduvp #add_main_playlist_btn{
+	margin-top: 6px;
+}
+
+.fwduvp .add_playlist_btn{
+	margin-right: 8px;
+	margin-top: 6px;
+}
+
+.fwduvp .delete_main_playlist_btn{
+	margin-right: 8px;
+	margin-top: 6px;
+}
+
+.fwduvp .add_video_btn{
+	margin-right: 8px;
+	margin-top: 6px;
+}
+
+.fwduvp .duplicate_playlist_btn1{
+	position: relative !important;
+	left:auto !important;
+	top:auto !important;
+	margin-left: 8px;
+}
+
+.fwduvp .delete_playlist_btn{
+	margin-right: 8px;
+	margin-top: 4px;
+}
+
+.fwduvp .playlist-header .ui-icon{
+	left:22px !important;
+}
+
+.fwduvp .checkbox_vid,
+.fwduvp .edit_vid_btn,
+.fwduvp .delete_vid_btn,
+.fwduvp .edit_video_btn,
+.fwduvp .delete_video_btn,
+.fwduvp .edit_vid_btn,
+.fwduvp .edit_playlist_btn2,
+.fwduvp .delete_playlist_btn2,
+.fwduvp .duplicate_playlist_btn{
+ 	cursor: pointer;
+ 	position: relative;
+ 	top: -26px;
+ 	float: right;
+ 	margin-right: 8px;
+ }
+
+.fwduvp .playlist-count.normal .duplicate_playlist_btn{
+ 	float: none;
+}
+
+.fwduvp .fwd-item-image-img{
+	width:26px;
+	height:26px;
+	position:absolute;
+	top:2px;
+	left:455px;
+}
+
+.fwduvp .fwd-video-image-img{
+	width: 26px;
+    height: 25px;
+    position: relative;
+    top: -29px;
+    float: right;
+    margin-right: 3px;
+}
+
+.fwduvp .item-header { 
+	position: relative;
+	font: Verdana, Arial, sans-serif;
+	font-size:13px;
+	font-weight:normal;
+	padding: 8px;
+	padding-right:20px;
+	padding-top:7px;
+	margin: 0px; 
+	color: #555555; 
+}
+
+.fwduvp .item-header span{
+	margin-left: 0px;
+}
+
+.fwduvp .playlist-icon{
+	position:absolute;
+	left:6px;
+}
+
+.fwduvp .fwd-item{
+	position:relative;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	width: 585px;
+	height: 29px;
+	border: 1px solid #d3d3d3;
+	border-radius: 4px;
+	background: #e6e6e6 url("images/ui-bg_glass_75_e6e6e6_1x400.png") 50% 50% repeat-x;
+}
+
+.fwduvp .fwd-item button{
+	top: -24px;
+}
+
+.fwduvp .fwd-error{
+	color:#FF0000;
+}
+
+.fwduvp .ui-tooltip{
+	max-width: 400px !important;
+}
+
+.fwduvp table{
+	border-spacing: 0;
+}
+
+.fwduvp #main_playlists .ui-accordion-header {
+	font-family: Verdana, Arial, sans-serif;
+	font-size:13px;
+	margin-bottom:8px;
+	margin-top:8px;
+	padding:6px;
+	padding-left:28px;
+	height:16px;
+}
+
+.fwduvp .video-header { 
+	font-family: Verdana, Arial, sans-serif;
+	font-size:13px;
+	font-weight:normal;
+	cursor: pointer; 
+	padding: 8px;
+	padding-top:7px;
+	margin: 0px; 
+	color: #555555; 
+}
+
+.fwduvp .fwd-video{
+	position:relative;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	width: 615px;
+	height: 29px;
+	border: 1px solid #d3d3d3;
+	border-radius: 4px;
+	background: #e6e6e6 url("images/ui-bg_glass_75_e6e6e6_1x400.png") 50% 50% repeat-x;
+}
+
+.fwduvp .vid_over{
+	border: 1px solid #999999;
+	background: #dadada url("images/ui-bg_glass_75_dadada_1x400.png") 50% 50% repeat-x;
+}
+
+.fwduvp .pl-header {
+	font-family: Verdana, Arial, sans-serif;
+	font-size:13px;
+	font-weight:normal;
+	cursor: pointer; 
+	padding: 8px; 
+	margin: 0px; 
+	color: #555555; 
+}
+
+.fwduvp .fwd-playlist{
+	position:relative;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	width: 656px;
+	height: 28px;
+	border: 1px solid #d3d3d3;
+	border-radius: 4px;
+	background: #e6e6e6 url("images/ui-bg_glass_75_e6e6e6_1x400.png") 50% 50% repeat-x;
+}
+
+.fwduvp .pl_over{
+	border: 1px solid #999999;
+	background: #dadada url("images/ui-bg_glass_75_dadada_1x400.png") 50% 50% repeat-x;
+}
+
+.fwduvp #pr_name,
+.fwduvp .pr_name_edit{
+	margin-bottom: 17px;
+}
+
+.fwduvp .img-tooltip{
+	margin-left: 4px;
+	position: relative;
+	top: 3px;
+}
+
+.fwduvp .dialog{
+	width: 100%;
+}
+
+.fwduvp .dialog .empty-after-button{
+	height: 27px;
+}
+
+.fwduvp .dialog input{
+	margin-bottom: 0;
+}
+
+.fwduvp .dialog td:first-child{
+	width: 140px;
+}
+
+.fwduvp .dialog td label{
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.fwduvp .dialog td:nth-child(2){
+	width: calc(100% - 140px);
+}
+
+.fwduvp .dialog tr{
+	height: 50px;
+}
+
+.fwduvp .dialog .has-button{
+	position: relative;
+}
+
+.fwduvp .dialog .has-button button{
+	position: absolute;
+	left: 0;
+	top: auto;
+    bottom: -16px;
+}
+
+.fwduvp.ui-dialog #rotationY360DegreeVideo,
+.fwduvp.ui-dialog #rotationY360DegreeVideoEdit{
+	width: 50px;
+}
+
+.fwduvp-display-none{
+	display:  none !important;
+}
+
+/* Cuepoints. */
+.fwduvp .dialog.cuepoints-dialog input{
+	width: calc(100% - 26px);
+}
+
+.fwduvp .dialog.cuepoints-dialog #cuepoint_start_time,
+.fwduvp .dialog.cuepoints-dialog #cuepoint_start_time_edit{
+	width: 108px;
+}
+
+.fwduvp #uploads_cuepoint_div,
+.fwduvp #uploads_cuepoint_div_edit{
+	margin-top: 10px;
+}
+
+/* Pre-roll,mid-roll,post-roll advertisement. */ 
+.fwduvp .ads_source_button{
+	cursor: pointer;
+	position: relative;
+}
+
+.fwduvp .dialog.ads-dialog{
+	margin: 15px 0 0;
+}
+
+.fwduvp #ads_source,
+.fwduvp #ads_source_edit,
+.fwduvp #ads_label,
+.fwduvp #ads_label_edit,
+.fwduvp #global_ads_source,
+.fwduvp #global_ads_source_edit,
+.fwduvp #global_ads_label,
+.fwduvp #global_ads_label_edit{
+	width: calc(100% - 26px);
+}
+
+.fwduvp #ads_source,
+.fwduvp #ads_source_edit,
+.fwduvp #global_ads_source,
+.fwduvp #global_ads_source_edit{
+	width: calc(100% - 26px);
+}
+
+.fwduvp #ads_url,
+.fwduvp #ads_url_edit,
+.fwduvp #global_ads_url,
+.fwduvp #global_ads_url_edit,
+.fwduvp #global_pause_ads_source,
+.fwduvp #global_vast_xml_url,
+.fwduvp #global_vast_xml_url_edit{
+	width: calc(100% - 26px);
+}
+
+.fwduvp #global_pause_ads_source,
+.fwduvp #global_vast_xml_url,
+.fwduvp #global_vast_xml_target,
+.fwduvp #global_vast_start_time{
+	font-size: 10px;
+}
+
+.fwduvp #global_apply_to_youtube_videos{
+	width: 16px !important;
+	height: 16px !important;
+	min-height: 16px;
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	-webkit-appearance: none;
+	appearance: none;
+	background: #fff;
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+	position: relative;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+.fwduvp #global_apply_to_youtube_videos:checked{
+	background: #fff;
+	border-color: #2271b1;
+}
+
+.fwduvp #global_apply_to_youtube_videos:checked::before{
+	content: '';
+	position: absolute;
+	left: 11px;
+	top: 10px;
+	width: 10px;
+	height: 6px;
+	border: 2px solid #2271b1;
+	border-top: 0;
+	border-right: 0;
+	transform: translate(-50%, -58%) rotate(-45deg);
+	box-sizing: border-box;
+}
+
+.fwduvp #add_duration,
+.fwduvp #add_duration_edit,
+.fwduvp #time_to_hold_ad,
+.fwduvp #time_to_hold_ad_edit,
+.fwduvp #ads_start_time,
+.fwduvp #ads_start_time_edit,
+.fwduvp #global_add_duration,
+.fwduvp #global_add_duration_edit,
+.fwduvp #global_time_to_hold_ad,
+.fwduvp #global_time_to_hold_ad_edit,
+.fwduvp #global_ads_start_time,
+.fwduvp #global_ads_start_time_edit,
+.fwduvp #global_vast_start_time,
+.fwduvp #global_vast_start_time_edit{
+	width: 108px;
+}
+
+.fwduvp #uploads_ads_div,
+.fwduvp #uploads_ads_div_edit{
+	margin-top: 10px;
+}
+
+.fwduvp .dialog.adsense td:first-child,
+.fwduvp .dialog.adsense_edit td:first-child{
+	width: 181px;
+}
+
+.fwduvp .dialog.adsense input,
+.fwduvp .dialog.adsense_edit input{
+	width: calc(100% - 26px);
+}
+
+
+/* Pop-up advertisement. */
+.fwduvp #popupads_label,
+.fwduvp #popupads_label_edit,
+.fwduvp #popupads_source,
+.fwduvp #popupads_source_edit,
+.fwduvp #popupads_url,
+.fwduvp #popupads_url_edit,
+.fwduvp #global_popupads_label,
+.fwduvp #global_popupads_label_edit,
+.fwduvp #global_popupads_source,
+.fwduvp #global_popupads_source_edit,
+.fwduvp #global_popupads_url,
+.fwduvp #global_popupads_url_edit{
+	width: calc(100% - 26px);
+}
+
+.fwduvp #popupads_start_time,
+.fwduvp #popupads_start_time_edit,
+.fwduvp #popupads_stop_time,
+.fwduvp #popupads_stop_time_edit,
+.fwduvp #global_popupads_start_time,
+.fwduvp #global_popupads_start_time_edit,
+.fwduvp #global_popupads_stop_time,
+.fwduvp #global_popupads_stop_time_edit{
+	width: 108px;
+}
+
+.fwduvp #uploads_popupad_div,
+.fwduvp #uploads_popupad_div_edit{
+	margin-top: 10px;
+}
+
+/* Subtitles. */
+.fwduvp .subtitle_label{
+	width: 252px;
+}
+
+.fwduvp .subtitle_source{
+	width: 252px;
+}
+
+.fwduvp .uploads_subtitle_button{
+	cursor: pointer;
+	position: relative;
+	top: 4px;
+}
+
+.fwduvp .dialog.subtitle-dialog input{
+	width: calc(100% - 26px);
+}
+
+.fwduvp #uploads_subtitle_div,
+.fwduvp #uploads_subtitle_div_edit{
+	margin-top: 10px;
+}
+
+
+/* Add video final. */
+.fwduvp .uploads_video_button_edit,
+.fwduvp .uploads_video_button{
+	cursor: pointer;
+	position: relative;
+	top: -4px;
+}
+
+.fwduvp .fwd_uvpencript{
+	margin-left: 20px;
+}
+
+.fwduvp .add-video-final-dialog table{
+	margin-top: 10px;
+}
+
+.fwduvp .add-video-final-dialog .td1{
+	width: 250px;
+	padding: 0;
+}
+
+.fwduvp .add-video-final-dialog .td1{
+	width: 500px;
+	padding: 0;
+	padding-top: 10px;
+}
+
+.fwduvp .add-video-final-dialog .td1 input,
+.fwduvp .add-video-final-dialog .td2 input{
+	width: 470px;
+}
+
+
+/* Main playlist. */
+.fwduvp .pl_name{
+	width: 500px; 
+	margin-bottom: 20px;
+}
+
+.fwduvp .pl_password{
+	width: 500px;
+}
+
+.fwduvp .extra-buttons-holder button,
+.fwduvp .extra-buttons-holder input{
+	cursor: pointer;
+ 	position: relative;
+ 	top: -27px;
+ 	float: right;
+ 	margin-right: 8px;
+}
+
+.fwduvp .extra-buttons-holder input{
+	top: -22px;
+}
+
+.fwduvp #pl_password,
+.fwduvp #pl_password_edit{
+	width: 500px;
+}
+
+.fwduvp #pl_source_div input,
+.fwduvp #pl_source_div_edit input{
+	width: 500px;
+}
+
+.fwduvp #pl_vimeo_div input,
+.fwduvp #pl_vimeo_div_edit input{
+	width: 500px !important;
+}
+
+.fwduvp #uploads_pl_thumb_div table,
+.fwduvp #uploads_pl_thumb_div_edit table{
+	border-spacing:0;
+}
+
+.fwduvp #uploads_pl_thumb_div .td1,
+.fwduvp #uploads_pl_thumb_div_edit .td1{
+	width: 500px;
+	padding: 0;
+}
+
+.fwduvp #uploads_pl_thumb_div .td1 input,
+.fwduvp #uploads_pl_thumb_div_edit .td1 input{
+	width: 500px;
+}
+
+.fwduvp #uploads_pl_thumb_div img,
+.fwduvp #uploads_pl_thumb_div_edit img{
+	width: 50px;
+	height: 50px;
+	margin-left: 20px;
+}
+
+.fwduvp #uploads_pl_thumb_div button,
+.fwduvp #uploads_pl_thumb_div_edit button{
+	cursor: pointer;
+	position: relative;
+	top: -4px;
+}
+
+
+/* Add video main dialog. */
+.fwduvp #vid_name,
+.fwduvp #vid_name_edit{
+	width: calc(100% - 70px) !important;
+}
+
+.fwduvp #add-video-dialog table, 
+.fwduvp #add-video-dialog_edit table{
+	border-spacing: 0;
+}
+
+.fwduvp #uploads_poster_div .td1,
+.fwduvp #uploads_poster_div_edit .td1,
+.fwduvp #uploads_thumb_div .td1,
+.fwduvp #uploads_thumb_div_edit .td1{
+	width: 100%;
+	padding: 0;
+}
+
+.fwduvp #uploads_poster_div .td1 input,
+.fwduvp #uploads_poster_div_edit .td1 input,
+.fwduvp #uploads_thumb_div .td1 input,
+.fwduvp #uploads_thumb_div_edit .td1 input{
+	width: 100%;
+}
+
+.fwduvp #uploads_poster_div button,
+.fwduvp #uploads_poster_div_edit button,
+.fwduvp #uploads_thumb_div button,
+.fwduvp #uploads_thumb_div_edit button{
+	cursor: pointer;
+	position: relative;
+	top: -4px;
+}
+
+.fwduvp #uploads_poster_div img,
+.fwduvp #uploads_poster_div_edit img,
+.fwduvp #uploads_thumb_div img,
+.fwduvp #uploads_thumb_div_edit img{
+	width: 50px;
+	height: 50px; 
+	margin-left: 20px;
+}
+
+.fwduvp #start_at_time,
+.fwduvp #start_at_time_edit,
+.fwduvp #stop_at_time,
+.fwduvp #stop_at_time_edit{
+	width: 108px;
+}
+
+.fwduvp #password,
+.fwduvp #password_edit{
+	width: 200px;
+	margin: 8px 0 10px;
+}
+
+.fwduvp #main_cuepoints,
+.fwduvp #main_cuepoints_edit,
+.fwduvp #main_popupads,
+.fwduvp #main_popupads_edit,
+.fwduvp #main_ads,
+.fwduvp #main_ads_edit,
+.fwduvp #main_global_ads,
+.fwduvp #main_global_popupads,
+.fwduvp #main_subtitles,
+.fwduvp #main_subtitles_edit,
+.fwduvp #main_vids,
+.fwduvp #main_vids_edit{
+	border-style: dotted;
+	border-width: 1px;
+	border-color: #999999;
+	padding: 2px 8px 2px;
+	margin-bottom:10px;
+}
+
+.fwduvp #main_global_ads{
+	background: #ffffff;
+	max-width: 615px;
+}
+
+.fwduvp #main_global_popupads{
+	background: #ffffff;
+	max-width: 615px;
+}
+
+.fwduvp #main_global_ads .global-ad-item{
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.fwduvp #main_global_popupads .global-popupad-item{
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.fwduvp #add_cuepoint_button,
+.fwduvp #edit_cuepoint_button,
+.fwduvp #add_popupad_button,
+.fwduvp #edit_popupad_button,
+.fwduvp #add_ads_button,
+.fwduvp #edit_ads_button,
+.fwduvp #add_global_ads_button,
+.fwduvp #add_global_popupad_button,
+.fwduvp #add_subtitle_button,
+.fwduvp #subtitle_button_edit,
+.fwduvp #add_video_button,
+.fwduvp #add_video_button_edit{
+	cursor: pointer;
+}
+
+.fwduvp #uploads_video_div_edit,
+.fwduvp #uploads_video_div{
+	margin-top: 10px;
+}
+
+.fwduvp .dialog.add-video input{
+	width: calc(100% - 26px);
+}
+
+.fwduvp .dialog.video-final input{
+	width: calc(100% - 26px);
+}
+
+.fwduvp .dialog.video-final #fwduvp_vast_start_time,
+.fwduvp .dialog.video-final #fwduvp_vast_start_time_edit{
+	width: 108px;
+}
+
+/* Global advertisements. */
+
+
+
+/* Main form. */
+.fwduvp.main-form{
+	margin-top: 20px;
+	margin-right: 20px;
+}
+
+.fwduvp.main-form .holder{
+	height: 600px;
+	padding: 20px;
+	overflow: auto;
+}
+
+.fwduvp.main-form  .header{
+	margin-top: 0 ;
+}
+
+.fwduvp.main-form .main-playlist-header span{
+	float: right;
+}
+
+.fwduvp.main-form .pls{
+	width: 658px
+}
+
+.fwduvp #main_playlists{
+	width: 710px;
+}
+
+.fwduvp .playlist-icon{
+	position: absolute;
+	left: 6px;
+	top: 6px;
+}
+
+.fwduvp .playlist-header-sort .playlist-name{
+	margin-left: 12px;
+}
+
+.fwduvp .playlist-header-sort .vids{
+	width: 558px;
+}
+
+.fwduvp #add_main_playlist_btn,
+.fwduvp .add_playlist_btn,
+.fwduvp .duplicate_main_playlist_btn,
+.fwduvp .edit_main_playlist_btn,
+.fwduvp .delete_main_playlist_btn,
+.fwduvp .duplicate_playlist_btn,
+.fwduvp .edit_playlist_btn2,
+.fwduvp .delete_playlist_btn2,
+.fwduvp .add_video_btn,
+.fwduvp .duplicate_playlist_btn1,
+.fwduvp .edit_playlist_btn,
+.fwduvp .delete_playlist_btn{
+	cursor: pointer;
+}
+
+.fwduvp .duplicate_main_playlist_btn,
+.fwduvp .edit_main_playlist_btn,
+.fwduvp .delete_main_playlist_btn{
+	margin-right: 8px;
+}
+
+.fwduvp .playlist-name-2{
+	position: relative;
+	margin-left: 22px;
+	top: -1px;
+}
+
+.fwduvp #update_btn,
+.fwduvp #fwd_update_global_ads_btn{
+	cursor: pointer;
+	margin-top: 10px;
+}
+
+.fwduvp-playlist-manager .main-holder{
+	margin: 20px 0 0 0;
+	padding: 20px;
+	background: #ffffff;
+}
+
+.fwduvp-playlist-manager .main-holder .fwd-option:first-child{
+	margin-top: 0 !important;
+}
+
+.fwduvp-playlist-manager .main-holder #global_vast_settings_table{
+	width: 100%;
+	max-width: 615px;
+	table-layout: auto;
+}
+
+.fwduvp-playlist-manager .main-holder #global_vast_settings_table td{
+	width: auto;
+}
+
+.fwduvp-playlist-manager .main-holder #global_vast_settings_table td:first-child{
+	width: 136px;
+	white-space: nowrap;
+}
+
+.fwduvp #mp_em{
+	display: block;
+	margin-bottom: 8px;
+}
+
+.fwduvp .fwd-updated-p{
+	padding: 8px;
+}
+
+.fwduvp .wp-editor-wrap{
+	margin: 1px 0 10px !important;
+}

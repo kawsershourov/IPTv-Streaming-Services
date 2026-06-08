@@ -1,0 +1,37 @@
+/**
+ * Shortcode CSS.
+ *
+ * @package fwduvp
+ * @since fwduvp 1.0
+ */
+ 
+.fwduvp-meta-box select{
+ 	max-width: 160px;
+}
+
+.fwduvp-meta-box .img-tooltip{
+	margin-left: 4px;
+	position: relative;
+	top: 5px;
+	width: 16px !important;
+	height: 16px !important;
+}
+
+#fwduvp_start_at_playlist,
+#fwduvp_start_at_video{
+	width: 50px;
+}
+
+#fwduvp_shortocde{
+	width: 100%;
+	margin-top: 10px;
+}
+
+#fwduvp_msg{
+	padding: 8px;
+	font-size:11px;
+}
+
+#fwduvp_div{
+	background-color: #F2F2F2;
+}

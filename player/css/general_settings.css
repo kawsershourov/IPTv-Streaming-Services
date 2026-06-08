@@ -1,0 +1,114 @@
+/**
+ * General settings CSS.
+ *
+ * @package fwduvp
+ * @since fwduvp 1.0
+ */
+
+.fwduvp{
+ 	font-size: 10px;
+}
+
+.fwduvp p{
+ 	font-size: 12px;
+}
+
+.fwduvp input.text{
+ 	width: 95%;
+ 	padding: .4em;
+}
+
+.fwduvp fieldset{
+ 	padding: 0;
+ 	border: 0;
+ 	margin-top: 25px;
+}
+
+.fwduvp.ui-widget{
+	padding: 0;
+    border: 0;
+    margin-top: 25px;
+}
+
+.fwduvp table{
+ 	border-spacing: 0;
+ 	float: left;
+ 	margin-right: 40px;
+}
+
+.fwduvp tr{
+ 	height: 50px;
+}
+
+.fwduvp td{
+ 	padding: 0;
+ 	width: 230px;
+}
+
+.fwduvp .img-tooltip{
+	vertical-align: middle;
+	margin-top: 0;
+}
+
+.fwduvp .fwd-error{
+ 	color:#FF0000; 
+}
+
+.fwduvp .fwd-updated-p{
+	padding: 8px;
+}
+
+/* Form. */
+.fwduvp.form{
+	margin-top: 0px;
+	margin-right: 20px;
+}
+
+.fwduvp #tabs{
+	height: 750px;
+	overflow: auto;
+}
+
+.fwduvp #tips{
+	width: 654px;
+}
+
+.fwduvp.form .menu img {
+    vertical-align: middle !important;
+}
+
+.fwduvp.form .menu span{
+	vertical-align: middle;
+	margin-left: 4px;
+}
+
+.fwduvp #skins{
+	max-width: 200px;
+}
+
+.fwduvp .tab input[type=text] {
+    width: 200px;
+}
+
+.fwduvp td label {
+	display: inline-block;
+    margin-right: 20px;
+}
+
+.fwduvp #skins{
+	margin-right: 20px;
+}
+
+.fwduvp #uvp_logo_upload_img,
+.fwduvp #uvp_bg_upload_img{
+	width:50px;
+	height:50px;
+	margin-left:20px;
+}
+
+.fwduvp #add_btn,
+.fwduvp #update_btn,
+.fwduvp #del_btn{
+	cursor: pointer;
+	margin-top: 20px;
+}

@@ -1,0 +1,2574 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FWD Ultimate Video Player\n"
+"POT-Creation-Date: 2026-04-14 01:47+0300\n"
+"PO-Revision-Date: 2026-04-14 01:47+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Poedit 3.5\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: fwd-ultimate-video-player.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: php/FWDUVP.php:184
+msgid "General settings"
+msgstr ""
+
+#: php/FWDUVP.php:185
+msgid "Playlists manager"
+msgstr ""
+
+#: php/FWDUVP.php:186
+msgid "Global advertising"
+msgstr ""
+
+#: php/FWDUVP.php:421
+msgid "Your new preset has been added!"
+msgstr ""
+
+#: php/FWDUVP.php:427
+msgid "Your preset settings have been updated!"
+msgstr ""
+
+#: php/FWDUVP.php:433
+msgid "Your preset has been deleted!"
+msgstr ""
+
+#: php/FWDUVP.php:444 php/FWDUVP.php:635 php/FWDUVP.php:756 php/FWDUVP.php:784
+msgid "You are not allowed to do this action."
+msgstr ""
+
+#: php/FWDUVP.php:454
+msgid "Failed to save preset settings."
+msgstr ""
+
+#: php/FWDUVP.php:644 php/FWDUVP.php:678
+msgid "Failed to update playlists."
+msgstr ""
+
+#: php/FWDUVP.php:656 php/FWDUVP.php:884 php/FWDUVP.php:1063
+msgid "A main playlist with this name already exists."
+msgstr ""
+
+#: php/FWDUVP.php:670 php/FWDUVP.php:886 php/FWDUVP.php:1064
+msgid "A playlist with this name already exists in this main playlist."
+msgstr ""
+
+#: php/FWDUVP.php:681 php/FWDUVP.php:1040
+msgid "Your playlists have been updated!"
+msgstr ""
+
+#: php/FWDUVP.php:772 php/FWDUVP.php:776
+msgid "Failed to update global advertisements."
+msgstr ""
+
+#: php/FWDUVP.php:779
+msgid "Global advertisements have been updated!"
+msgstr ""
+
+#: php/FWDUVP.php:793 php/FWDUVP.php:797
+msgid "Failed to update global pop-up advertisements."
+msgstr ""
+
+#: php/FWDUVP.php:800
+msgid "Global pop-up advertisements have been updated!"
+msgstr ""
+
+#: php/FWDUVP.php:816 php/FWDUVP.php:1053
+msgid "Add"
+msgstr ""
+
+#: php/FWDUVP.php:817 php/FWDUVP.php:1052
+msgid "Update"
+msgstr ""
+
+#: php/FWDUVP.php:818 php/FWDUVP.php:1049 php/playlist_manager.php:1568
+#: php/playlist_manager.php:1577 php/playlist_manager.php:1599
+#: php/playlist_manager.php:1610
+msgid "Delete"
+msgstr ""
+
+#: php/FWDUVP.php:819 php/FWDUVP.php:1048 php/playlist_manager.php:1569
+#: php/playlist_manager.php:1575 php/playlist_manager.php:1601
+#: php/playlist_manager.php:1609
+msgid "Edit"
+msgstr ""
+
+#: php/FWDUVP.php:820 php/FWDUVP.php:1055 php/playlist_manager.php:616
+msgid "Yes"
+msgstr ""
+
+#: php/FWDUVP.php:821 php/FWDUVP.php:1056 php/playlist_manager.php:617
+msgid "No"
+msgstr ""
+
+#: php/FWDUVP.php:822 php/FWDUVP.php:1054
+msgid "Cancel"
+msgstr ""
+
+#: php/FWDUVP.php:823 php/FWDUVP.php:1065
+msgid "Upgrade to Pro to use this feature"
+msgstr ""
+
+#: php/FWDUVP.php:1047 php/playlist_manager.php:585
+#: php/playlist_manager.php:976 php/playlist_manager.php:1574
+msgid "Add new video"
+msgstr ""
+
+#: php/FWDUVP.php:1050 php/playlist_manager.php:1576
+#: php/playlist_manager.php:1600 php/playlist_manager.php:1608
+msgid "Duplicate playlist"
+msgstr ""
+
+#: php/FWDUVP.php:1051 php/playlist_manager.php:765
+#: php/playlist_manager.php:1607
+msgid "Add new playlist"
+msgstr ""
+
+#: php/FWDUVP.php:1057
+msgid "The source must be a youtube playlist or youtube channel URL."
+msgstr ""
+
+#: php/FWDUVP.php:1058
+msgid ""
+"The source represents the relative path to a folder containing only MP4 "
+"files that must be a subfolder of the 'content' folder contained in the "
+"plugin directory 'wp-content/plugins/fwduvp'."
+msgstr ""
+
+#: php/FWDUVP.php:1059
+msgid ""
+"The source represents the absolute path of an XML file that contains a "
+"formatted XML playlist. You can get the file example from the plugin main "
+"zip file or from the following URL  http://webdesign-flash.ro/w/uvp/content/"
+"playlist_dark.xml."
+msgstr ""
+
+#: php/FWDUVP.php:1060 php/playlist_manager.php:977
+#: php/playlist_manager.php:1253
+msgid "The video name, source and thumbnail path fields are required."
+msgstr ""
+
+#: php/FWDUVP.php:1061
+msgid "Please make sure at least one video source is added."
+msgstr ""
+
+#: php/FWDUVP.php:1062
+msgid ""
+"The playlist name is required (and also the playlist source if the type is "
+"not normal)."
+msgstr ""
+
+#: php/FWDUVP.php:1066
+msgid "HLS (.m3u8) video source is available only in Pro version."
+msgstr ""
+
+#: php/general_settings.php:3
+msgid "Select your preset:"
+msgstr ""
+
+#: php/general_settings.php:6
+msgid "Video player start behaviour:"
+msgstr ""
+
+#: php/general_settings.php:8
+msgid "stop"
+msgstr ""
+
+#: php/general_settings.php:9
+msgid "default"
+msgstr ""
+
+#: php/general_settings.php:10
+msgid "pause"
+msgstr ""
+
+#: php/general_settings.php:13
+msgid ""
+"If set to pause and more then one instance is used all instances will pause "
+"except the current playing instance otherwise if set to stop all instances "
+"will stop playing and stop the download precess except the current playing "
+"instance. If default is used when playing one instance will not stop or "
+"pause other instances."
+msgstr ""
+
+#: php/general_settings.php:21
+msgid "Main settings"
+msgstr ""
+
+#: php/general_settings.php:22
+msgid "Controller settings"
+msgstr ""
+
+#: php/general_settings.php:23
+msgid "Playlists window settings"
+msgstr ""
+
+#: php/general_settings.php:24
+msgid "Playlist settings"
+msgstr ""
+
+#: php/general_settings.php:25
+msgid "Logo settings"
+msgstr ""
+
+#: php/general_settings.php:26
+msgid "Embed and info windows settings"
+msgstr ""
+
+#: php/general_settings.php:27
+msgid "Ads settings"
+msgstr ""
+
+#: php/general_settings.php:28
+msgid "Advertisement window on pause settings"
+msgstr ""
+
+#: php/general_settings.php:29
+msgid "Sticky display type setting"
+msgstr ""
+
+#: php/general_settings.php:30
+msgid "Lightbox display type settings"
+msgstr ""
+
+#: php/general_settings.php:31
+msgid "A to B loop settings"
+msgstr ""
+
+#: php/general_settings.php:32
+msgid "Thumbnails preview"
+msgstr ""
+
+#: php/general_settings.php:33
+msgid "Right click context menu"
+msgstr ""
+
+#: php/general_settings.php:34
+msgid "Fingerprint Stamp"
+msgstr ""
+
+#: php/general_settings.php:41
+msgid "Preset name:"
+msgstr ""
+
+#: php/general_settings.php:49
+msgid "Skin type:"
+msgstr ""
+
+#: php/general_settings.php:54
+msgid "Acora skin"
+msgstr ""
+
+#: php/general_settings.php:74
+msgid "WooCommerce display type:"
+msgstr ""
+
+#: php/general_settings.php:78
+msgid "Responsive"
+msgstr ""
+
+#: php/general_settings.php:79
+msgid "Full width"
+msgstr ""
+
+#: php/general_settings.php:82
+msgid ""
+"The WooCommerce display type, please reffer to the documentation under the "
+"WooCommerce section to see how this works."
+msgstr ""
+
+#: php/general_settings.php:87
+msgid "Google analytics measurement id:"
+msgstr ""
+
+#: php/general_settings.php:91
+msgid ""
+"If you want to use google analytics set this option to the google analytics "
+"tracking code otherwise leave it blank."
+msgstr ""
+
+#: php/general_settings.php:96
+msgid "Use vector icons:"
+msgstr ""
+
+#: php/general_settings.php:100 php/general_settings.php:112
+#: php/general_settings.php:125 php/general_settings.php:137
+#: php/general_settings.php:149 php/general_settings.php:194
+#: php/general_settings.php:206 php/general_settings.php:221
+#: php/general_settings.php:234 php/general_settings.php:247
+#: php/general_settings.php:260 php/general_settings.php:273
+#: php/general_settings.php:295 php/general_settings.php:306
+#: php/general_settings.php:317 php/general_settings.php:328
+#: php/general_settings.php:347 php/general_settings.php:368
+#: php/general_settings.php:381 php/general_settings.php:392
+#: php/general_settings.php:510 php/general_settings.php:541
+#: php/general_settings.php:554 php/general_settings.php:574
+#: php/general_settings.php:608 php/general_settings.php:619
+#: php/general_settings.php:630 php/general_settings.php:641
+#: php/general_settings.php:652 php/general_settings.php:664
+#: php/general_settings.php:675 php/general_settings.php:686
+#: php/general_settings.php:697 php/general_settings.php:708
+#: php/general_settings.php:719 php/general_settings.php:730
+#: php/general_settings.php:741 php/general_settings.php:753
+#: php/general_settings.php:768 php/general_settings.php:780
+#: php/general_settings.php:792 php/general_settings.php:803
+#: php/general_settings.php:814 php/general_settings.php:826
+#: php/general_settings.php:837 php/general_settings.php:850
+#: php/general_settings.php:1010 php/general_settings.php:1023
+#: php/general_settings.php:1036 php/general_settings.php:1047
+#: php/general_settings.php:1195 php/general_settings.php:1218
+#: php/general_settings.php:1230 php/general_settings.php:1243
+#: php/general_settings.php:1254 php/general_settings.php:1267
+#: php/general_settings.php:1278 php/general_settings.php:1290
+#: php/general_settings.php:1312 php/general_settings.php:1323
+#: php/general_settings.php:1334 php/general_settings.php:1345
+#: php/general_settings.php:1359 php/general_settings.php:1370
+#: php/general_settings.php:1382 php/general_settings.php:1393
+#: php/general_settings.php:1585 php/general_settings.php:1596
+#: php/general_settings.php:1728 php/general_settings.php:1739
+#: php/general_settings.php:1866 php/general_settings.php:1877
+#: php/general_settings.php:1889 php/general_settings.php:1900
+#: php/general_settings.php:2012 php/general_settings.php:2046
+#: php/general_settings.php:2166 php/general_settings.php:2177
+#: php/general_settings.php:2242 php/playlist_manager.php:518
+#: php/playlist_manager.php:557 php/playlist_manager.php:596
+#: php/playlist_manager.php:629 php/playlist_manager.php:670
+#: php/playlist_manager.php:691 php/playlist_manager.php:704
+#: php/playlist_manager.php:1021 php/playlist_manager.php:1174
+#: php/playlist_manager.php:1185 php/playlist_manager.php:1196
+#: php/playlist_manager.php:1299 php/playlist_manager.php:1451
+#: php/playlist_manager.php:1462 php/playlist_manager.php:1473
+msgid "yes"
+msgstr ""
+
+#: php/general_settings.php:101 php/general_settings.php:113
+#: php/general_settings.php:126 php/general_settings.php:138
+#: php/general_settings.php:150 php/general_settings.php:195
+#: php/general_settings.php:207 php/general_settings.php:222
+#: php/general_settings.php:235 php/general_settings.php:248
+#: php/general_settings.php:261 php/general_settings.php:274
+#: php/general_settings.php:296 php/general_settings.php:307
+#: php/general_settings.php:318 php/general_settings.php:329
+#: php/general_settings.php:348 php/general_settings.php:369
+#: php/general_settings.php:382 php/general_settings.php:393
+#: php/general_settings.php:511 php/general_settings.php:542
+#: php/general_settings.php:555 php/general_settings.php:575
+#: php/general_settings.php:609 php/general_settings.php:620
+#: php/general_settings.php:631 php/general_settings.php:642
+#: php/general_settings.php:653 php/general_settings.php:665
+#: php/general_settings.php:676 php/general_settings.php:687
+#: php/general_settings.php:698 php/general_settings.php:709
+#: php/general_settings.php:720 php/general_settings.php:731
+#: php/general_settings.php:742 php/general_settings.php:754
+#: php/general_settings.php:769 php/general_settings.php:781
+#: php/general_settings.php:793 php/general_settings.php:804
+#: php/general_settings.php:815 php/general_settings.php:827
+#: php/general_settings.php:838 php/general_settings.php:851
+#: php/general_settings.php:1011 php/general_settings.php:1024
+#: php/general_settings.php:1037 php/general_settings.php:1048
+#: php/general_settings.php:1196 php/general_settings.php:1219
+#: php/general_settings.php:1231 php/general_settings.php:1244
+#: php/general_settings.php:1255 php/general_settings.php:1268
+#: php/general_settings.php:1279 php/general_settings.php:1291
+#: php/general_settings.php:1313 php/general_settings.php:1324
+#: php/general_settings.php:1335 php/general_settings.php:1346
+#: php/general_settings.php:1360 php/general_settings.php:1371
+#: php/general_settings.php:1383 php/general_settings.php:1394
+#: php/general_settings.php:1586 php/general_settings.php:1597
+#: php/general_settings.php:1729 php/general_settings.php:1740
+#: php/general_settings.php:1867 php/general_settings.php:1878
+#: php/general_settings.php:1890 php/general_settings.php:1901
+#: php/general_settings.php:2013 php/general_settings.php:2047
+#: php/general_settings.php:2167 php/general_settings.php:2178
+#: php/general_settings.php:2243 php/playlist_manager.php:519
+#: php/playlist_manager.php:558 php/playlist_manager.php:595
+#: php/playlist_manager.php:628 php/playlist_manager.php:669
+#: php/playlist_manager.php:692 php/playlist_manager.php:703
+#: php/playlist_manager.php:1022 php/playlist_manager.php:1175
+#: php/playlist_manager.php:1186 php/playlist_manager.php:1197
+#: php/playlist_manager.php:1300 php/playlist_manager.php:1452
+#: php/playlist_manager.php:1463 php/playlist_manager.php:1474
+msgid "no"
+msgstr ""
+
+#: php/general_settings.php:103
+msgid "Set this option to yes to use vector based icons for the buttons."
+msgstr ""
+
+#: php/general_settings.php:108
+msgid "Show error / info window:"
+msgstr ""
+
+#: php/general_settings.php:115
+msgid ""
+"Set this to no if you do't want the error / info window appear and display "
+"the error to the user."
+msgstr ""
+
+#: php/general_settings.php:121
+msgid "Initialize only when visible:"
+msgstr ""
+
+#: php/general_settings.php:128
+msgid ""
+"Lazy scrolling / loading, the posibility to initialize UVP on scroll when "
+"the player is visible in the page, this way for example if the player is in "
+"a section of a webpage that is not visible it will not be initialized / "
+"play, instead UVP will be initalized / play only when the user is scrolling "
+"to that section in which the player is added."
+msgstr ""
+
+#: php/general_settings.php:133
+msgid "Use sticky on scroll:"
+msgstr ""
+
+#: php/general_settings.php:140
+msgid ""
+"Set this to yes to keep UVP visible when it is outside the viewport "
+"otherwise leave it to no."
+msgstr ""
+
+#: php/general_settings.php:145
+msgid "Show sticky on scroll open / close button:"
+msgstr ""
+
+#: php/general_settings.php:152
+msgid ""
+"Use or not the show or hide button when then player is in sticky on scroll "
+"mode."
+msgstr ""
+
+#: php/general_settings.php:157
+msgid "Sticky on scroll player maximum width:"
+msgstr ""
+
+#: php/general_settings.php:161
+msgid ""
+"This value represents the player maximum width in px units for the player "
+"when it is in sticky on scroll mode, think of this property as it would be "
+"the 'max-width' CSS property."
+msgstr ""
+
+#: php/general_settings.php:166
+msgid "Sticky on scroll player maximum height:"
+msgstr ""
+
+#: php/general_settings.php:170
+msgid ""
+"This value represents the player maximum height in px units for the player "
+"when it is in sticky on scroll mode, think of this property as it would be "
+"the 'max-height' CSS property."
+msgstr ""
+
+#: php/general_settings.php:175
+msgid "Display type:"
+msgstr ""
+
+#: php/general_settings.php:179
+msgid "responsive"
+msgstr ""
+
+#: php/general_settings.php:180
+msgid "sticky"
+msgstr ""
+
+#: php/general_settings.php:181
+msgid "fullscreen"
+msgstr ""
+
+#: php/general_settings.php:182
+msgid "lightbox"
+msgstr ""
+
+#: php/general_settings.php:183
+msgid "after parent"
+msgstr ""
+
+#: php/general_settings.php:190
+msgid "Use deeplinking:"
+msgstr ""
+
+#: php/general_settings.php:197
+msgid "This allows or not deeplinking (an unique URL for each video)."
+msgstr ""
+
+#: php/general_settings.php:202
+msgid "Fill entire video screen:"
+msgstr ""
+
+#: php/general_settings.php:210
+msgid "This feature will allow to fill the gaps of the video player."
+msgstr ""
+
+#: php/general_settings.php:217
+msgid "Fill entire poster screen:"
+msgstr ""
+
+#: php/general_settings.php:225
+msgid "This feature will allow to fill the gaps of the video player poster."
+msgstr ""
+
+#: php/general_settings.php:230
+msgid "Go fullscreen on play:"
+msgstr ""
+
+#: php/general_settings.php:238
+msgid ""
+"If this feature is set to yes when the play button is clicked or tapped the "
+"player will start playing the video and go in fullscreen at the same time."
+msgstr ""
+
+#: php/general_settings.php:243
+msgid "Playsinline:"
+msgstr ""
+
+#: php/general_settings.php:251
+msgid ""
+"This affects only mobile devices, if you want the player to go fullscreen "
+"and use the device dfault player when the play button is tapped set this to "
+"yes otherwise leave it to no and the player will play inline just like on a "
+"desktop machine."
+msgstr ""
+
+#: php/general_settings.php:256
+msgid "Use resume / remember on play:"
+msgstr ""
+
+#: php/general_settings.php:264
+msgid ""
+"Enable / disable the  resume / remember function which marks the last play "
+"position of the video when the browser is closed and remembers it when you "
+"come back to watch video again."
+msgstr ""
+
+#: php/general_settings.php:269
+msgid "Use HEX / CSS colors:"
+msgstr ""
+
+#: php/general_settings.php:277
+msgid ""
+"This feature allows to add hexadecimal colors to all buttons and some player "
+"elements just like it's done with CSS and even more, we have done it in a "
+"cool way that all graphics will retain the texture and at the same time "
+"apply the chosen color. Please note that this feature will work with all "
+"skins but we created a custom dark skin and a custom white skin specially "
+"for this, I suggest to use this skins, if you are using a dark theme set the "
+"'Skin type:' option to hex_dark if is the white theme set 'Skin type:' to "
+"hex_white , both skins can be found in the plugin directory wp-plugins/"
+"fwduvp/content."
+msgstr ""
+
+#: php/general_settings.php:282
+msgid "Normal HEX / CSS color:"
+msgstr ""
+
+#: php/general_settings.php:291
+msgid "Add keyboard support:"
+msgstr ""
+
+#: php/general_settings.php:302
+msgid "Autoscale:"
+msgstr ""
+
+#: php/general_settings.php:313
+msgid "Show buttons tooltips:"
+msgstr ""
+
+#: php/general_settings.php:324
+msgid "Stop video when play complete:"
+msgstr ""
+
+#: php/general_settings.php:335
+msgid "Subtitle off label:"
+msgstr ""
+
+#: php/general_settings.php:343
+msgid "Autoplay:"
+msgstr ""
+
+#: php/general_settings.php:354
+msgid "Autoplay button text:"
+msgstr ""
+
+#: php/general_settings.php:358
+msgid ""
+"The autoplay button text will appear if autoplay is set to yes, in a button "
+"on the top left player side, when clicked the volume will be unmuted. If you "
+"don't want this button leave the input empty/blank."
+msgstr ""
+
+#: php/general_settings.php:364
+msgid "Loop:"
+msgstr ""
+
+#: php/general_settings.php:377
+msgid "Shuffle:"
+msgstr ""
+
+#: php/general_settings.php:388
+msgid "Show popup commercial ads close button:"
+msgstr ""
+
+#: php/general_settings.php:399
+msgid "Player maximum width:"
+msgstr ""
+
+#: php/general_settings.php:403
+msgid ""
+"This value represents the player maximum width in px units, think of this "
+"property as it would be the 'max-width' CSS property."
+msgstr ""
+
+#: php/general_settings.php:408
+msgid "Player maximum height:"
+msgstr ""
+
+#: php/general_settings.php:412
+msgid ""
+"This value represents the player maximum height in px units, think of this "
+"property as it would be the 'max-height' CSS property."
+msgstr ""
+
+#: php/general_settings.php:417
+msgid "Volume:"
+msgstr ""
+
+#: php/general_settings.php:421
+msgid ""
+"This is the volume level of the player. It must be a float value between 0 "
+"and 1"
+msgstr ""
+
+#: php/general_settings.php:427
+msgid "Rewind time:"
+msgstr ""
+
+#: php/general_settings.php:431
+msgid "The rewind time in seconds."
+msgstr ""
+
+#: php/general_settings.php:437 php/general_settings.php:2125
+#: php/general_settings.php:2185
+msgid "Background color:"
+msgstr ""
+
+#: php/general_settings.php:445
+msgid "Video background color:"
+msgstr ""
+
+#: php/general_settings.php:453
+msgid "Poster background color:"
+msgstr ""
+
+#: php/general_settings.php:461
+msgid "Buttons tooltip hide delay:"
+msgstr ""
+
+#: php/general_settings.php:465
+msgid ""
+"This is a float number that represents the duration in seconds until the "
+"tooltip button is showed on mouse hover."
+msgstr ""
+
+#: php/general_settings.php:470
+msgid "Buttons tooltip font color:"
+msgstr ""
+
+#: php/general_settings.php:479
+msgid "Playback rate / speed:"
+msgstr ""
+
+#: php/general_settings.php:495
+msgid "Global private videos password:"
+msgstr ""
+
+#: php/general_settings.php:499
+msgid "The global password for private videos."
+msgstr ""
+
+#: php/general_settings.php:506
+msgid "Show preloader:"
+msgstr ""
+
+#: php/general_settings.php:513
+msgid "Set this to no to disable the counting time preloader."
+msgstr ""
+
+#: php/general_settings.php:521
+msgid "Preloader color 1:"
+msgstr ""
+
+#: php/general_settings.php:529
+msgid "Preloader color 2:"
+msgstr ""
+
+#: php/general_settings.php:537
+msgid "Show UVP controller when playing Vimeo videos:"
+msgstr ""
+
+#: php/general_settings.php:544
+msgid ""
+"Normal vimeo videos do not allow to remove the player default controlls so "
+"leave this option to no, if you are using vimeo pro video and disabled the "
+"vimeo video controller set this to yes this way the UVP controller can be "
+"used."
+msgstr ""
+
+#: php/general_settings.php:550
+msgid "Play video only when loggedin:"
+msgstr ""
+
+#: php/general_settings.php:562
+msgid "Message to show if user is not loggedin:"
+msgstr ""
+
+#: php/general_settings.php:570
+msgid "Execute cuepoints only once:"
+msgstr ""
+
+#: php/general_settings.php:582
+msgid "Audio visualizer lines color:"
+msgstr ""
+
+#: php/general_settings.php:591
+msgid "Audio visualizer circle color:"
+msgstr ""
+
+#: php/general_settings.php:604
+msgid "Show controller:"
+msgstr ""
+
+#: php/general_settings.php:615
+msgid "Show controller when video is stopped:"
+msgstr ""
+
+#: php/general_settings.php:626
+msgid "Show next and previous buttons in controller:"
+msgstr ""
+
+#: php/general_settings.php:637
+msgid "Show volume button:"
+msgstr ""
+
+#: php/general_settings.php:648
+msgid "Show time:"
+msgstr ""
+
+#: php/general_settings.php:660
+msgid "Show playback rate / speed button:"
+msgstr ""
+
+#: php/general_settings.php:671
+msgid "Show rewind 10 seconds button:"
+msgstr ""
+
+#: php/general_settings.php:682
+msgid "Show Youtube quality button:"
+msgstr ""
+
+#: php/general_settings.php:693
+msgid "Show info button:"
+msgstr ""
+
+#: php/general_settings.php:704
+msgid "Show download button:"
+msgstr ""
+
+#: php/general_settings.php:715
+msgid "Show share button:"
+msgstr ""
+
+#: php/general_settings.php:726
+msgid "Show embed button:"
+msgstr ""
+
+#: php/general_settings.php:737
+msgid "Show 360 degree VR button:"
+msgstr ""
+
+#: php/general_settings.php:744
+msgid ""
+"To enable vr for 360 videos set this feature to yes otherwise leave it to no."
+msgstr ""
+
+#: php/general_settings.php:749
+msgid "Show chromecast button:"
+msgstr ""
+
+#: php/general_settings.php:756
+msgid ""
+"Show or hide the chormecast button (this only works on google chrome and a "
+"https protocol)."
+msgstr ""
+
+#: php/general_settings.php:764
+msgid "Show subtitle button:"
+msgstr ""
+
+#: php/general_settings.php:771
+msgid ""
+"Show or hide the subtitle button, this only applies if the video has one or "
+"more subtitle files."
+msgstr ""
+
+#: php/general_settings.php:776
+msgid "Show audio tracks button:"
+msgstr ""
+
+#: php/general_settings.php:783
+msgid ""
+"Support for HLS .m3u8 and video / mp4 multiple audio tracks, please note "
+"that for .mp4 / video this feature is limited by browser support, browsers "
+"that do not have support for the HTMLMediaElement.audioTracks video property "
+"will not display the headphone button that allows changing the video audio "
+"track."
+msgstr ""
+
+#: php/general_settings.php:788
+msgid "Show fullscreen button:"
+msgstr ""
+
+#: php/general_settings.php:799
+msgid "Disable video scrubber:"
+msgstr ""
+
+#: php/general_settings.php:810
+msgid "Repeat background:"
+msgstr ""
+
+#: php/general_settings.php:817
+msgid ""
+"This option is like the CSS 'background-repeat' property for the controller "
+"background image. If set to 'no' it will expand the image to fill the "
+"controller size."
+msgstr ""
+
+#: php/general_settings.php:822
+msgid "Show main scrubber tooltip:"
+msgstr ""
+
+#: php/general_settings.php:833
+msgid "Show scrubber when controller is hidden:"
+msgstr ""
+
+#: php/general_settings.php:840
+msgid "Show or hide the video scrubbar when the video controller is hidden."
+msgstr ""
+
+#: php/general_settings.php:846
+msgid "Show Youtube UI elements:"
+msgstr ""
+
+#: php/general_settings.php:853
+msgid ""
+"Show or hide the YouTube UI elements (Title/Share/Watch later/Related videos/"
+"Logo)."
+msgstr ""
+
+#: php/general_settings.php:859
+msgid "Main scrubber tooltip background color:"
+msgstr ""
+
+#: php/general_settings.php:867
+msgid "Main scrubber tooltip font color:"
+msgstr ""
+
+#: php/general_settings.php:875
+msgid "Controller height:"
+msgstr ""
+
+#: php/general_settings.php:883
+msgid "Controller hide delay:"
+msgstr ""
+
+#: php/general_settings.php:887
+msgid ""
+"This is a number that represents the seconds until the control bar is hiding "
+"after a period of inactivity."
+msgstr ""
+
+#: php/general_settings.php:892
+msgid "Start space between buttons:"
+msgstr ""
+
+#: php/general_settings.php:901
+msgid "Space between buttons:"
+msgstr ""
+
+#: php/general_settings.php:912
+msgid "Scrubbers offset width:"
+msgstr ""
+
+#: php/general_settings.php:916
+msgid ""
+"This is a number that represents the total amount in pixels removed from the "
+"scrubber bars when they are at the end (useful based on the skin type)."
+msgstr ""
+
+#: php/general_settings.php:921
+msgid "Main scrubber offset top:"
+msgstr ""
+
+#: php/general_settings.php:925
+msgid ""
+"This is the amount in pixels to push the main scrubber up when the "
+"controller is hiding."
+msgstr ""
+
+#: php/general_settings.php:930
+msgid "Time offset left width:"
+msgstr ""
+
+#: php/general_settings.php:934
+msgid ""
+"This is a number that represents an addition in px to the space between the "
+"time indicator left side and the scrubber."
+msgstr ""
+
+#: php/general_settings.php:939
+msgid "Time offset right width:"
+msgstr ""
+
+#: php/general_settings.php:943
+msgid ""
+"This is a number that represents an addition in px to the space between the "
+"time indicator right side and the volume button or any other button that "
+"will follow the time indicator."
+msgstr ""
+
+#: php/general_settings.php:948
+msgid "Volume scrubber height:"
+msgstr ""
+
+#: php/general_settings.php:952
+msgid "This is a number that represents the height of the volume scrubber."
+msgstr ""
+
+#: php/general_settings.php:957
+msgid "Time offset top:"
+msgstr ""
+
+#: php/general_settings.php:961
+msgid ""
+"This is a number that represents an addition in px to the time position on "
+"the y axis."
+msgstr ""
+
+#: php/general_settings.php:966
+msgid "Volume scrubber offset height:"
+msgstr ""
+
+#: php/general_settings.php:970
+msgid ""
+"This is a number that represents the extra offset height added to the volume "
+"scrubber."
+msgstr ""
+
+#: php/general_settings.php:975
+msgid "Time color:"
+msgstr ""
+
+#: php/general_settings.php:983 php/general_settings.php:2029
+msgid "Youtube quality button normal color:"
+msgstr ""
+
+#: php/general_settings.php:991
+msgid "Youtube quality button selected color:"
+msgstr ""
+
+#: php/general_settings.php:1006
+msgid "Show playlists search box input:"
+msgstr ""
+
+#: php/general_settings.php:1019
+msgid "Show playlists select / combo-box:"
+msgstr ""
+
+#: php/general_settings.php:1026
+msgid ""
+"If this is set to 'yes' the playlists select / combo-box is showed as soon "
+"as the player is loaded and displayed."
+msgstr ""
+
+#: php/general_settings.php:1032
+msgid "Show playlists button and playlists:"
+msgstr ""
+
+#: php/general_settings.php:1043
+msgid "Show playlists by default:"
+msgstr ""
+
+#: php/general_settings.php:1050
+msgid ""
+"If this is set to 'yes' the playlists window is showed as soon as the player "
+"is loaded and displayed."
+msgstr ""
+
+#: php/general_settings.php:1055
+msgid "Thumbnail selected type:"
+msgstr ""
+
+#: php/general_settings.php:1059
+msgid "opacity"
+msgstr ""
+
+#: php/general_settings.php:1060
+msgid "threshold"
+msgstr ""
+
+#: php/general_settings.php:1061
+msgid "black-and-white"
+msgstr ""
+
+#: php/general_settings.php:1063
+msgid ""
+"This represents the playlist thumbnail selected state (please note that this "
+"setting is always 'opacity' when tested locally or on a mobile device)."
+msgstr ""
+
+#: php/general_settings.php:1068
+msgid "Youtube playlist API key:"
+msgstr ""
+
+#: php/general_settings.php:1072
+msgid ""
+"This the youtube API key required to load youtube playlists or channels, "
+"please refer to documentation about info for getting this key."
+msgstr ""
+
+#: php/general_settings.php:1077 php/meta_box.php:23
+msgid "Start at playlist:"
+msgstr ""
+
+#: php/general_settings.php:1081
+msgid ""
+"This is a number that represents the playlist number that will be loaded "
+"when the player loads the first time. If deeplinking is used and the browser "
+"URL has a playlist link this option is ignored. The playlists count starts "
+"from 0 (zero)."
+msgstr ""
+
+#: php/general_settings.php:1086
+msgid "Buttons margins:"
+msgstr ""
+
+#: php/general_settings.php:1090
+msgid ""
+"This is a number that represents the margins offset for the prev, next and "
+"close buttons from the playlists window."
+msgstr ""
+
+#: php/general_settings.php:1095
+msgid "Thumbnail maximum width:"
+msgstr ""
+
+#: php/general_settings.php:1103
+msgid "Thumbnail maximum height:"
+msgstr ""
+
+#: php/general_settings.php:1111
+msgid "Horizontal space between thumbnails:"
+msgstr ""
+
+#: php/general_settings.php:1119
+msgid "Vertical space between thumbnails:"
+msgstr ""
+
+#: php/general_settings.php:1127
+msgid "Combo-box selector background selected color:"
+msgstr ""
+
+#: php/general_settings.php:1136
+msgid "Combo-box selector text normal color:"
+msgstr ""
+
+#: php/general_settings.php:1146
+msgid "Combo-box selector text selected color:"
+msgstr ""
+
+#: php/general_settings.php:1154
+msgid "Combo-box button background normal color:"
+msgstr ""
+
+#: php/general_settings.php:1162
+msgid "Combo-box button background selected color:"
+msgstr ""
+
+#: php/general_settings.php:1170
+msgid "Combo-box button text normal color:"
+msgstr ""
+
+#: php/general_settings.php:1178
+msgid "Combo-box button text selected color:"
+msgstr ""
+
+#: php/general_settings.php:1191
+msgid "Show playlist button and playlist:"
+msgstr ""
+
+#: php/general_settings.php:1203
+msgid "Playlist position:"
+msgstr ""
+
+#: php/general_settings.php:1214
+msgid "Show playlist by default:"
+msgstr ""
+
+#: php/general_settings.php:1221
+msgid ""
+"If this is set to 'yes' the playlist is showed as soon as the player is "
+"loaded and displayed otherwise the playlist is hidden and it will only "
+"appear if the playlist button is clicked or touched."
+msgstr ""
+
+#: php/general_settings.php:1226
+msgid "Show playlist on fullscreen:"
+msgstr ""
+
+#: php/general_settings.php:1233
+msgid ""
+"By default when the player is in fullscreen the playlist is hidden and not "
+"allowed to be viewed. Set this option to yes if you want the playlist to be "
+"visible  in fullscreen, otherwise leave it to no (please note that if the "
+"browser viewport width is smaller then 1000px then this option will be "
+"ignored becuase there is not enough space to display both the player and the "
+"playlist)."
+msgstr ""
+
+#: php/general_settings.php:1239
+msgid "Show playlist thumbnails:"
+msgstr ""
+
+#: php/general_settings.php:1250
+msgid "Show only playlist thumbnails:"
+msgstr ""
+
+#: php/general_settings.php:1257
+msgid ""
+"This feature will only show the thumbnails without text, please don't forget "
+"to set the thumbnail width and thumbnail height to the size that you want."
+msgstr ""
+
+#: php/general_settings.php:1263
+msgid "Show playlist name:"
+msgstr ""
+
+#: php/general_settings.php:1274
+msgid "Randomize playlist:"
+msgstr ""
+
+#: php/general_settings.php:1281
+msgid ""
+"Set this to yes if you want the playlist to be shuffled / random when first "
+"loaded."
+msgstr ""
+
+#: php/general_settings.php:1286
+msgid "Show search input:"
+msgstr ""
+
+#: php/general_settings.php:1297
+msgid "Show loop button:"
+msgstr ""
+
+#: php/general_settings.php:1308
+msgid "Show shuffle button:"
+msgstr ""
+
+#: php/general_settings.php:1319
+msgid "Show next and previous buttons:"
+msgstr ""
+
+#: php/general_settings.php:1330
+msgid "Disable download button for folder:"
+msgstr ""
+
+#: php/general_settings.php:1341
+msgid "Add mouse wheel support:"
+msgstr ""
+
+#: php/general_settings.php:1355
+msgid "Start at random video:"
+msgstr ""
+
+#: php/general_settings.php:1366
+msgid "Stop after last video in the playlist has played:"
+msgstr ""
+
+#: php/general_settings.php:1373
+msgid ""
+"By default when the last video in the playlist has finished playing UVP will "
+"start playing the fist video fro the playlist, if you want to stop the video "
+"after the last video in the playlist has finished playing set this option to "
+"yes."
+msgstr ""
+
+#: php/general_settings.php:1378
+msgid "Scroll playlist on mouse move:"
+msgstr ""
+
+#: php/general_settings.php:1389
+msgid "Play next video after video is stopped:"
+msgstr ""
+
+#: php/general_settings.php:1396
+msgid ""
+"If the video is set to stop at a specific time by default it will stop but "
+"if you want to skip to the next video set this feature to yes."
+msgstr ""
+
+#: php/general_settings.php:1402
+msgid "Playlist right width:"
+msgstr ""
+
+#: php/general_settings.php:1406
+msgid ""
+"This is a number that represents the playlist width when it is positioned at "
+"the right."
+msgstr ""
+
+#: php/general_settings.php:1411
+msgid "Playlist bottom height:"
+msgstr ""
+
+#: php/general_settings.php:1415
+msgid ""
+"This is a number that represents the playlist height when it is positioned "
+"at the bottom."
+msgstr ""
+
+#: php/general_settings.php:1420 php/meta_box.php:32
+msgid "Start at video:"
+msgstr ""
+
+#: php/general_settings.php:1424
+msgid ""
+"This is a number that represents the video number that will be loaded when "
+"the player loads the first time. If deeplinking is used and the browser URL "
+"has a playlist link this option is ignored. The videos count starts from 0 "
+"(zero)."
+msgstr ""
+
+#: php/general_settings.php:1429
+msgid "Maximum playlist items:"
+msgstr ""
+
+#: php/general_settings.php:1433
+msgid ""
+"This option is useful if the number of playlist items needs to be limited, "
+"for example if a playlist is loaded from Youtube and it has 1000 videos it "
+"will be too large to display so the playlist will display only 100 videos. "
+"If you want to load the total available number of videos without limitation "
+"just set this number to a large number like 10000."
+msgstr ""
+
+#: php/general_settings.php:1438 php/general_settings.php:2107
+msgid "Thumbnail width:"
+msgstr ""
+
+#: php/general_settings.php:1442
+msgid "This is a number that represents the thumbnails width in pixels."
+msgstr ""
+
+#: php/general_settings.php:1447 php/general_settings.php:2116
+msgid "Thumbnail height:"
+msgstr ""
+
+#: php/general_settings.php:1451
+msgid "This is a number that represents the thumbnails height in pixels."
+msgstr ""
+
+#: php/general_settings.php:1456
+msgid "Space between controller and playlist:"
+msgstr ""
+
+#: php/general_settings.php:1460
+msgid ""
+"This is a number that represents the space in pixels between the video "
+"control bar and playlist."
+msgstr ""
+
+#: php/general_settings.php:1465
+msgid "Space between thumbnails:"
+msgstr ""
+
+#: php/general_settings.php:1469
+msgid ""
+"This is a number that represents the vertical space in pixels between "
+"thumbnails."
+msgstr ""
+
+#: php/general_settings.php:1474
+msgid "Scrollbar offset width:"
+msgstr ""
+
+#: php/general_settings.php:1478
+msgid ""
+"This is a number that represents the width to remove from the playlist total "
+"width to make room for the playlist scrollbar."
+msgstr ""
+
+#: php/general_settings.php:1484
+msgid "Scrollbar speed sensitivity:"
+msgstr ""
+
+#: php/general_settings.php:1488
+msgid ""
+"This is a number that represents the scrollbar speed sensitivity. It must be "
+"a float value between 0 and 1."
+msgstr ""
+
+#: php/general_settings.php:1496
+msgid "Playlist background color:"
+msgstr ""
+
+#: php/general_settings.php:1504
+msgid "Playlist name color:"
+msgstr ""
+
+#: php/general_settings.php:1512
+msgid "Thumbnail normal background color:"
+msgstr ""
+
+#: php/general_settings.php:1520
+msgid "Thumbnail hover background color:"
+msgstr ""
+
+#: php/general_settings.php:1528
+msgid "Thumbnail disabled background color:"
+msgstr ""
+
+#: php/general_settings.php:1536
+msgid "Search input background color:"
+msgstr ""
+
+#: php/general_settings.php:1544
+msgid "Search input color:"
+msgstr ""
+
+#: php/general_settings.php:1552
+msgid "Youtube and folder video title color:"
+msgstr ""
+
+#: php/general_settings.php:1560
+msgid "Youtube owner color:"
+msgstr ""
+
+#: php/general_settings.php:1568
+msgid "Youtube description color:"
+msgstr ""
+
+#: php/general_settings.php:1581
+msgid "Show logo:"
+msgstr ""
+
+#: php/general_settings.php:1592
+msgid "Hide logo with controller:"
+msgstr ""
+
+#: php/general_settings.php:1603
+msgid "Logo position:"
+msgstr ""
+
+#: php/general_settings.php:1607
+msgid "top-right"
+msgstr ""
+
+#: php/general_settings.php:1608
+msgid "top-left"
+msgstr ""
+
+#: php/general_settings.php:1609
+msgid "bottom-right"
+msgstr ""
+
+#: php/general_settings.php:1610
+msgid "bottom-left"
+msgstr ""
+
+#: php/general_settings.php:1616
+msgid "Logo path:"
+msgstr ""
+
+#: php/general_settings.php:1620 php/general_settings.php:1990
+#: php/playlist_manager.php:832 php/playlist_manager.php:934
+#: php/playlist_manager.php:989 php/playlist_manager.php:1004
+#: php/playlist_manager.php:1265 php/playlist_manager.php:1281
+msgid "Add Image"
+msgstr ""
+
+#: php/general_settings.php:1628
+msgid "Logo link:"
+msgstr ""
+
+#: php/general_settings.php:1636
+msgid "Logo click target:"
+msgstr ""
+
+#: php/general_settings.php:1640
+msgid "_self"
+msgstr ""
+
+#: php/general_settings.php:1641
+msgid "_blank"
+msgstr ""
+
+#: php/general_settings.php:1648
+msgid "Logo margins:"
+msgstr ""
+
+#: php/general_settings.php:1661
+msgid "Embed and info window close button margins:"
+msgstr ""
+
+#: php/general_settings.php:1669 php/general_settings.php:2133
+#: php/general_settings.php:2193
+msgid "Border color:"
+msgstr ""
+
+#: php/general_settings.php:1677
+msgid "Main labels color:"
+msgstr ""
+
+#: php/general_settings.php:1685
+msgid "Secondary labels color:"
+msgstr ""
+
+#: php/general_settings.php:1693
+msgid "Share and embed text color:"
+msgstr ""
+
+#: php/general_settings.php:1701
+msgid "Input background color:"
+msgstr ""
+
+#: php/general_settings.php:1709
+msgid "Input color:"
+msgstr ""
+
+#: php/general_settings.php:1724
+msgid "Open new page at the end of the ads:"
+msgstr ""
+
+#: php/general_settings.php:1735
+msgid "Play ads only once:"
+msgstr ""
+
+#: php/general_settings.php:1746
+msgid "Ads buttons position:"
+msgstr ""
+
+#: php/general_settings.php:1750 php/general_settings.php:1911
+#: php/general_settings.php:1936
+msgid "left"
+msgstr ""
+
+#: php/general_settings.php:1751 php/general_settings.php:1912
+#: php/general_settings.php:1938
+msgid "right"
+msgstr ""
+
+#: php/general_settings.php:1757
+msgid "Skip to video text:"
+msgstr ""
+
+#: php/general_settings.php:1765
+msgid "Skip to video button text:"
+msgstr ""
+
+#: php/general_settings.php:1773
+msgid "Ads text normal color:"
+msgstr ""
+
+#: php/general_settings.php:1781
+msgid "Ads text selected color:"
+msgstr ""
+
+#: php/general_settings.php:1789
+msgid "Ads border normal color:"
+msgstr ""
+
+#: php/general_settings.php:1797
+msgid "Ads border selected color:"
+msgstr ""
+
+#: php/general_settings.php:1810
+msgid "Title:"
+msgstr ""
+
+#: php/general_settings.php:1819
+msgid "Maximum width:"
+msgstr ""
+
+#: php/general_settings.php:1828
+msgid "Maximum height:"
+msgstr ""
+
+#: php/general_settings.php:1837
+msgid "Advertisement border size:"
+msgstr ""
+
+#: php/general_settings.php:1846
+msgid "Title color:"
+msgstr ""
+
+#: php/general_settings.php:1862
+msgid "Show player by default:"
+msgstr ""
+
+#: php/general_settings.php:1873
+msgid "Animate player:"
+msgstr ""
+
+#: php/general_settings.php:1885
+msgid "Show opener:"
+msgstr ""
+
+#: php/general_settings.php:1896
+msgid "Show opener play / pause button:"
+msgstr ""
+
+#: php/general_settings.php:1907
+msgid "Opener alignment:"
+msgstr ""
+
+#: php/general_settings.php:1920
+msgid "Player vertical position:"
+msgstr ""
+
+#: php/general_settings.php:1924
+msgid "bottom"
+msgstr ""
+
+#: php/general_settings.php:1925
+msgid "top"
+msgstr ""
+
+#: php/general_settings.php:1932
+msgid "Player horizontal position:"
+msgstr ""
+
+#: php/general_settings.php:1937
+msgid "center"
+msgstr ""
+
+#: php/general_settings.php:1945
+msgid "Equalizer offset top:"
+msgstr ""
+
+#: php/general_settings.php:1949
+msgid "This number represents the opener equalizer left offset (left margin)."
+msgstr ""
+
+#: php/general_settings.php:1955
+msgid "Equalizer offset left:"
+msgstr ""
+
+#: php/general_settings.php:1959
+msgid "This number represents the opener equalizer top offset (top margin)."
+msgstr ""
+
+#: php/general_settings.php:1964
+msgid "Offset X:"
+msgstr ""
+
+#: php/general_settings.php:1968
+msgid ""
+"This value represents an offset in px on the x axis, basically if you want "
+"to push the player a few px on the x axis from it's position you can do it "
+"by modifying this option."
+msgstr ""
+
+#: php/general_settings.php:1973
+msgid "Offset Y:"
+msgstr ""
+
+#: php/general_settings.php:1977
+msgid ""
+"This value represents an offset in px on the y axis, basically if you want "
+"to push the player a few px on the y axis from it's position you can do it "
+"by modifying this option."
+msgstr ""
+
+#: php/general_settings.php:1982
+msgid "Background image path:"
+msgstr ""
+
+#: php/general_settings.php:2008
+msgid "Close lightbox on play complete:"
+msgstr ""
+
+#: php/general_settings.php:2015
+msgid ""
+"If set to yes when the video has finished playing and UVP lightbox is opened "
+"the lightbox will automatically close."
+msgstr ""
+
+#: php/general_settings.php:2020
+msgid "Background opacity:"
+msgstr ""
+
+#: php/general_settings.php:2042
+msgid "Use a to be loop:"
+msgstr ""
+
+#: php/general_settings.php:2049
+msgid ""
+"The a to b loop feature is basically a plugin for UVP this way it will not "
+"add to the total file size if it is not used. To enable it set it to yes "
+"otherwise set it to no."
+msgstr ""
+
+#: php/general_settings.php:2054
+msgid "Time text normal color:"
+msgstr ""
+
+#: php/general_settings.php:2062
+msgid "Time text selected color:"
+msgstr ""
+
+#: php/general_settings.php:2070
+msgid "Button text normal color:"
+msgstr ""
+
+#: php/general_settings.php:2078
+msgid "Button text selected color:"
+msgstr ""
+
+#: php/general_settings.php:2086
+msgid "Button background normal color:"
+msgstr ""
+
+#: php/general_settings.php:2094
+msgid "Button background selected color:"
+msgstr ""
+
+#: php/general_settings.php:2111
+msgid "Thumbnail preview width in px."
+msgstr ""
+
+#: php/general_settings.php:2120
+msgid "Thumbnail preview height in px."
+msgstr ""
+
+#: php/general_settings.php:2141
+msgid "Time background color:"
+msgstr ""
+
+#: php/general_settings.php:2149
+msgid "Time text color:"
+msgstr ""
+
+#: php/general_settings.php:2162
+msgid "Show right click context menu:"
+msgstr ""
+
+#: php/general_settings.php:2173
+msgid "Show developer link:"
+msgstr ""
+
+#: php/general_settings.php:2180
+msgid ""
+"Ads an extra option in the right click context menu with a link for the "
+"developer website, if you want to support this pluogin please set this "
+"option to yes."
+msgstr ""
+
+#: php/general_settings.php:2201
+msgid "Spacer color:"
+msgstr ""
+
+#: php/general_settings.php:2209
+msgid "Menu item normal color:"
+msgstr ""
+
+#: php/general_settings.php:2217
+msgid "Menu item selected color:"
+msgstr ""
+
+#: php/general_settings.php:2225
+msgid "Menu item disabled color:"
+msgstr ""
+
+#: php/general_settings.php:2238
+msgid "Use fingerprint stamp:"
+msgstr ""
+
+#: php/general_settings.php:2249
+msgid "Fingerprint stamp frequency:"
+msgstr ""
+
+#: php/general_settings.php:2253
+msgid ""
+"The time in milliseconds until the fingerprint stamp text appears, please "
+"note there is also a small random offset added to this."
+msgstr ""
+
+#: php/general_settings.php:2258
+msgid "Fingerprint stamp duration:"
+msgstr ""
+
+#: php/general_settings.php:2262
+msgid "The time in milliseconds until the finger print stamp text is visible."
+msgstr ""
+
+#: php/general_settings.php:2271
+msgid "Add new preset"
+msgstr ""
+
+#: php/general_settings.php:2272
+msgid "Update preset settings"
+msgstr ""
+
+#: php/general_settings.php:2273
+msgid "Delete preset"
+msgstr ""
+
+#: php/global_advertising.php:3 php/playlist_manager.php:78
+msgid "Add new pre-roll,mid-roll,post-roll advertisement"
+msgstr ""
+
+#: php/global_advertising.php:4 php/global_advertising.php:59
+#: php/global_advertising.php:120 php/global_advertising.php:201
+#: php/playlist_manager.php:79 php/playlist_manager.php:153
+#: php/playlist_manager.php:229 php/playlist_manager.php:365
+msgid "The source field is required."
+msgstr ""
+
+#: php/global_advertising.php:8 php/global_advertising.php:63
+#: php/global_advertising.php:133 php/global_advertising.php:214
+#: php/playlist_manager.php:84 php/playlist_manager.php:159
+#: php/playlist_manager.php:246 php/playlist_manager.php:371
+msgid "Advertisement label:"
+msgstr ""
+
+#: php/global_advertising.php:12 php/global_advertising.php:67
+#: php/playlist_manager.php:92
+msgid "Video or image source:"
+msgstr ""
+
+#: php/global_advertising.php:15 php/global_advertising.php:70
+#: php/global_advertising.php:143 php/global_advertising.php:224
+#: php/playlist_manager.php:96 php/playlist_manager.php:171
+#: php/playlist_manager.php:386 php/playlist_manager.php:531
+#: php/playlist_manager.php:570 php/playlist_manager.php:650
+#: php/playlist_manager.php:726
+msgid "Add from media library"
+msgstr ""
+
+#: php/global_advertising.php:16 php/global_advertising.php:71
+#: php/global_advertising.php:144 php/playlist_manager.php:97
+#: php/playlist_manager.php:172 php/playlist_manager.php:262
+#: php/playlist_manager.php:387
+msgid ""
+"This feature support mp4 video files from the media library or external "
+"path, youtube videos or images (jpg, jpeg, png)."
+msgstr ""
+
+#: php/global_advertising.php:25 php/global_advertising.php:80
+#: php/global_advertising.php:153 php/global_advertising.php:233
+#: php/playlist_manager.php:112 php/playlist_manager.php:186
+#: php/playlist_manager.php:276 php/playlist_manager.php:401
+msgid "Target:"
+msgstr ""
+
+#: php/global_advertising.php:34 php/global_advertising.php:89
+#: php/global_advertising.php:162 php/global_advertising.php:242
+#: php/playlist_manager.php:18 php/playlist_manager.php:51
+#: php/playlist_manager.php:123 php/playlist_manager.php:197
+#: php/playlist_manager.php:287 php/playlist_manager.php:412
+msgid "Start time:"
+msgstr ""
+
+#: php/global_advertising.php:37 php/global_advertising.php:92
+#: php/playlist_manager.php:127 php/playlist_manager.php:201
+msgid ""
+"The time at which the advertisement will start playing, the format is hours:"
+"minutes:seconds, for example 01:20:20."
+msgstr ""
+
+#: php/global_advertising.php:41 php/global_advertising.php:96
+#: php/playlist_manager.php:132 php/playlist_manager.php:206
+msgid "Time to hold add:"
+msgstr ""
+
+#: php/global_advertising.php:44 php/global_advertising.php:99
+msgid ""
+"The duration in seconds until the skip button will appear, for example set "
+"10 to show after 10 seconds."
+msgstr ""
+
+#: php/global_advertising.php:48 php/global_advertising.php:103
+#: php/playlist_manager.php:141 php/playlist_manager.php:215
+msgid "Add duration:"
+msgstr ""
+
+#: php/global_advertising.php:51 php/global_advertising.php:106
+msgid ""
+"The ad duration in hh:mm:ss format if an image is used, for example 00:00:20."
+msgstr ""
+
+#: php/global_advertising.php:58
+msgid "Edit pre-roll,mid-roll,post-roll advertisement"
+msgstr ""
+
+#: php/global_advertising.php:113 php/playlist_manager.php:1533
+msgid "Delete advertisement"
+msgstr ""
+
+#: php/global_advertising.php:115 php/playlist_manager.php:1535
+msgid "Are you sure you want to delete this advertisement?"
+msgstr ""
+
+#: php/global_advertising.php:119 php/playlist_manager.php:228
+msgid "Add new pop-up advertisement"
+msgstr ""
+
+#: php/global_advertising.php:124 php/global_advertising.php:205
+#: php/playlist_manager.php:235
+msgid "Type:"
+msgstr ""
+
+#: php/global_advertising.php:140 php/global_advertising.php:221
+#: php/playlist_manager.php:257 php/playlist_manager.php:382
+msgid "Image source"
+msgstr ""
+
+#: php/global_advertising.php:166 php/global_advertising.php:246
+#: php/playlist_manager.php:296 php/playlist_manager.php:421
+msgid "Stop time:"
+msgstr ""
+
+#: php/global_advertising.php:173 php/global_advertising.php:252
+#: php/playlist_manager.php:308 php/playlist_manager.php:433
+msgid "Google adsense ad client code:"
+msgstr ""
+
+#: php/global_advertising.php:177 php/global_advertising.php:253
+#: php/playlist_manager.php:317 php/playlist_manager.php:442
+msgid "Google adsense ad slot code:"
+msgstr ""
+
+#: php/global_advertising.php:181 php/global_advertising.php:254
+#: php/playlist_manager.php:326 php/playlist_manager.php:451
+msgid "Google adsense ad width:"
+msgstr ""
+
+#: php/global_advertising.php:185 php/global_advertising.php:255
+#: php/playlist_manager.php:335 php/playlist_manager.php:460
+msgid "Google adsense ad height:"
+msgstr ""
+
+#: php/global_advertising.php:189 php/global_advertising.php:256
+#: php/playlist_manager.php:344 php/playlist_manager.php:469
+msgid "Google adsense ad start time:"
+msgstr ""
+
+#: php/global_advertising.php:193 php/global_advertising.php:257
+#: php/playlist_manager.php:353 php/playlist_manager.php:478
+msgid "Google adsense ad stop time:"
+msgstr ""
+
+#: php/global_advertising.php:200 php/playlist_manager.php:364
+msgid "Edit pop-up advertisement"
+msgstr ""
+
+#: php/global_advertising.php:262 php/playlist_manager.php:490
+msgid "Delete pop-up advertisement"
+msgstr ""
+
+#: php/global_advertising.php:264 php/playlist_manager.php:492
+msgid "Are you sure you want to delete this pop-up advertisement?"
+msgstr ""
+
+#: php/global_advertising.php:273 php/playlist_manager.php:1075
+#: php/playlist_manager.php:1352
+msgid "Advertisement pre-roll,mid-roll,post-roll:"
+msgstr ""
+
+#: php/global_advertising.php:275 php/global_advertising.php:281
+#: php/playlist_manager.php:1077 php/playlist_manager.php:1084
+#: php/playlist_manager.php:1354 php/playlist_manager.php:1361
+msgid "Add advertisement"
+msgstr ""
+
+#: php/global_advertising.php:279 php/playlist_manager.php:1082
+#: php/playlist_manager.php:1359
+msgid "Pop-up image / adsense advertisement:"
+msgstr ""
+
+#: php/global_advertising.php:287 php/playlist_manager.php:1109
+#: php/playlist_manager.php:1386
+msgid "Advertisement on pause:"
+msgstr ""
+
+#: php/global_advertising.php:290
+msgid ""
+"Add here the URL / page source of the webpage to be displayed in the "
+"advertisement on pause window (ex:http://www.webdesign-flash.ro/iframe."
+"html), if you do not want this window to appear when the video is paused "
+"leave this input blank."
+msgstr ""
+
+#: php/global_advertising.php:294 php/playlist_manager.php:1139
+#: php/playlist_manager.php:1416
+msgid "Vast source:"
+msgstr ""
+
+#: php/global_advertising.php:297
+msgid ""
+"The absolute path of a valid VAST, VMAP or Google IMA file. This field is "
+"optional."
+msgstr ""
+
+#: php/global_advertising.php:301 php/playlist_manager.php:1148
+#: php/playlist_manager.php:1425
+msgid "Vast target:"
+msgstr ""
+
+#: php/global_advertising.php:310 php/playlist_manager.php:1161
+#: php/playlist_manager.php:1438
+msgid "Vast start time:"
+msgstr ""
+
+#: php/global_advertising.php:313
+msgid "The start time for VAST in hh:mm:ss format, for example 00:10:48."
+msgstr ""
+
+#: php/global_advertising.php:321
+msgid "Update advertisements"
+msgstr ""
+
+#: php/meta_box.php:7
+msgid "Select preset:"
+msgstr ""
+
+#: php/meta_box.php:15
+msgid "Select playlist:"
+msgstr ""
+
+#: php/meta_box.php:27
+msgid ""
+"Start at a specific playlist from the selected main playlist, the counting "
+"starts from 0, which means that 0 is the fist playlist. Please note that "
+"this feature is optional, if left blank UVP will start at the playlist "
+"specified in the selected preset."
+msgstr ""
+
+#: php/meta_box.php:36
+msgid ""
+"Start at a specific video from the selected playlist, the counting starts "
+"from 0, which means that 0 is the fist video. Please note that this feature "
+"is optional, if left blank UVP will start at the video specified in the "
+"selected preset."
+msgstr ""
+
+#: php/playlist_manager.php:4
+msgid "Add new cuepoint"
+msgstr ""
+
+#: php/playlist_manager.php:5 php/playlist_manager.php:38
+msgid "The start time field is required."
+msgstr ""
+
+#: php/playlist_manager.php:10 php/playlist_manager.php:43
+msgid "Cuepoint label:"
+msgstr ""
+
+#: php/playlist_manager.php:22 php/playlist_manager.php:55
+msgid ""
+"The start time of for the cuepoint, the format is hours:minutes:seconds, for "
+"example 01:20:20."
+msgstr ""
+
+#: php/playlist_manager.php:27 php/playlist_manager.php:60
+msgid "Cuepoint javascript function call:"
+msgstr ""
+
+#: php/playlist_manager.php:31 php/playlist_manager.php:64
+msgid ""
+"The cupoint javascript function that will be executed at the cuepoint start "
+"time. If you have a javascript function defined in your page it can be set "
+"here to be called at the start time, for example if the function is called "
+"myFunction set this to myFunction(); make sure you add the parentheses as "
+"well and also make sure you don't use any parameters the function has to be "
+"simple."
+msgstr ""
+
+#: php/playlist_manager.php:37
+msgid "Edit cuepoint"
+msgstr ""
+
+#: php/playlist_manager.php:70
+msgid "Delete cuepoint"
+msgstr ""
+
+#: php/playlist_manager.php:72
+msgid "Are you sure you want to delete this cuepoint?"
+msgstr ""
+
+#: php/playlist_manager.php:136
+msgid ""
+"The duration in seconds format until the skip button will appear, for "
+"example to show the skip add button after 10 seconds from the video start "
+"set this to 10. If you don't want the skip button to appear set this to 0."
+msgstr ""
+
+#: php/playlist_manager.php:145 php/playlist_manager.php:219
+msgid ""
+"The add duration in hh:mm:ss format to hold the add if an image is used, for "
+"example to hold the image add for 20 seconds set this option to 00:00:20."
+msgstr ""
+
+#: php/playlist_manager.php:152
+msgid "Edit new pre-roll,mid-roll,post-roll advertisement"
+msgstr ""
+
+#: php/playlist_manager.php:167
+msgid "Video or image:"
+msgstr ""
+
+#: php/playlist_manager.php:210
+msgid ""
+"The duration in seconds until the skip button will appear, for example to "
+"show the skip add button after 10 seconds from the video start set this to "
+"10. If you don't want the skip button to appear  set this to 0."
+msgstr ""
+
+#: php/playlist_manager.php:291 php/playlist_manager.php:416
+msgid ""
+"The time at which the advertisement will show, the format is hours:minutes:"
+"seconds, for example 01:20:20."
+msgstr ""
+
+#: php/playlist_manager.php:300 php/playlist_manager.php:425
+msgid ""
+"The time at which the advertisement will hide, the format is hours:minutes:"
+"seconds, for example 01:20:20."
+msgstr ""
+
+#: php/playlist_manager.php:312 php/playlist_manager.php:437
+msgid ""
+"The google ad client code, you can get this from the google adsense embed "
+"code."
+msgstr ""
+
+#: php/playlist_manager.php:321 php/playlist_manager.php:446
+msgid ""
+"The google ad slot code, you can get this from the google adsense embed code."
+msgstr ""
+
+#: php/playlist_manager.php:330 php/playlist_manager.php:455
+msgid "The google adsense ad width in px."
+msgstr ""
+
+#: php/playlist_manager.php:339 php/playlist_manager.php:464
+msgid "The google adsense ad height in px."
+msgstr ""
+
+#: php/playlist_manager.php:348 php/playlist_manager.php:473
+msgid ""
+"The start time of the popup ad when will show, the format is hours:minutes:"
+"seconds, for example 01:10:20."
+msgstr ""
+
+#: php/playlist_manager.php:357 php/playlist_manager.php:482
+msgid ""
+"The stop time of the popup ad when will hide, the format is hours:minutes:"
+"seconds, for example 01:20:20."
+msgstr ""
+
+#: php/playlist_manager.php:499
+msgid "Add new subtitle"
+msgstr ""
+
+#: php/playlist_manager.php:500 php/playlist_manager.php:539
+#: php/playlist_manager.php:659
+msgid "The label field is required."
+msgstr ""
+
+#: php/playlist_manager.php:505 php/playlist_manager.php:544
+msgid "Subtitle label:"
+msgstr ""
+
+#: php/playlist_manager.php:509 php/playlist_manager.php:548
+msgid ""
+"The subtitle label that will appear in the subtitle quality selector like: "
+"720p, 1080p or whatever label you like. If you are using just a single "
+"subtitle source this will not be displayed."
+msgstr ""
+
+#: php/playlist_manager.php:514 php/playlist_manager.php:553
+#: php/playlist_manager.php:624 php/playlist_manager.php:699
+msgid "Encrypt:"
+msgstr ""
+
+#: php/playlist_manager.php:521 php/playlist_manager.php:560
+msgid ""
+"Set this feature to yes if you wish to encrypt the subtitle path this way it "
+"will not be possible to see / steal the subtitle source by viewing the page "
+"source."
+msgstr ""
+
+#: php/playlist_manager.php:526 php/playlist_manager.php:565
+#: php/playlist_manager.php:1344
+msgid "Subtitle source:"
+msgstr ""
+
+#: php/playlist_manager.php:530 php/playlist_manager.php:569
+msgid "The subtitle .txt or .srt path."
+msgstr ""
+
+#: php/playlist_manager.php:538
+msgid "Edit subtitle"
+msgstr ""
+
+#: php/playlist_manager.php:577
+msgid "Delete subtitle"
+msgstr ""
+
+#: php/playlist_manager.php:579
+msgid "Are you sure you want to delete this subtitle?"
+msgstr ""
+
+#: php/playlist_manager.php:591 php/playlist_manager.php:665
+msgid "Is 360 degree / VR:"
+msgstr ""
+
+#: php/playlist_manager.php:598
+msgid ""
+"If 360 degree / VR video is used set this option to yes otherwise set it to "
+"no, to enable VR please set in your preset Show 360 degree VR button to yes "
+"otherwise lave set it to no."
+msgstr ""
+
+#: php/playlist_manager.php:603 php/playlist_manager.php:678
+msgid "360 video start rotation:"
+msgstr ""
+
+#: php/playlist_manager.php:607 php/playlist_manager.php:682
+msgid ""
+"For 360 videos the start rotation in degrees, this can also be negative for "
+"example -90 will rotate the video on the Y axis / horizontally -90 degrees, "
+"by default is zero (0)."
+msgstr ""
+
+#: php/playlist_manager.php:612 php/playlist_manager.php:687
+msgid "Start VR at play:"
+msgstr ""
+
+#: php/playlist_manager.php:619 php/playlist_manager.php:694
+msgid ""
+"If you want to start VR when the video is starting to play set this option "
+"to yes otherwise leave it to no and the VR will start when the user is "
+"clicking the goggles button from the player control bar, to enable VR please "
+"set in your preset Show 360 degree VR button to yes otherwise lave set it to "
+"no."
+msgstr ""
+
+#: php/playlist_manager.php:631 php/playlist_manager.php:706
+msgid ""
+"Set this feature to yes if you wish to encrypt the video paths this way it "
+"will not be possible to see / steal the videos location by viewing the page "
+"source."
+msgstr ""
+
+#: php/playlist_manager.php:636 php/playlist_manager.php:711
+msgid "Video label:"
+msgstr ""
+
+#: php/playlist_manager.php:640 php/playlist_manager.php:715
+msgid ""
+"The video label that will appear in the video quality selector like: 720p, "
+"1080p or whatever label you like. If you are using just a single video "
+"source this will not be displayed."
+msgstr ""
+
+#: php/playlist_manager.php:645 php/playlist_manager.php:721
+#: php/playlist_manager.php:1336
+msgid "Video source:"
+msgstr ""
+
+#: php/playlist_manager.php:649 php/playlist_manager.php:725
+msgid ""
+"The video mp4 path, Vimeo video URL, Youtube video URL, mp3 path, hls/m3u8 "
+"URL."
+msgstr ""
+
+#: php/playlist_manager.php:658 php/playlist_manager.php:1252
+msgid "Edit video"
+msgstr ""
+
+#: php/playlist_manager.php:672
+msgid ""
+"If 360 degree / VR video is used set this option to yes otherwise set it to "
+"no."
+msgstr ""
+
+#: php/playlist_manager.php:733 php/playlist_manager.php:1527
+msgid "Delete video"
+msgstr ""
+
+#: php/playlist_manager.php:735 php/playlist_manager.php:1529
+msgid "Are you sure you want to delete this video?"
+msgstr ""
+
+#: php/playlist_manager.php:741 php/playlist_manager.php:1623
+msgid "Add new main playlist"
+msgstr ""
+
+#: php/playlist_manager.php:742 php/playlist_manager.php:751
+msgid "The name field is required."
+msgstr ""
+
+#: php/playlist_manager.php:745
+msgid "Name:"
+msgstr ""
+
+#: php/playlist_manager.php:750
+msgid "Edit main playlist"
+msgstr ""
+
+#: php/playlist_manager.php:759
+msgid "Delete main playlist"
+msgstr ""
+
+#: php/playlist_manager.php:761
+msgid "Are you sure you want to delete this main playlist?"
+msgstr ""
+
+#: php/playlist_manager.php:766
+msgid "The playlist name and thumbnail path is required."
+msgstr ""
+
+#: php/playlist_manager.php:769 php/playlist_manager.php:870
+msgid "Playlist name:"
+msgstr ""
+
+#: php/playlist_manager.php:774 php/playlist_manager.php:875
+msgid "Playlist type:"
+msgstr ""
+
+#: php/playlist_manager.php:783 php/playlist_manager.php:885
+msgid "Playlist password:"
+msgstr ""
+
+#: php/playlist_manager.php:785 php/playlist_manager.php:887
+msgid ""
+"Set a password here if you want the playlist to be private otherwise leave "
+"it blank."
+msgstr ""
+
+#: php/playlist_manager.php:788 php/playlist_manager.php:890
+msgid "Playlist source:"
+msgstr ""
+
+#: php/playlist_manager.php:791 php/playlist_manager.php:893
+msgid "Source help."
+msgstr ""
+
+#: php/playlist_manager.php:795 php/playlist_manager.php:897
+msgid "Album URL:"
+msgstr ""
+
+#: php/playlist_manager.php:798 php/playlist_manager.php:900
+msgid "Add here the album URL."
+msgstr ""
+
+#: php/playlist_manager.php:801 php/playlist_manager.php:903
+msgid "User ID:"
+msgstr ""
+
+#: php/playlist_manager.php:804 php/playlist_manager.php:906
+msgid "Add here your vimeo user id."
+msgstr ""
+
+#: php/playlist_manager.php:807 php/playlist_manager.php:909
+msgid "APP client ID:"
+msgstr ""
+
+#: php/playlist_manager.php:810 php/playlist_manager.php:912
+msgid "Add here your vimeo app client id."
+msgstr ""
+
+#: php/playlist_manager.php:813 php/playlist_manager.php:915
+msgid "APP secret:"
+msgstr ""
+
+#: php/playlist_manager.php:816 php/playlist_manager.php:918
+msgid "Add here your vimeo app secret."
+msgstr ""
+
+#: php/playlist_manager.php:819 php/playlist_manager.php:921
+msgid "APP token:"
+msgstr ""
+
+#: php/playlist_manager.php:822 php/playlist_manager.php:924
+msgid "Add here your vimeo app token."
+msgstr ""
+
+#: php/playlist_manager.php:827 php/playlist_manager.php:929
+msgid "Playlist thumbnail path (enter a URL or upload an image):"
+msgstr ""
+
+#: php/playlist_manager.php:843 php/playlist_manager.php:945
+msgid "Playlist text:"
+msgstr ""
+
+#: php/playlist_manager.php:849 php/playlist_manager.php:951
+#: php/playlist_manager.php:1212 php/playlist_manager.php:1234
+#: php/playlist_manager.php:1488 php/playlist_manager.php:1510
+msgid "Caption template:"
+msgstr ""
+
+#: php/playlist_manager.php:856 php/playlist_manager.php:958
+msgid "Playlist text format:"
+msgstr ""
+
+#: php/playlist_manager.php:866
+msgid "Edit playlist"
+msgstr ""
+
+#: php/playlist_manager.php:867
+msgid "The playlist name is required."
+msgstr ""
+
+#: php/playlist_manager.php:968
+msgid "Delete playlist"
+msgstr ""
+
+#: php/playlist_manager.php:970
+msgid "Are you sure you want to delete this playlist?"
+msgstr ""
+
+#: php/playlist_manager.php:979 php/playlist_manager.php:1255
+msgid "Video name:"
+msgstr ""
+
+#: php/playlist_manager.php:984 php/playlist_manager.php:1260
+msgid "Video thumbnail path (enter a URL or upload an image):"
+msgstr ""
+
+#: php/playlist_manager.php:999 php/playlist_manager.php:1276
+msgid "Video poster path (enter a URL or upload an image):"
+msgstr ""
+
+#: php/playlist_manager.php:1017 php/playlist_manager.php:1295
+msgid "Is private:"
+msgstr ""
+
+#: php/playlist_manager.php:1024 php/playlist_manager.php:1302
+msgid ""
+"Set this to yes if you want a private video, this way a user will be "
+"required to enter a password to view the video."
+msgstr ""
+
+#: php/playlist_manager.php:1029 php/playlist_manager.php:1307
+msgid "Start at time:"
+msgstr ""
+
+#: php/playlist_manager.php:1033 php/playlist_manager.php:1311
+msgid ""
+"Start playing the video at a specified time in format hours:minutes:seconds, "
+"for example 00:01:10. If you don't need this feature leave this blank."
+msgstr ""
+
+#: php/playlist_manager.php:1038 php/playlist_manager.php:1316
+msgid "Stop at time:"
+msgstr ""
+
+#: php/playlist_manager.php:1042 php/playlist_manager.php:1320
+msgid ""
+"Stop playing the video at a specified time in format hours:minutes:seconds, "
+"for example 00:01:10. If you don't need this feature leave this blank."
+msgstr ""
+
+#: php/playlist_manager.php:1047 php/playlist_manager.php:1325
+msgid "Video password:"
+msgstr ""
+
+#: php/playlist_manager.php:1051 php/playlist_manager.php:1329
+msgid ""
+"A unique password for this video can be set here, if left blank the global "
+"password will be used that is set in the general settings under the used "
+"preset."
+msgstr ""
+
+#: php/playlist_manager.php:1059
+msgid "Video:"
+msgstr ""
+
+#: php/playlist_manager.php:1061 php/playlist_manager.php:1338
+msgid "Add video"
+msgstr ""
+
+#: php/playlist_manager.php:1062 php/playlist_manager.php:1339
+msgid ""
+"If multiple videos are added check the select box of the video that you want "
+"to load first."
+msgstr ""
+
+#: php/playlist_manager.php:1067
+msgid "Subtitle:"
+msgstr ""
+
+#: php/playlist_manager.php:1069 php/playlist_manager.php:1346
+msgid "Add subtitle"
+msgstr ""
+
+#: php/playlist_manager.php:1070 php/playlist_manager.php:1347
+msgid ""
+"If multiple subtitles are added check the select box of the subtitle that "
+"you want to load first."
+msgstr ""
+
+#: php/playlist_manager.php:1089 php/playlist_manager.php:1366
+msgid "Cuepoints:"
+msgstr ""
+
+#: php/playlist_manager.php:1091 php/playlist_manager.php:1368
+msgid "Add cuepoint"
+msgstr ""
+
+#: php/playlist_manager.php:1098 php/playlist_manager.php:1375
+msgid "Thumbnails preview:"
+msgstr ""
+
+#: php/playlist_manager.php:1102
+msgid ""
+"For auto-generated live thumbnails set this to auto, this feature works with "
+"self hosted or external hosted mp4/video, HLS/m3u8, Google drive, Dropbox, "
+"Amazon S3 and more.... The .vtt version works with all the supported video "
+"formats."
+msgstr ""
+
+#: php/playlist_manager.php:1103 php/playlist_manager.php:1380
+msgid "Add .vtt file"
+msgstr ""
+
+#: php/playlist_manager.php:1113 php/playlist_manager.php:1390
+msgid ""
+"Add here the URL / page source of the webpage to be displayed in the "
+"advertisement on pause window (ex:http://www.webdesign-flash.ro/iframe."
+"html), if you don't want this window to appear when the video is paused "
+"leave this input blank."
+msgstr ""
+
+#: php/playlist_manager.php:1118 php/playlist_manager.php:1395
+msgid "Redirect page at video complete:"
+msgstr ""
+
+#: php/playlist_manager.php:1122 php/playlist_manager.php:1399
+msgid ""
+"Add here an URL of the page to open when the video has finished playing, if "
+"you don't want this feature leave it blank."
+msgstr ""
+
+#: php/playlist_manager.php:1127 php/playlist_manager.php:1404
+msgid "Redirect target:"
+msgstr ""
+
+#: php/playlist_manager.php:1143 php/playlist_manager.php:1420
+msgid ""
+"The absolute path of a valid VAST, VMAP or Google IMA file (this also "
+"applies to video IAM adsense), for example http://www.webdesign-flash.ro/p/"
+"uvp/content/vast.xml. This feature is optional if you don't need it leave it "
+"blank."
+msgstr ""
+
+#: php/playlist_manager.php:1156 php/playlist_manager.php:1433
+msgid ""
+"VAST template dosen't specify the target of the new window that is opened "
+"when the video ad is clicked so this option is very useful."
+msgstr ""
+
+#: php/playlist_manager.php:1165 php/playlist_manager.php:1442
+msgid ""
+"The start time of for VAST ads hours:minutes:seconds, for example 01:20:20. "
+"For pre-roll set this option to 00:00:00, for mid-roll set it to any start "
+"time that you like for example 00:11:20, for post-roll set this option to "
+"the total video duration minus one second, for example if the video duration "
+"is 01:45:25 set this to 01:45:24."
+msgstr ""
+
+#: php/playlist_manager.php:1170 php/playlist_manager.php:1447
+msgid "Downloadable:"
+msgstr ""
+
+#: php/playlist_manager.php:1181 php/playlist_manager.php:1458
+msgid "Use A to B loop:"
+msgstr ""
+
+#: php/playlist_manager.php:1192 php/playlist_manager.php:1469
+msgid "Play only if logged in:"
+msgstr ""
+
+#: php/playlist_manager.php:1206 php/playlist_manager.php:1482
+msgid "Video short description:"
+msgstr ""
+
+#: php/playlist_manager.php:1217 php/playlist_manager.php:1494
+msgid "Video short description format:"
+msgstr ""
+
+#: php/playlist_manager.php:1228 php/playlist_manager.php:1504
+msgid "Video long description:"
+msgstr ""
+
+#: php/playlist_manager.php:1241 php/playlist_manager.php:1517
+msgid "Video long description format:"
+msgstr ""
+
+#: php/playlist_manager.php:1379
+msgid ""
+"For auto-generated live thumbnails set this to auto, this feature works with "
+"self hosted or external hosted mp4/video, HLS/m3u8, Google drive, Dropbox, "
+"Amazon S3 and more... The .vtt version works with all the supported video "
+"formats."
+msgstr ""
+
+#: php/playlist_manager.php:1543
+msgid "All main playlists:"
+msgstr ""
+
+#: php/playlist_manager.php:1621
+msgid "No main playlists are available."
+msgstr ""
+
+#: php/playlist_manager.php:1627
+msgid "Update main playlists"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "FWD Ultimate Video Player"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://fwdapps.net/p/uvp"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"This is the WordPress plugin with a CMS menu for the installation and "
+"configuration of the Ultimate Video Player."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "FWDesign"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://fwdapps.net"
+msgstr ""
