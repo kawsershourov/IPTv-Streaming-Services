@@ -119,6 +119,13 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('player_show_next_prev',         'yes'),
 ('player_show_loop_button',       'no'),
 ('player_show_shuffle_button',    'no'),
+('player_show_prevnext_controller','yes'),
+('player_show_playlist_button',   'yes'),
+('player_show_subtitle_button',   'no'),
+('player_show_quality_button',    'no'),
+('player_show_audio_tracks_button','no'),
+('player_show_chromecast_button', 'no'),
+('player_show_vr_button',         'no'),
 -- Player colors
 ('player_use_hex_colors',         'yes'),
 ('player_buttons_color',          '#ffffff'),

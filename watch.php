@@ -124,7 +124,6 @@ require __DIR__ . '/app/includes/header.php';
             'startAtPlaylist'                 => 0,
             'startAtVideo'                    => (int) $startIndex,
             'showPlaylistsButtonAndPlaylists' => 'no',
-            'showPlaylistButtonAndPlaylist'   => 'yes',
         ]);
         ?>
         <script src="<?= e($playerBase . '/js/FWDUVP.js') ?>"></script>

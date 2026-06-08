@@ -32,20 +32,33 @@ $colorLabels = [
     'player_preloader_bg'           => 'Loader background',
     'player_preloader_fill'         => 'Loader fill',
 ];
-$buttons = [
-    'player_show_fullscreen_button'   => 'Fullscreen button',
-    'player_show_volume_button'       => 'Volume button',
-    'player_show_time'                => 'Time / duration',
-    'player_show_next_prev'           => 'Next / previous buttons',
-    'player_show_playbackrate_button' => 'Playback-rate button',
-    'player_show_rewind_button'       => 'Rewind button',
-    'player_show_info_button'         => 'Info button',
-    'player_show_share_button'        => 'Share button',
-    'player_show_embed_button'        => 'Embed button',
-    'player_show_download_button'     => 'Download button',
-    'player_show_loop_button'         => 'Loop button',
-    'player_show_shuffle_button'      => 'Shuffle button',
+// Control-bar buttons grouped by where they sit on the bar.
+$leftButtons = [
+    'player_show_prevnext_controller' => 'Rewind / forward (◀◀ ▶▶)',
+    'player_show_rewind_button'       => 'Replay (rewind 10s)',
 ];
+$rightButtons = [
+    'player_show_volume_button'       => 'Volume',
+    'player_show_playlist_button'     => 'Playlist list',
+    'player_show_subtitle_button'     => 'Subtitles / CC',
+    'player_show_audio_tracks_button' => 'Audio tracks',
+    'player_show_share_button'        => 'Share',
+    'player_show_embed_button'        => 'Embed',
+    'player_show_playbackrate_button' => 'Playback speed',
+    'player_show_quality_button'      => 'Quality (HD)',
+    'player_show_chromecast_button'   => 'Chromecast',
+    'player_show_vr_button'           => '360 / VR',
+    'player_show_info_button'         => 'Info',
+    'player_show_download_button'     => 'Download',
+    'player_show_time'                => 'Time / duration',
+    'player_show_fullscreen_button'   => 'Fullscreen',
+];
+$playlistButtons = [
+    'player_show_next_prev'           => 'Next / previous (playlist)',
+    'player_show_loop_button'         => 'Loop',
+    'player_show_shuffle_button'      => 'Shuffle',
+];
+$buttons = $leftButtons + $rightButtons + $playlistButtons; // all, for the save loop
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
@@ -144,10 +157,17 @@ require __DIR__ . '/includes/header.php';
         <?php player_check('player_use_playlists_select_box', $toggles['player_use_playlists_select_box']); ?>
         <?php player_check('player_show_search', $toggles['player_show_search']); ?>
 
-        <h2 style="font-size:16px;margin:18px 0 12px;">Controller buttons</h2>
+        <h2 style="font-size:16px;margin:18px 0 12px;">Control bar — left side</h2>
+        <?php foreach ($leftButtons as $key => $label) { player_check($key, $label); } ?>
+        <p class="muted" style="margin:-6px 0 8px;font-size:13px;">Play / pause is always shown.</p>
+
+        <h2 style="font-size:16px;margin:18px 0 12px;">Control bar — right side</h2>
         <div style="columns:2;-webkit-columns:2;">
-            <?php foreach ($buttons as $key => $label) { player_check($key, $label); } ?>
+            <?php foreach ($rightButtons as $key => $label) { player_check($key, $label); } ?>
         </div>
+
+        <h2 style="font-size:16px;margin:18px 0 12px;">Playlist controls</h2>
+        <?php foreach ($playlistButtons as $key => $label) { player_check($key, $label); } ?>
 
         <h2 style="font-size:16px;margin:18px 0 12px;">Colors</h2>
         <?php player_check('player_use_hex_colors', $toggles['player_use_hex_colors']); ?>

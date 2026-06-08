@@ -71,6 +71,10 @@ settings added to seed + DB. Verified: admin save instantly changes the live pla
 Also added a **Colors** section (HEX theming): `useHEXColorsForSkin` + button/time/playlist/
 thumbnail/search/dropdown-selector/preloader colors (prop names verified in the engine; see
 `player_color_map()` in `app/player.php`). 15 color settings added to seed + DB.
+Later extended the button toggles to cover **every** control-bar icon, grouped left/right/playlist:
+added playlist-button, controller prev/next, subtitles, quality(HD), audio tracks, chromecast,
+360/VR (props verified in engine). `showPlaylistButtonAndPlaylist` moved into base config (no longer
+hardcoded in index/watch). 25 toggles total on the Player page.
 
 ### 2026-06-08 — Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):

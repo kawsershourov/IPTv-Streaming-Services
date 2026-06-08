@@ -105,7 +105,6 @@ $homeConfig = array_merge(uvp_base_config(), [
     'usePlaylistsSelectBox'           => player_yn('player_use_playlists_select_box'),
     'showPlaylistsByDefault'          => 'yes',
     'showPlaylistsSearchInput'        => player_yn('player_show_search'),
-    'showPlaylistButtonAndPlaylist'   => 'yes',
 ]);
 ?>
 <script src="<?= e($playerBase . '/js/FWDUVP.js') ?>"></script>
