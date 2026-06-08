@@ -11,6 +11,7 @@ $toggles = [
     'player_use_vector_icons'         => 'Use vector icons (instead of graphic skin icons)',
     'player_show_playlist_by_default' => 'Show the right-side channel playlist on load (always visible)',
     'player_show_playlists_popup'     => 'Open the playlists selector popup window on load (the animated overlay) — usually OFF',
+    'player_show_playlists_button'    => 'Show the “show playlists” button on the control bar (categories selector). Off = a single All-Channels list',
     'player_use_playlists_select_box' => 'Show the playlists dropdown (All Channels / categories)',
     'player_show_search'              => 'Show the playlist search box',
     'player_use_hex_colors'           => 'Recolor controller buttons with the “Controller buttons” color',
@@ -156,6 +157,7 @@ require __DIR__ . '/includes/header.php';
         </div>
         <?php player_check('player_show_playlist_by_default', $toggles['player_show_playlist_by_default']); ?>
         <?php player_check('player_show_playlists_popup', $toggles['player_show_playlists_popup']); ?>
+        <?php player_check('player_show_playlists_button', $toggles['player_show_playlists_button']); ?>
         <?php player_check('player_use_playlists_select_box', $toggles['player_use_playlists_select_box']); ?>
         <?php player_check('player_show_search', $toggles['player_show_search']); ?>
 
