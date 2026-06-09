@@ -1,14 +1,27 @@
 # Uploaded files are static only — never execute code here.
-php_flag engine off
+# NOTE: php_flag/php_value are ONLY valid under mod_php; on PHP-FPM/CGI (typical
+# cPanel) an unguarded php_flag throws HTTP 500, so it must be wrapped.
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# Block execution of any server-side script type (works on all SAPIs).
 <IfModule mod_authz_core.c>
-    <FilesMatch "\.(php|phtml|phar|php\d+|pl|py|cgi|sh|asp|aspx|js\.php)$">
+    <FilesMatch "\.(php|phtml|phar|php[0-9]|pl|py|cgi|sh|asp|aspx)$">
         Require all denied
     </FilesMatch>
 </IfModule>
 <IfModule !mod_authz_core.c>
-    <FilesMatch "\.(php|phtml|phar|php\d+|pl|py|cgi|sh|asp|aspx)$">
+    <FilesMatch "\.(php|phtml|phar|php[0-9]|pl|py|cgi|sh|asp|aspx)$">
         Order allow,deny
         Deny from all
     </FilesMatch>
 </IfModule>
+
 Options -Indexes
