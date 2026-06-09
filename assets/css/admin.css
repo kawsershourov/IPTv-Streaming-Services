@@ -54,6 +54,7 @@ table.data .row-actions { display: flex; gap: 8px; }
 .color-field { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; color: var(--text); }
 .color-field input[type=color] { width: 46px; height: 30px; padding: 2px; border: 1px solid var(--border); border-radius: 6px; background: transparent; cursor: pointer; flex-shrink: 0; }
 
+.bulk-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
 .mini-select { padding: 6px 8px; font-size: 13px; background: var(--bg-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; }
 .admin-form textarea { font-family: inherit; resize: vertical; }
 

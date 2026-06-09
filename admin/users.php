@@ -30,6 +30,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('admin/users.php');
     }
 
+    // Bulk: set the role for all checked users.
+    if ($op === 'bulk_role') {
+        $ids  = array_map('intval', (array) ($_POST['ids'] ?? []));
+        $role = in_array($_POST['bulk_role'] ?? '', ['user', 'editor', 'admin'], true) ? $_POST['bulk_role'] : null;
+        if (!$ids) {
+            flash('error', 'Select at least one user (tick the checkboxes).');
+        } elseif (!$role) {
+            flash('error', 'Choose a role to apply.');
+        } else {
+            $n = 0;
+            foreach ($ids as $id) {
+                if ($id === (int) $me['id'] || !User::find($id)) {
+                    continue; // skip yourself and missing users
+                }
+                User::setRole($id, $role);
+                $n++;
+            }
+            flash('success', "Set {$n} user(s) to {$role}.");
+        }
+        redirect('admin/users.php');
+    }
+
     $userId = (int) ($_POST['id'] ?? 0);
     $target = User::find($userId);
 
@@ -108,13 +130,31 @@ require __DIR__ . '/includes/header.php';
     </form>
 </div>
 
+<!-- Bulk role: checkboxes in the table below are linked via form="bulkUserForm" -->
+<form method="post" action="<?= e(url('admin/users.php')) ?>" id="bulkUserForm" class="bulk-bar">
+    <?= csrf_field() ?>
+    <input type="hidden" name="op" value="bulk_role">
+    <span class="muted">With selected:</span>
+    <select name="bulk_role" class="mini-select">
+        <option value="">set role…</option>
+        <option value="user">user</option>
+        <option value="editor">editor</option>
+        <option value="admin">admin</option>
+    </select>
+    <button class="btn btn-primary btn-sm">Apply</button>
+</form>
+
 <div class="table-wrap">
     <table class="data">
-        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Subscription</th><th>Assign plan</th><th></th></tr></thead>
+        <thead><tr>
+            <th style="width:34px;"><input type="checkbox" id="selectAllUsers" title="Select all"></th>
+            <th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Subscription</th><th>Assign plan</th><th></th>
+        </tr></thead>
         <tbody>
         <?php foreach ($users as $u): ?>
             <?php $sub = Subscription::activeForUser((int) $u['id']); $self = (int) $u['id'] === (int) $me['id']; ?>
             <tr>
+                <td><?php if (!$self): ?><input type="checkbox" class="user-check" name="ids[]" value="<?= (int) $u['id'] ?>" form="bulkUserForm"><?php endif; ?></td>
                 <td><?= e($u['name']) ?><?= $self ? ' <span class="muted">(you)</span>' : '' ?></td>
                 <td class="muted"><?= e($u['email']) ?></td>
                 <td>
@@ -166,4 +206,26 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
 </div>
+<script>
+(function () {
+    var all = document.getElementById('selectAllUsers');
+    var boxes = document.querySelectorAll('.user-check');
+    if (all) {
+        all.addEventListener('change', function () {
+            boxes.forEach(function (b) { b.checked = all.checked; });
+        });
+    }
+    // Confirm before applying a bulk role.
+    var bulk = document.getElementById('bulkUserForm');
+    if (bulk) {
+        bulk.addEventListener('submit', function (e) {
+            var n = document.querySelectorAll('.user-check:checked').length;
+            var role = bulk.querySelector('[name=bulk_role]').value;
+            if (!n) { e.preventDefault(); alert('Tick at least one user first.'); return; }
+            if (!role) { e.preventDefault(); alert('Choose a role to apply.'); return; }
+            if (!confirm('Set ' + n + ' selected user(s) to "' + role + '"?')) { e.preventDefault(); }
+        });
+    }
+})();
+</script>
 <?php require __DIR__ . '/includes/footer.php'; ?>
