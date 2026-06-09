@@ -135,7 +135,10 @@ require __DIR__ . '/includes/header.php';
 ?>
 <div class="toolbar">
     <h1 style="margin:0;">Channels</h1>
-    <a href="<?= e(url('admin/channels.php?action=new')) ?>" class="btn btn-primary btn-sm">+ New channel</a>
+    <div style="display:flex;gap:8px;">
+        <a href="<?= e(url('admin/channels_import.php')) ?>" class="btn btn-outline btn-sm">Import CSV/Excel</a>
+        <a href="<?= e(url('admin/channels.php?action=new')) ?>" class="btn btn-primary btn-sm">+ New channel</a>
+    </div>
 </div>
 <div class="table-wrap">
     <table class="data">

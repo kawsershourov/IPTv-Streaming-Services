@@ -104,6 +104,13 @@ Responsive overhaul: shared `--container` (1600px) for header + player so they m
 CSS/JS changes load immediately — the earlier "hamburger not working" was a stale-cache issue.
 Admin panel responsive: sidebar becomes a horizontal scrollable bar on small screens, forms/grids
 stack, tables scroll (admin.css media queries 880/600).
+Admin additions: (1) Google Analytics / custom code — `head_code` + `footer_code` settings injected
+verbatim into the public header/footer (not admin). (2) Roles — `users.role` enum now
+user/editor/admin; `is_staff()`/`require_staff()`; editors reach admin for Dashboard/Categories/
+Channels only (Users/Plans/Player/Settings stay admin-only and hidden from their nav); role dropdown
+in admin/users.php. (3) Bulk channel import — `admin/channels_import.php` + dependency-free
+`app/spreadsheet.php` reader (CSV via fgetcsv, XLSX via ZipArchive+SimpleXML); CSV template download;
+upsert by slug; auto-creates missing categories. Import button on the Channels list.
 
 ### 2026-06-08 — Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):
