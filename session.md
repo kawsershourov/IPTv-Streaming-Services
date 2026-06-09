@@ -116,7 +116,10 @@ modal `window.spConfirm()` in site.js (forms use `data-confirm="…"`; site.js n
 replacing native confirm(); Users + Channels have checkbox multi-select with bulk delete (+ bulk role
 for users, bulk activate/deactivate for channels) and a server-side `?q=` search box; create/delete
 users; table CSS polish (sticky header, row hover, pill tags, checkbox accent). Self + last-admin
-protected on user delete.
+protected on user delete. Search is **AJAX live search**: rows extracted to `_users_rows.php` /
+`_channels_rows.php` partials; `?ajax=1` returns rows-only; JS debounces input and swaps the tbody
+(`#usersBody`/`#chBody`). Delete confirm handler is document-delegated so it works on swapped rows;
+select-all queries `.user-check`/`.ch-check` live.
 
 ### 2026-06-08 — Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):

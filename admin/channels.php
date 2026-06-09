@@ -162,6 +162,13 @@ if ($q !== '') {
     $channels = array_values(array_filter($channels, static fn ($c) =>
         mb_strpos(mb_strtolower($c['name'] . ' ' . $c['category_name']), $needle) !== false));
 }
+
+// AJAX live-search: return only the table rows.
+if (isset($_GET['ajax'])) {
+    require __DIR__ . '/_channels_rows.php';
+    exit;
+}
+
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="toolbar">
@@ -194,36 +201,32 @@ require __DIR__ . '/includes/header.php';
             <th style="width:34px;"><input type="checkbox" id="selectAllCh" title="Select all"></th>
             <th>Name</th><th>Category</th><th>Type</th><th>Live</th><th>Premium</th><th>Status</th><th></th>
         </tr></thead>
-        <tbody>
-        <?php foreach ($channels as $c): ?>
-            <tr>
-                <td><input type="checkbox" class="ch-check" name="ids[]" value="<?= (int) $c['id'] ?>" form="bulkChForm"></td>
-                <td><?= e($c['name']) ?></td>
-                <td class="muted"><?= e($c['category_name']) ?></td>
-                <td><?= e(strtoupper($c['stream_type'])) ?></td>
-                <td><?= (int) $c['is_live'] ? 'Yes' : 'No' ?></td>
-                <td><?= (int) $c['is_premium'] ? '<span class="tag tag-prem">Premium</span>' : '—' ?></td>
-                <td><?= $c['status'] === 'active' ? '<span class="tag tag-on">active</span>' : '<span class="tag tag-off">inactive</span>' ?></td>
-                <td><div class="row-actions">
-                    <a href="<?= e(url('admin/channels.php?action=edit&id=' . $c['id'])) ?>" class="btn btn-outline btn-sm">Edit</a>
-                    <form method="post" action="<?= e(url('admin/channels.php')) ?>" data-confirm="Delete &quot;<?= e($c['name']) ?>&quot;? This cannot be undone.">
-                        <?= csrf_field() ?>
-                        <input type="hidden" name="op" value="delete">
-                        <input type="hidden" name="id" value="<?= (int) $c['id'] ?>">
-                        <button class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                </div></td>
-            </tr>
-        <?php endforeach; ?>
-        <?php if (!$channels): ?><tr><td colspan="8" class="muted"><?= $q !== '' ? 'No channels match “' . e($q) . '”.' : 'No channels yet.' ?></td></tr><?php endif; ?>
+        <tbody id="chBody">
+        <?php require __DIR__ . '/_channels_rows.php'; ?>
         </tbody>
     </table>
 </div>
 <script>
 (function () {
     var all = document.getElementById('selectAllCh');
-    var boxes = document.querySelectorAll('.ch-check');
-    if (all) { all.addEventListener('change', function () { boxes.forEach(function (b) { b.checked = all.checked; }); }); }
+    if (all) { all.addEventListener('change', function () { document.querySelectorAll('.ch-check').forEach(function (b) { b.checked = all.checked; }); }); }
+
+    // AJAX live search.
+    var sform = document.querySelector('.search-box');
+    var sinput = sform ? sform.querySelector('input[name=q]') : null;
+    var body = document.getElementById('chBody');
+    if (sform && sinput && body) {
+        var t, base = sform.getAttribute('action');
+        function run() {
+            body.style.opacity = '.5';
+            fetch(base + '?q=' + encodeURIComponent(sinput.value) + '&ajax=1', { credentials: 'same-origin' })
+                .then(function (r) { return r.text(); })
+                .then(function (html) { body.innerHTML = html; body.style.opacity = '1'; if (all) all.checked = false; });
+        }
+        sinput.addEventListener('input', function () { clearTimeout(t); t = setTimeout(run, 250); });
+        sform.addEventListener('submit', function (e) { e.preventDefault(); clearTimeout(t); run(); });
+    }
+
     var bulk = document.getElementById('bulkChForm');
     if (bulk) {
         bulk.addEventListener('submit', function (e) {
