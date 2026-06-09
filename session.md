@@ -111,6 +111,12 @@ Channels only (Users/Plans/Player/Settings stay admin-only and hidden from their
 in admin/users.php. (3) Bulk channel import — `admin/channels_import.php` + dependency-free
 `app/spreadsheet.php` reader (CSV via fgetcsv, XLSX via ZipArchive+SimpleXML); CSV template download;
 upsert by slug; auto-creates missing categories. Import button on the Channels list.
+Admin UX: toast notifications via `flash_render()` (front + admin + admin login); custom confirm
+modal `window.spConfirm()` in site.js (forms use `data-confirm="…"`; site.js now loaded on admin too)
+replacing native confirm(); Users + Channels have checkbox multi-select with bulk delete (+ bulk role
+for users, bulk activate/deactivate for channels) and a server-side `?q=` search box; create/delete
+users; table CSS polish (sticky header, row hover, pill tags, checkbox accent). Self + last-admin
+protected on user delete.
 
 ### 2026-06-08 — Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):

@@ -127,7 +127,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     redirect('admin/users.php');
 }
 
+$q = trim((string) ($_GET['q'] ?? ''));
 $users = User::all();
+if ($q !== '') {
+    $needle = mb_strtolower($q);
+    $users = array_values(array_filter($users, static fn ($u) =>
+        mb_strpos(mb_strtolower($u['name'] . ' ' . $u['email'] . ' ' . $u['role']), $needle) !== false));
+}
 $plans = Plan::all();
 
 $adminTitle = 'Users';
@@ -136,7 +142,14 @@ require __DIR__ . '/includes/header.php';
 ?>
 <div class="toolbar">
     <h1 style="margin:0;">Users</h1>
-    <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('newUser').style.display='block';this.style.display='none';">+ New user</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <form method="get" action="<?= e(url('admin/users.php')) ?>" class="search-box">
+            <input type="search" name="q" value="<?= e($q) ?>" placeholder="Search name / email…">
+            <button class="btn btn-outline btn-sm">Search</button>
+            <?php if ($q !== ''): ?><a href="<?= e(url('admin/users.php')) ?>" class="btn btn-ghost btn-sm">Clear</a><?php endif; ?>
+        </form>
+        <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('newUser').style.display='block';this.style.display='none';">+ New user</button>
+    </div>
 </div>
 
 <div class="admin-form" id="newUser" style="display:none;margin-bottom:18px;">
@@ -234,7 +247,7 @@ require __DIR__ . '/includes/header.php';
                             <?= csrf_field() ?><input type="hidden" name="op" value="status"><input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
                             <button class="btn btn-outline btn-sm"><?= $u['status'] === 'active' ? 'Suspend' : 'Activate' ?></button>
                         </form>
-                        <form method="post" action="<?= e(url('admin/users.php')) ?>" onsubmit="return confirm('Delete <?= e(addslashes($u['name'])) ?>? This cannot be undone.');">
+                        <form method="post" action="<?= e(url('admin/users.php')) ?>" data-confirm="Delete &quot;<?= e($u['name']) ?>&quot;? This cannot be undone.">
                             <?= csrf_field() ?><input type="hidden" name="op" value="delete"><input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
                             <button class="btn btn-danger btn-sm">Delete</button>
                         </form>
@@ -242,6 +255,7 @@ require __DIR__ . '/includes/header.php';
                 </div></td>
             </tr>
         <?php endforeach; ?>
+        <?php if (!$users): ?><tr><td colspan="8" class="muted"><?= $q !== '' ? 'No users match “' . e($q) . '”.' : 'No users yet.' ?></td></tr><?php endif; ?>
         </tbody>
     </table>
 </div>
@@ -254,20 +268,26 @@ require __DIR__ . '/includes/header.php';
             boxes.forEach(function (b) { b.checked = all.checked; });
         });
     }
-    // Confirm before applying a bulk action.
+    // Confirm before applying a bulk action (uses the custom modal).
     var bulk = document.getElementById('bulkUserForm');
     if (bulk) {
         bulk.addEventListener('submit', function (e) {
+            if (bulk.dataset.confirmed === '1') { return; }
+            e.preventDefault();
             var op = e.submitter ? e.submitter.value : 'bulk_role';
             var n = document.querySelectorAll('.user-check:checked').length;
-            if (!n) { e.preventDefault(); alert('Tick at least one user first.'); return; }
+            if (!n) { alert('Tick at least one user first.'); return; }
+            var go = function () {
+                var h = document.createElement('input'); h.type = 'hidden'; h.name = 'op'; h.value = op; bulk.appendChild(h);
+                bulk.dataset.confirmed = '1'; bulk.submit();
+            };
             if (op === 'bulk_delete') {
-                if (!confirm('Delete ' + n + ' selected user(s)? This cannot be undone.')) { e.preventDefault(); }
+                window.spConfirm('Delete ' + n + ' selected user(s)? This cannot be undone.', go);
                 return;
             }
             var role = bulk.querySelector('[name=bulk_role]').value;
-            if (!role) { e.preventDefault(); alert('Choose a role to apply.'); return; }
-            if (!confirm('Set ' + n + ' selected user(s) to "' + role + '"?')) { e.preventDefault(); }
+            if (!role) { alert('Choose a role to apply.'); return; }
+            window.spConfirm('Set ' + n + ' selected user(s) to "' + role + '"?', go, { title: 'Apply role', ok: 'Apply' });
         });
     }
 })();

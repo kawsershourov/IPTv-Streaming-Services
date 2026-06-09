@@ -105,7 +105,7 @@ require __DIR__ . '/includes/header.php';
                 <td><?= (int) $c['is_active'] ? '<span class="tag tag-on">active</span>' : '<span class="tag tag-off">hidden</span>' ?></td>
                 <td><div class="row-actions">
                     <a href="<?= e(url('admin/categories.php?action=edit&id=' . $c['id'])) ?>" class="btn btn-outline btn-sm">Edit</a>
-                    <form method="post" action="<?= e(url('admin/categories.php')) ?>" onsubmit="return confirm('Delete this category and its channels?');">
+                    <form method="post" action="<?= e(url('admin/categories.php')) ?>" data-confirm="Delete this category and all its channels? This cannot be undone.">
                         <?= csrf_field() ?>
                         <input type="hidden" name="op" value="delete">
                         <input type="hidden" name="id" value="<?= (int) $c['id'] ?>">

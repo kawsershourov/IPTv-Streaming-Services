@@ -98,7 +98,7 @@ require __DIR__ . '/includes/header.php';
                 <td><?= (int) $p['is_active'] ? '<span class="tag tag-on">active</span>' : '<span class="tag tag-off">inactive</span>' ?></td>
                 <td><div class="row-actions">
                     <a href="<?= e(url('admin/plans.php?action=edit&id=' . $p['id'])) ?>" class="btn btn-outline btn-sm">Edit</a>
-                    <form method="post" action="<?= e(url('admin/plans.php')) ?>" onsubmit="return confirm('Delete this plan?');">
+                    <form method="post" action="<?= e(url('admin/plans.php')) ?>" data-confirm="Delete this plan? This cannot be undone.">
                         <?= csrf_field() ?>
                         <input type="hidden" name="op" value="delete">
                         <input type="hidden" name="id" value="<?= (int) $p['id'] ?>">
