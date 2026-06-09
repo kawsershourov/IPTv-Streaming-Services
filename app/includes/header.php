@@ -24,7 +24,7 @@ $fullTitle = isset($pageTitle) && $pageTitle !== '' ? "$pageTitle — $siteName"
         <?php $siteLogo = Setting::get('site_logo', ''); $logoW = (int) Setting::get('site_logo_width', '160'); ?>
         <a class="brand" href="<?= e(url('')) ?>">
             <?php if ($siteLogo): ?>
-                <img class="brand-logo" src="<?= e($siteLogo) ?>" alt="<?= e($siteName) ?>" style="width:<?= $logoW ?>px;height:auto;">
+                <img class="brand-logo" src="<?= e(asset_url($siteLogo)) ?>" alt="<?= e($siteName) ?>" style="width:<?= $logoW ?>px;height:auto;">
             <?php else: ?>
                 <span class="brand-sun">Sun</span><span class="brand-plex">Plex</span>
             <?php endif; ?>

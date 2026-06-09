@@ -5,10 +5,10 @@
     <p class="empty" style="padding:24px;">No media yet — use “Upload new” above.</p>
 <?php else: ?>
     <div class="mp-grid">
-        <?php foreach ($items as $m): $k = media_kind($m['url']); ?>
-            <button type="button" class="mp-item" data-url="<?= e($m['url']) ?>" title="<?= e($m['filename']) ?>">
+        <?php foreach ($items as $m): $k = media_kind($m['url']); $u = asset_url($m['url']); ?>
+            <button type="button" class="mp-item" data-url="<?= e($u) ?>" title="<?= e($m['filename']) ?>">
                 <?php if ($k === 'img'): ?>
-                    <img src="<?= e($m['url']) ?>" alt="" loading="lazy">
+                    <img src="<?= e($u) ?>" alt="" loading="lazy">
                 <?php elseif ($k === 'video'): ?>
                     <span class="media-icon">🎬</span>
                 <?php elseif ($k === 'audio'): ?>

@@ -3,7 +3,7 @@
  * Renders one channel tile. Expects $channel (array).
  * Used by the home rows and category grid.
  */
-$logo = trim((string) ($channel['logo'] ?? ''));
+$logo = asset_url($channel['logo'] ?? '');
 $initials = strtoupper(mb_substr(preg_replace('/[^A-Za-z0-9 ]/', '', $channel['name']) ?: $channel['name'], 0, 2));
 $watchUrl = url('watch.php?c=' . urlencode($channel['slug']));
 ?>

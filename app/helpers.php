@@ -35,6 +35,27 @@ function url(string $path = ''): string
     return $base . '/' . ltrim($path, '/');
 }
 
+/**
+ * Resolve a stored upload URL (logo / media / favicon) for the CURRENT base_url.
+ * DB rows saved on one environment (e.g. localhost "/SunPlex.live/uploads/..") then
+ * keep working on another (e.g. a domain root "/uploads/.."). External http(s)
+ * URLs and non-upload paths pass through unchanged.
+ */
+function asset_url(?string $stored): string
+{
+    $stored = trim((string) $stored);
+    if ($stored === '') {
+        return '';
+    }
+    if (preg_match('#^https?://#i', $stored)) {
+        return $stored;
+    }
+    if (preg_match('#(uploads/[^\s"\']+)$#', $stored, $m)) {
+        return url($m[1]);
+    }
+    return $stored;
+}
+
 /** Build an asset URL under /assets, with a cache-busting ?v=<mtime> so updates load immediately. */
 function asset(string $path): string
 {
@@ -149,7 +170,7 @@ function upload_image(string $field, string $prefix = 'img'): ?string
 /** <link rel="icon"> tag for the configured site icon, or empty string. */
 function favicon_tag(): string
 {
-    $icon = Setting::get('site_icon', '');
+    $icon = asset_url(Setting::get('site_icon', ''));
     return $icon ? '<link rel="icon" href="' . e($icon) . '">' : '';
 }
 

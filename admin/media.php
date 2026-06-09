@@ -147,12 +147,12 @@ $kindOf = static function (string $url): string {
 
 <?php if ($items): ?>
     <div class="media-grid">
-        <?php foreach ($items as $m): $kind = $kindOf($m['url']); ?>
+        <?php foreach ($items as $m): $kind = $kindOf($m['url']); $u = asset_url($m['url']); ?>
             <div class="media-card">
                 <label class="media-check"><input type="checkbox" class="media-cb" name="ids[]" value="<?= (int) $m['id'] ?>" form="bulkMediaForm"></label>
                 <div class="media-thumb">
                     <?php if ($kind === 'img'): ?>
-                        <img src="<?= e($m['url']) ?>" alt="" loading="lazy">
+                        <img src="<?= e($u) ?>" alt="" loading="lazy">
                     <?php elseif ($kind === 'video'): ?>
                         <span class="media-icon">🎬</span>
                     <?php elseif ($kind === 'audio'): ?>
@@ -162,7 +162,7 @@ $kindOf = static function (string $url): string {
                     <?php endif; ?>
                 </div>
                 <div class="media-meta">
-                    <input type="text" class="media-url" value="<?= e($m['url']) ?>" readonly title="<?= e($m['filename']) ?>">
+                    <input type="text" class="media-url" value="<?= e($u) ?>" readonly title="<?= e($m['filename']) ?>">
                     <div class="media-actions">
                         <button type="button" class="btn btn-outline btn-sm media-copy">Copy URL</button>
                         <form method="post" action="<?= e(url('admin/media.php')) ?>" data-confirm="Delete this media file? This cannot be undone." style="display:inline;">

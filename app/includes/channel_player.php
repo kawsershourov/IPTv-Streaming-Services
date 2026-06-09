@@ -24,7 +24,7 @@ $pp_fallback  = $pp_base . '/content/logo.png';
 
 $pp_thumbFor = static function (array $ch) use ($pp_fallback): string {
     $logo = trim((string) ($ch['logo'] ?? ''));
-    return $logo !== '' ? $logo : $pp_fallback;
+    return $logo !== '' ? asset_url($logo) : $pp_fallback;
 };
 
 $pp_renderItem = static function (array $ch) use ($pp_me, $pp_thumbFor): string {

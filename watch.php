@@ -48,7 +48,7 @@ $fallbackThumb  = $playerBase . '/content/logo.png';
 
 $thumbFor = static function (array $ch) use ($fallbackThumb): string {
     $logo = trim((string) ($ch['logo'] ?? ''));
-    return $logo !== '' ? $logo : $fallbackThumb;
+    return $logo !== '' ? asset_url($logo) : $fallbackThumb;
 };
 
 // Only channels this user may watch go into the player playlist (gating).
