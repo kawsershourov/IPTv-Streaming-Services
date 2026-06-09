@@ -129,13 +129,13 @@ $kindOf = static function (string $url): string {
 </div>
 
 <div class="admin-form" style="max-width:none;margin-bottom:18px;">
-    <form method="post" action="<?= e(url('admin/media.php')) ?>" enctype="multipart/form-data" class="form" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+    <form method="post" action="<?= e(url('admin/media.php')) ?>" enctype="multipart/form-data" class="form" id="mediaUploadForm" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
         <?= csrf_field() ?>
         <input type="hidden" name="op" value="upload">
         <input type="file" name="files[]" multiple accept="image/*,video/mp4,video/webm,audio/mpeg,.pdf" required style="flex:1;min-width:240px;">
-        <button class="btn btn-primary">Upload</button>
+        <button class="btn btn-primary" id="mediaUploadBtn">Upload</button>
     </form>
-    <p class="muted" style="font-size:12px;margin:8px 0 0;">Images (PNG/JPG/GIF/WEBP/SVG/ICO/BMP/AVIF), MP4/WEBM video, MP3, PDF. You can select multiple files.</p>
+    <p class="muted" style="font-size:12px;margin:8px 0 0;">Images (PNG/JPG/GIF/WEBP/SVG/ICO/BMP/AVIF), MP4/WEBM video, MP3, PDF. Select as many as you like — large batches upload automatically in groups.</p>
 </div>
 
 <form method="post" action="<?= e(url('admin/media.php')) ?>" id="bulkMediaForm" class="bulk-bar">
@@ -185,6 +185,43 @@ $kindOf = static function (string $url): string {
 (function () {
     var all = document.getElementById('selectAllMedia');
     if (all) { all.addEventListener('change', function () { document.querySelectorAll('.media-cb').forEach(function (b) { b.checked = all.checked; }); }); }
+
+    // Batched upload: send files in groups (PHP allows only ~20 files per request),
+    // so any number of files works regardless of host limits.
+    var upForm = document.getElementById('mediaUploadForm');
+    var upBtn = document.getElementById('mediaUploadBtn');
+    if (upForm && upBtn) {
+        var fileInput = upForm.querySelector('input[type=file]');
+        var endpoint = upForm.getAttribute('action');
+        var csrf = (upForm.querySelector('input[name=_csrf]') || {}).value;
+        var BATCH = 12;
+        upForm.addEventListener('submit', function (e) {
+            var files = fileInput.files ? Array.prototype.slice.call(fileInput.files) : [];
+            if (files.length <= BATCH) { return; } // small batch: normal submit is fine
+            e.preventDefault();
+            var i = 0, added = 0, failed = 0;
+            upBtn.disabled = true;
+            function next() {
+                if (i >= files.length) {
+                    upBtn.textContent = 'Done (' + added + ')';
+                    window.location.href = endpoint; // reload to show everything
+                    return;
+                }
+                var batch = files.slice(i, i + BATCH);
+                var fd = new FormData();
+                fd.append('op', 'upload');
+                fd.append('ajax', '1');
+                if (csrf) { fd.append('_csrf', csrf); }
+                batch.forEach(function (f) { fd.append('files[]', f); });
+                upBtn.textContent = 'Uploading ' + Math.min(i + batch.length, files.length) + ' / ' + files.length + '…';
+                fetch(endpoint, { method: 'POST', body: fd, credentials: 'same-origin' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (d) { added += (d.added || 0); failed += (d.errors ? d.errors.length : 0); i += BATCH; next(); })
+                    .catch(function () { failed += batch.length; i += BATCH; next(); });
+            }
+            next();
+        });
+    }
 
     // Copy URL to clipboard with brief feedback.
     document.querySelectorAll('.media-copy').forEach(function (btn) {
