@@ -111,6 +111,20 @@ CREATE TABLE `settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------------
+-- login_attempts (brute-force throttling)
+-- ---------------------------------------------------------------------------
+DROP TABLE IF EXISTS `login_attempts`;
+CREATE TABLE `login_attempts` (
+  `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ip`         VARCHAR(45) NOT NULL,
+  `email`      VARCHAR(190) NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_attempts_ip` (`ip`, `created_at`),
+  KEY `idx_attempts_email` (`email`, `created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------------
 -- password_resets
 -- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS `password_resets`;

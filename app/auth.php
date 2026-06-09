@@ -51,14 +51,64 @@ function is_staff(): bool
     return $u !== null && in_array($u['role'], ['admin', 'editor'], true);
 }
 
-/** Attempt login. Returns [ok(bool), error(string|null)]. */
+/* --------------------------------------------------------------------- */
+/* Brute-force login throttling                                           */
+/* --------------------------------------------------------------------- */
+
+const LOGIN_MAX_ATTEMPTS = 6;   // failures allowed per IP or email …
+const LOGIN_WINDOW_MIN   = 15;  // … within this many minutes
+
+/** Best-effort client IP (first hop of X-Forwarded-For, else REMOTE_ADDR). */
+function client_ip(): string
+{
+    $xff = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '';
+    if ($xff !== '') {
+        $first = trim(explode(',', $xff)[0]);
+        if (filter_var($first, FILTER_VALIDATE_IP)) {
+            return $first;
+        }
+    }
+    return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+}
+
+/** Are logins currently throttled for this IP or email? */
+function login_is_throttled(string $email): bool
+{
+    $win = LOGIN_WINDOW_MIN;
+    $row = db_one(
+        "SELECT COUNT(*) AS c FROM login_attempts
+          WHERE (ip = ? OR email = ?) AND created_at > (NOW() - INTERVAL $win MINUTE)",
+        [client_ip(), strtolower($email)]
+    );
+    return ((int) ($row['c'] ?? 0)) >= LOGIN_MAX_ATTEMPTS;
+}
+
+function login_record_failure(string $email): void
+{
+    db_run('INSERT INTO login_attempts (ip, email) VALUES (?, ?)', [client_ip(), strtolower($email)]);
+    // Opportunistic cleanup of rows older than a day.
+    db_run('DELETE FROM login_attempts WHERE created_at < (NOW() - INTERVAL 1 DAY)');
+}
+
+function login_clear_failures(string $email): void
+{
+    db_run('DELETE FROM login_attempts WHERE ip = ? OR email = ?', [client_ip(), strtolower($email)]);
+}
+
+/** Attempt login. Returns [ok(bool), error(string|null)]. Throttled + fixation-safe. */
 function attempt_login(string $email, string $password): array
 {
+    if (login_is_throttled($email)) {
+        return [false, 'Too many failed attempts. Please wait about 15 minutes and try again.'];
+    }
+
     $user = User::findByEmail($email);
     if (!$user || !password_verify($password, $user['password_hash'])) {
+        login_record_failure($email);
         return [false, 'Invalid email or password.'];
     }
     if ($user['status'] !== 'active') {
+        login_record_failure($email);
         return [false, 'This account is suspended.'];
     }
 
@@ -66,6 +116,7 @@ function attempt_login(string $email, string $password): array
     session_regenerate_id(true);
     $_SESSION['user_id'] = (int) $user['id'];
     auth_reset_cache();
+    login_clear_failures($email);
     return [true, null];
 }
 

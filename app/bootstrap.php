@@ -25,12 +25,27 @@ if (config('debug')) {
     error_reporting(E_ALL);
     ini_set('display_errors', '1');
 } else {
+    // Production: never leak errors to visitors; log them instead.
+    error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
     ini_set('display_errors', '0');
+    ini_set('log_errors', '1');
 }
 
-// --- Session ------------------------------------------------------------
+// --- Session (hardened cookies) ----------------------------------------
+$https = (($_SERVER['HTTPS'] ?? '') !== '' && $_SERVER['HTTPS'] !== 'off')
+      || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https')
+      || (($_SERVER['SERVER_PORT'] ?? '') == 443);
+ini_set('session.use_strict_mode', '1');
+ini_set('session.use_only_cookies', '1');
 session_name((string) config('security.session_name', 'sunplex_sess'));
 if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path'     => '/',
+        'httponly' => true,
+        'secure'   => $https,      // only sent over HTTPS in production
+        'samesite' => 'Lax',
+    ]);
     session_start();
 }
 
