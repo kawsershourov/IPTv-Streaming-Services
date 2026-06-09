@@ -102,6 +102,7 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 -- Player (managed in Admin > Player)
 ('default_skin',                  'minimal_skin_dark'),
 ('player_autoplay',               'yes'),
+('player_show_error_info',        'no'),
 ('player_volume',                 '0.8'),
 ('player_max_width',              '1280'),
 ('player_max_height',             '720'),

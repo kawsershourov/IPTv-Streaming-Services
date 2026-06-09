@@ -11,8 +11,8 @@ if (isset($_GET['template'])) {
     header('Content-Disposition: attachment; filename="channels-template.csv"');
     $out = fopen('php://output', 'w');
     fputcsv($out, $columns);
-    fputcsv($out, ['T-Sports', 'Sports', 'https://example.com/tsports.m3u8', 'hls', 'yes', 'no', '', '1', 'active']);
-    fputcsv($out, ['ESPN', 'Sports', 'https://example.com/espn.m3u8', 'hls', 'yes', 'yes', '', '2', 'active']);
+    fputcsv($out, ['T-Sports', 'Sports', 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', 'hls', 'yes', 'no', '', '1', 'active']);
+    fputcsv($out, ['ESPN', 'Sports', 'https://test-streams.mux.dev/pts_shift/master.m3u8', 'hls', 'yes', 'yes', '', '2', 'active']);
     fclose($out);
     exit;
 }

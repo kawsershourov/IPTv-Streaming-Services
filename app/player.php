@@ -14,6 +14,7 @@ function player_setting_defaults(): array
         'default_skin'                  => 'minimal_skin_dark',
         'player_autoplay'               => 'yes',
         'player_volume'                 => '0.8',
+        'player_show_error_info'        => 'no',
         'player_max_width'              => '1280',
         'player_max_height'             => '720',
         'player_bg_color'               => '#000000',
@@ -118,6 +119,7 @@ function uvp_base_config(): array
         'useVectorIcons'        => player_yn('player_use_vector_icons'),
         'autoPlay'              => player_yn('player_autoplay'),
         'volume'                => (float) player_setting('player_volume'),
+        'showErrorInfo'         => player_yn('player_show_error_info'),
         'maxWidth'              => (int) player_setting('player_max_width'),
         'maxHeight'             => (int) player_setting('player_max_height'),
         // Controller layout — engine default volumeScrubberHeight is only 10px, which
