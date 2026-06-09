@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     Setting::set('registration_open',     isset($_POST['registration_open']) ? '1' : '0');
     Setting::set('guest_access',          isset($_POST['guest_access']) ? '1' : '0');
     Setting::set('subscriptions_enabled', isset($_POST['subscriptions_enabled']) ? '1' : '0');
+    Setting::set('show_visitor_stats',    isset($_POST['show_visitor_stats']) ? '1' : '0');
 
     // Site logo: remove, pick from Media (URL), or upload a new file.
     if (isset($_POST['remove_logo'])) {
@@ -101,6 +102,11 @@ require __DIR__ . '/includes/header.php';
         <p class="muted" style="margin:-8px 0 16px;font-size:13px;">
             When OFF, the plans page and premium gating are disabled and every signed-in member can watch all channels.
         </p>
+
+        <label class="check">
+            <input type="checkbox" name="show_visitor_stats" <?= Setting::get('show_visitor_stats', '1') === '1' ? 'checked' : '' ?>>
+            Show the visitor stats bar on the public site (online / today / total visitors)
+        </label>
 
         <p class="muted" style="font-size:13px;">Player appearance and controls are managed on the
             <a href="<?= e(url('admin/player.php')) ?>">Player</a> page.</p>

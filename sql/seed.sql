@@ -97,6 +97,9 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('registration_open',     '1'),
 ('guest_access',          '0'),
 ('subscriptions_enabled', '1'),
+('show_visitor_stats',    '1'),
+('stats_cache',           ''),
+('stats_cache_time',      '0'),
 ('head_code',             ''),
 ('footer_code',           ''),
 -- Player (managed in Admin > Player)

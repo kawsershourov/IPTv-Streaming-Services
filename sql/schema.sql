@@ -127,6 +127,21 @@ CREATE TABLE `media` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------------
+-- visits (front-end visitor stats; one row per session per day)
+-- ---------------------------------------------------------------------------
+DROP TABLE IF EXISTS `visits`;
+CREATE TABLE `visits` (
+  `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `session_id` VARCHAR(64) NULL,
+  `ip`         VARCHAR(45) NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_seen`  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_visits_created` (`created_at`),
+  KEY `idx_visits_seen` (`last_seen`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------------
 -- login_attempts (brute-force throttling)
 -- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS `login_attempts`;
