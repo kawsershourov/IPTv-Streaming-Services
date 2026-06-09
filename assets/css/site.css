@@ -46,8 +46,9 @@ img { max-width: 100%; display: block; }
 }
 .header-inner { display: flex; align-items: center; gap: 18px; min-height: 66px; }
 .brand { font-size: 24px; font-weight: 800; letter-spacing: .3px; display: flex; align-items: center; flex-shrink: 0; }
-/* Logo scales by width and stays within the header. */
-.brand-logo { width: auto; height: auto; max-width: 160px; max-height: 100px; object-fit: contain; display: block; }
+/* Logo scales by its set width (height auto from the SVG/image aspect). A definite
+   width is required so SVGs that only have a viewBox don't collapse to 0×0. */
+.brand-logo { height: auto; max-height: 80px; max-width: 100%; object-fit: contain; display: block; }
 .brand-sun  { background: linear-gradient(90deg, var(--sun), var(--sun-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .brand-plex { color: var(--plex); }
 
