@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="<?= e(asset('css/admin.css')) ?>">
 </head>
 <body class="admin">
+<?= flash_render() ?>
 <div class="admin-login-wrap">
     <div class="auth-card">
         <h1><span class="brand-sun">Sun</span><span class="brand-plex">Plex</span> Admin</h1>

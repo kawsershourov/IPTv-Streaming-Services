@@ -47,4 +47,14 @@ class User
     {
         return (int) (db_one('SELECT COUNT(*) AS c FROM users')['c'] ?? 0);
     }
+
+    public static function countAdmins(): int
+    {
+        return (int) (db_one("SELECT COUNT(*) AS c FROM users WHERE role = 'admin'")['c'] ?? 0);
+    }
+
+    public static function delete(int $id): void
+    {
+        db_run('DELETE FROM users WHERE id = ?', [$id]);
+    }
 }

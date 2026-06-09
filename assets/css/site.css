@@ -81,11 +81,24 @@ img { max-width: 100%; display: block; }
 /* ---------- Layout ---------- */
 .site-main { padding: 24px var(--gutter) 56px; min-height: 60vh; }
 
-/* ---------- Flash ---------- */
+/* ---------- Flash (inline, used on auth cards) ---------- */
 .flash { border-radius: 8px; padding: 11px 14px; margin: 0 0 14px; font-size: 14px; border: 1px solid transparent; }
 .flash-success { background: rgba(46,160,87,.12); border-color: rgba(46,160,87,.4); color: #76e39a; }
 .flash-error   { background: rgba(255,59,92,.12);  border-color: rgba(255,59,92,.4);  color: #ff8ea0; }
 .flash-info    { background: rgba(43,139,255,.12); border-color: rgba(43,139,255,.4); color: #8cc0ff; }
+
+/* ---------- Toast notifications ---------- */
+.toast-container { position: fixed; top: 16px; right: 16px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; max-width: min(92vw, 380px); }
+.toast { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--panel); color: var(--text); box-shadow: var(--shadow); font-size: 14px; animation: toast-in .25s ease; }
+.toast span { flex: 1; }
+.toast-success { border-left: 4px solid #2ea05a; }
+.toast-error   { border-left: 4px solid var(--live); }
+.toast-info    { border-left: 4px solid var(--plex); }
+.toast-close { background: transparent; border: none; color: var(--muted); font-size: 18px; line-height: 1; cursor: pointer; padding: 0 2px; }
+.toast-close:hover { color: var(--text); }
+.toast-out { opacity: 0; transform: translateX(24px); transition: opacity .3s, transform .3s; }
+@keyframes toast-in { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+@media (max-width: 480px) { .toast-container { left: 12px; right: 12px; top: 12px; max-width: none; } }
 
 /* ---------- Hero ---------- */
 .hero {
@@ -159,7 +172,6 @@ img { max-width: 100%; display: block; }
 .account-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin: 18px 0; }
 .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
 .card h2 { margin: 0 0 12px; font-size: 16px; }
-.badge-premium { /* allow inline use */ }
 .account .badge-premium { background: var(--premium); color: #3a2c00; padding: 2px 8px; border-radius: 5px; font-size: 11px; }
 
 /* ---------- Home player (live-TV layout) ---------- */

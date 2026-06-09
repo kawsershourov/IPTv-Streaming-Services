@@ -52,6 +52,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('admin/users.php');
     }
 
+    // Bulk: delete all checked users (never yourself; never the last admin).
+    if ($op === 'bulk_delete') {
+        $ids = array_map('intval', (array) ($_POST['ids'] ?? []));
+        if (!$ids) {
+            flash('error', 'Select at least one user to delete.');
+            redirect('admin/users.php');
+        }
+        $n = 0;
+        $admins = User::countAdmins();
+        foreach ($ids as $id) {
+            if ($id === (int) $me['id'] || !($u = User::find($id))) {
+                continue;
+            }
+            if ($u['role'] === 'admin' && $admins <= 1) {
+                continue;
+            }
+            if ($u['role'] === 'admin') {
+                $admins--;
+            }
+            User::delete($id);
+            $n++;
+        }
+        flash('success', "Deleted {$n} user(s).");
+        redirect('admin/users.php');
+    }
+
     $userId = (int) ($_POST['id'] ?? 0);
     $target = User::find($userId);
 
@@ -88,6 +114,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($op === 'cancel_sub') {
         Subscription::cancel($userId);
         flash('success', 'Subscription cancelled for ' . $target['name'] . '.');
+    } elseif ($op === 'delete') {
+        if ($userId === (int) $me['id']) {
+            flash('error', 'You cannot delete your own account.');
+        } elseif ($target['role'] === 'admin' && User::countAdmins() <= 1) {
+            flash('error', 'You cannot delete the last admin.');
+        } else {
+            User::delete($userId);
+            flash('success', $target['name'] . ' deleted.');
+        }
     }
     redirect('admin/users.php');
 }
@@ -133,7 +168,6 @@ require __DIR__ . '/includes/header.php';
 <!-- Bulk role: checkboxes in the table below are linked via form="bulkUserForm" -->
 <form method="post" action="<?= e(url('admin/users.php')) ?>" id="bulkUserForm" class="bulk-bar">
     <?= csrf_field() ?>
-    <input type="hidden" name="op" value="bulk_role">
     <span class="muted">With selected:</span>
     <select name="bulk_role" class="mini-select">
         <option value="">set role…</option>
@@ -141,7 +175,8 @@ require __DIR__ . '/includes/header.php';
         <option value="editor">editor</option>
         <option value="admin">admin</option>
     </select>
-    <button class="btn btn-primary btn-sm">Apply</button>
+    <button type="submit" name="op" value="bulk_role" class="btn btn-primary btn-sm">Apply role</button>
+    <button type="submit" name="op" value="bulk_delete" class="btn btn-danger btn-sm">Delete selected</button>
 </form>
 
 <div class="table-wrap">
@@ -197,7 +232,11 @@ require __DIR__ . '/includes/header.php';
                     <?php if (!$self): ?>
                         <form method="post" action="<?= e(url('admin/users.php')) ?>">
                             <?= csrf_field() ?><input type="hidden" name="op" value="status"><input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
-                            <button class="btn btn-danger btn-sm"><?= $u['status'] === 'active' ? 'Suspend' : 'Activate' ?></button>
+                            <button class="btn btn-outline btn-sm"><?= $u['status'] === 'active' ? 'Suspend' : 'Activate' ?></button>
+                        </form>
+                        <form method="post" action="<?= e(url('admin/users.php')) ?>" onsubmit="return confirm('Delete <?= e(addslashes($u['name'])) ?>? This cannot be undone.');">
+                            <?= csrf_field() ?><input type="hidden" name="op" value="delete"><input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
+                            <button class="btn btn-danger btn-sm">Delete</button>
                         </form>
                     <?php else: ?><span class="muted">—</span><?php endif; ?>
                 </div></td>
@@ -215,13 +254,18 @@ require __DIR__ . '/includes/header.php';
             boxes.forEach(function (b) { b.checked = all.checked; });
         });
     }
-    // Confirm before applying a bulk role.
+    // Confirm before applying a bulk action.
     var bulk = document.getElementById('bulkUserForm');
     if (bulk) {
         bulk.addEventListener('submit', function (e) {
+            var op = e.submitter ? e.submitter.value : 'bulk_role';
             var n = document.querySelectorAll('.user-check:checked').length;
-            var role = bulk.querySelector('[name=bulk_role]').value;
             if (!n) { e.preventDefault(); alert('Tick at least one user first.'); return; }
+            if (op === 'bulk_delete') {
+                if (!confirm('Delete ' + n + ' selected user(s)? This cannot be undone.')) { e.preventDefault(); }
+                return;
+            }
+            var role = bulk.querySelector('[name=bulk_role]').value;
             if (!role) { e.preventDefault(); alert('Choose a role to apply.'); return; }
             if (!confirm('Set ' + n + ' selected user(s) to "' + role + '"?')) { e.preventDefault(); }
         });

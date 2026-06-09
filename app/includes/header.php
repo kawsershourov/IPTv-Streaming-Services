@@ -55,7 +55,5 @@ $fullTitle = isset($pageTitle) && $pageTitle !== '' ? "$pageTitle — $siteName"
     </div>
 </header>
 
+<?= flash_render() ?>
 <main class="wrap site-main">
-<?php foreach (flash_take() as $f): ?>
-    <div class="flash flash-<?= e($f['type']) ?>"><?= e($f['message']) ?></div>
-<?php endforeach; ?>

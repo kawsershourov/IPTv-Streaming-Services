@@ -43,6 +43,4 @@ $isAdminUser = is_admin();
         </nav>
     </aside>
     <main class="admin-main">
-        <?php foreach (flash_take() as $f): ?>
-            <div class="flash flash-<?= e($f['type']) ?>"><?= e($f['message']) ?></div>
-        <?php endforeach; ?>
+        <?= flash_render() ?>

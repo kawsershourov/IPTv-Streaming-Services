@@ -169,3 +169,25 @@ function flash_take(): array
     unset($_SESSION['_flash']);
     return $messages;
 }
+
+/** Render pending flash messages as auto-dismissing toast notifications (top-right). */
+function flash_render(): string
+{
+    $messages = flash_take();
+    if (!$messages) {
+        return '';
+    }
+    $html = '<div class="toast-container" id="toastContainer">';
+    foreach ($messages as $f) {
+        $html .= '<div class="toast toast-' . e($f['type']) . '">'
+               . '<span>' . e($f['message']) . '</span>'
+               . '<button type="button" class="toast-close" aria-label="Close">&times;</button></div>';
+    }
+    $html .= '</div>'
+           . '<script>(function(){var c=document.getElementById("toastContainer");if(!c)return;'
+           . 'function rm(t){t.classList.add("toast-out");setTimeout(function(){t.remove();},300);}'
+           . 'c.querySelectorAll(".toast").forEach(function(t){'
+           . 't.querySelector(".toast-close").addEventListener("click",function(){rm(t);});'
+           . 'setTimeout(function(){rm(t);},4500);});})();</script>';
+    return $html;
+}
