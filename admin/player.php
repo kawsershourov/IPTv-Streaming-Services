@@ -9,6 +9,7 @@ $skins = ['minimal_skin_dark', 'minimal_skin_white', 'classic_skin_dark', 'class
 $toggles = [
     'player_autoplay'                 => 'Autoplay on load',
     'player_show_error_info'          => 'Show player error messages (off = hide stream load errors and their URLs)',
+    'player_encrypt_source'           => 'Hide stream URLs from the page source (encode them; recommended)',
     'player_use_vector_icons'         => 'Use vector icons (instead of graphic skin icons)',
     'player_show_playlist_by_default' => 'Show the right-side channel playlist on load (always visible)',
     'player_show_playlists_popup'     => 'Open the playlists selector popup window on load (the animated overlay) — usually OFF',
@@ -149,6 +150,7 @@ require __DIR__ . '/includes/header.php';
         <h2 style="font-size:16px;margin:18px 0 12px;">Playback</h2>
         <?php player_check('player_autoplay', $toggles['player_autoplay']); ?>
         <?php player_check('player_show_error_info', $toggles['player_show_error_info']); ?>
+        <?php player_check('player_encrypt_source', $toggles['player_encrypt_source']); ?>
         <label>Start volume (0.0 – 1.0)
             <input type="number" name="player_volume" min="0" max="1" step="0.1" value="<?= e(player_setting('player_volume')) ?>">
         </label>

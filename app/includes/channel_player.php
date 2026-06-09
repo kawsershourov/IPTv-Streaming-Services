@@ -33,11 +33,7 @@ $pp_renderItem = static function (array $ch) use ($pp_me, $pp_thumbFor): string 
     $attrs = 'data-thumb-source="' . e($pp_thumbFor($ch)) . '" '
            . 'data-is-live="' . ((int) $ch['is_live'] === 1 ? 'yes' : 'no') . '" ';
     if ($watchable) {
-        $src = $ch['stream_url'];
-        if (in_array($ch['stream_type'], ['hls', 'dash', 'mp4'], true) && strpos($src, '#') === false) {
-            $src .= '#uvp' . (int) $ch['id'];
-        }
-        $attrs .= 'data-video-source="' . e($src) . '"';
+        $attrs .= 'data-video-source="' . e(player_source($ch['stream_url'], $ch['stream_type'], (int) $ch['id'])) . '"';
     } else {
         $attrs .= 'data-video-source="' . e($watchUrl) . '" '
                .  'data-redirect-url="' . e($watchUrl) . '" data-redirect-target="_self"';

@@ -15,6 +15,7 @@ function player_setting_defaults(): array
         'player_autoplay'               => 'yes',
         'player_volume'                 => '0.8',
         'player_show_error_info'        => 'no',
+        'player_encrypt_source'         => 'yes',
         'player_max_width'              => '1280',
         'player_max_height'             => '720',
         'player_bg_color'               => '#000000',
@@ -102,6 +103,31 @@ function player_setting(string $key): string
 function player_yn(string $key): string
 {
     return player_setting($key) === 'yes' ? 'yes' : 'no';
+}
+
+/** Is stream-source obfuscation on? (Hides the URL from the page HTML.) */
+function player_encrypt_enabled(): bool
+{
+    return Setting::get('player_encrypt_source', 'yes') === 'yes';
+}
+
+/**
+ * Build a player video-source value. For direct-media types it appends a unique
+ * #uvp<id> fragment (so duplicate URLs still reload) and, when enabled, encodes the
+ * whole thing with the engine's `encrypt:` base64 scheme so the raw URL is not
+ * visible in the page source. NOTE: this is obfuscation, not cryptography — the
+ * actual request is still visible in the browser's network tab.
+ */
+function player_source(string $url, string $type, int $id): string
+{
+    $direct = in_array($type, ['hls', 'dash', 'mp4'], true);
+    if ($direct && strpos($url, '#') === false) {
+        $url .= '#uvp' . $id;
+    }
+    if ($direct && player_encrypt_enabled()) {
+        return 'encrypt:' . base64_encode($url);
+    }
+    return $url;
 }
 
 /** Common UVP props derived from admin Player settings. */

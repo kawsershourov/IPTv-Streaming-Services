@@ -53,7 +53,7 @@ img { max-width: 100%; display: block; }
 .brand-plex { color: var(--plex); }
 
 .header-menu { display: flex; align-items: center; gap: 22px; flex: 1; min-width: 0; }
-.main-nav { display: flex; gap: 16px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.main-nav { display: flex; gap: 16px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; justify-content: center;}
 .main-nav::-webkit-scrollbar { display: none; }
 .main-nav a { color: var(--muted); font-size: 14px; font-weight: 600; white-space: nowrap; padding: 6px 2px; border-bottom: 2px solid transparent; transition: color .15s; }
 .main-nav a:hover { color: var(--text); }
