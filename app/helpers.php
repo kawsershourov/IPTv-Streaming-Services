@@ -153,6 +153,47 @@ function favicon_tag(): string
     return $icon ? '<link rel="icon" href="' . e($icon) . '">' : '';
 }
 
+/**
+ * Render a pagination control. Links carry data-page (for AJAX) and an href
+ * (no-JS fallback) built from $params + page. Returns '' when there's one page.
+ */
+function pager_html(int $page, int $pages, array $params = []): string
+{
+    if ($pages <= 1) {
+        return '';
+    }
+    $link = static function (int $n, string $label, bool $active = false, bool $disabled = false) use ($params): string {
+        $cls = 'page-link' . ($active ? ' active' : '') . ($disabled ? ' disabled' : '');
+        $href = '?' . http_build_query(array_merge($params, ['page' => $n]));
+        return '<a class="' . $cls . '" data-page="' . $n . '" href="' . e($href) . '">' . $label . '</a>';
+    };
+
+    $html  = '<nav class="pager">';
+    $html .= $link(max(1, $page - 1), '‹', false, $page <= 1);
+
+    $start = max(1, $page - 2);
+    $end   = min($pages, $page + 2);
+    if ($start > 1) {
+        $html .= $link(1, '1');
+        if ($start > 2) {
+            $html .= '<span class="page-gap">…</span>';
+        }
+    }
+    for ($i = $start; $i <= $end; $i++) {
+        $html .= $link($i, (string) $i, $i === $page);
+    }
+    if ($end < $pages) {
+        if ($end < $pages - 1) {
+            $html .= '<span class="page-gap">…</span>';
+        }
+        $html .= $link($pages, (string) $pages);
+    }
+
+    $html .= $link(min($pages, $page + 1), '›', false, $page >= $pages);
+    $html .= '</nav>';
+    return $html;
+}
+
 /* --------------------------------------------------------------------- */
 /* Flash messages                                                         */
 /* --------------------------------------------------------------------- */

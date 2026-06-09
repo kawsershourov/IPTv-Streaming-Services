@@ -127,18 +127,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     redirect('admin/users.php');
 }
 
-$q = trim((string) ($_GET['q'] ?? ''));
-$users = User::all();
-if ($q !== '') {
-    $needle = mb_strtolower($q);
-    $users = array_values(array_filter($users, static fn ($u) =>
-        mb_strpos(mb_strtolower($u['name'] . ' ' . $u['email'] . ' ' . $u['role']), $needle) !== false));
-}
-$plans = Plan::all();
+$q       = trim((string) ($_GET['q'] ?? ''));
+$page    = max(1, (int) ($_GET['page'] ?? 1));
+$perPage = 20;
+$total   = User::searchCount($q);
+$pages   = max(1, (int) ceil($total / $perPage));
+$page    = min($page, $pages);
+$users   = User::searchPaged($q, $perPage, ($page - 1) * $perPage);
+$plans   = Plan::all();
 
-// AJAX live-search: return only the table rows.
+// AJAX live-search/pagination: return rows + pager as JSON.
 if (isset($_GET['ajax'])) {
+    ob_start();
     require __DIR__ . '/_users_rows.php';
+    $rows = ob_get_clean();
+    header('Content-Type: application/json');
+    echo json_encode(['rows' => $rows, 'pager' => pager_html($page, $pages, ['q' => $q])]);
     exit;
 }
 
@@ -209,6 +213,7 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
 </div>
+<div id="usersPager" class="pager-wrap"><?= pager_html($page, $pages, ['q' => $q]) ?></div>
 <script>
 (function () {
     var all = document.getElementById('selectAllUsers');
@@ -218,20 +223,34 @@ require __DIR__ . '/includes/header.php';
         });
     }
 
-    // AJAX live search: swap the table rows as you type.
+    // AJAX live search + pagination: swap rows and pager.
     var sform = document.querySelector('.search-box');
     var sinput = sform ? sform.querySelector('input[name=q]') : null;
     var body = document.getElementById('usersBody');
+    var pager = document.getElementById('usersPager');
     if (sform && sinput && body) {
         var t, base = sform.getAttribute('action');
-        function run() {
+        function load(page) {
             body.style.opacity = '.5';
-            fetch(base + '?q=' + encodeURIComponent(sinput.value) + '&ajax=1', { credentials: 'same-origin' })
-                .then(function (r) { return r.text(); })
-                .then(function (html) { body.innerHTML = html; body.style.opacity = '1'; if (all) all.checked = false; });
+            fetch(base + '?q=' + encodeURIComponent(sinput.value) + '&page=' + (page || 1) + '&ajax=1', { credentials: 'same-origin' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    body.innerHTML = d.rows;
+                    if (pager) pager.innerHTML = d.pager;
+                    body.style.opacity = '1';
+                    if (all) all.checked = false;
+                });
         }
-        sinput.addEventListener('input', function () { clearTimeout(t); t = setTimeout(run, 250); });
-        sform.addEventListener('submit', function (e) { e.preventDefault(); clearTimeout(t); run(); });
+        sinput.addEventListener('input', function () { clearTimeout(t); t = setTimeout(function () { load(1); }, 250); });
+        sform.addEventListener('submit', function (e) { e.preventDefault(); clearTimeout(t); load(1); });
+        if (pager) {
+            pager.addEventListener('click', function (e) {
+                var a = e.target.closest('.page-link');
+                if (!a || a.classList.contains('disabled') || a.classList.contains('active')) { return; }
+                e.preventDefault();
+                load(parseInt(a.getAttribute('data-page'), 10) || 1);
+            });
+        }
     }
 
     // Confirm before applying a bulk action (uses the custom modal).

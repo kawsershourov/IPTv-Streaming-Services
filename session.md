@@ -119,7 +119,10 @@ users; table CSS polish (sticky header, row hover, pill tags, checkbox accent). 
 protected on user delete. Search is **AJAX live search**: rows extracted to `_users_rows.php` /
 `_channels_rows.php` partials; `?ajax=1` returns rows-only; JS debounces input and swaps the tbody
 (`#usersBody`/`#chBody`). Delete confirm handler is document-delegated so it works on swapped rows;
-select-all queries `.user-check`/`.ch-check` live.
+select-all queries `.user-check`/`.ch-check` live. **Pagination** (20/page): SQL search+limit via
+`User/Channel::searchPaged()` + `searchCount()` (LIMIT/OFFSET inlined as ints to avoid PDO bind
+issues); `pager_html()` helper; AJAX now returns JSON `{rows,pager}` and JS updates both #…Body and
+#…Pager; page links + search combine.
 
 ### 2026-06-08 — Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):

@@ -47,6 +47,33 @@ class Channel
         );
     }
 
+    /** Paginated search across channel name / category name. */
+    public static function searchPaged(string $q, int $limit, int $offset): array
+    {
+        $limit  = max(1, $limit);
+        $offset = max(0, $offset);
+        $base   = 'SELECT ch.*, c.name AS category_name FROM channels ch JOIN categories c ON c.id = ch.category_id';
+        $order  = ' ORDER BY c.sort_order, ch.sort_order, ch.name';
+        if ($q === '') {
+            return db_all("$base$order LIMIT $limit OFFSET $offset");
+        }
+        $like = '%' . $q . '%';
+        return db_all("$base WHERE ch.name LIKE ? OR c.name LIKE ?$order LIMIT $limit OFFSET $offset", [$like, $like]);
+    }
+
+    public static function searchCount(string $q): int
+    {
+        if ($q === '') {
+            return self::count();
+        }
+        $like = '%' . $q . '%';
+        return (int) (db_one(
+            'SELECT COUNT(*) AS c FROM channels ch JOIN categories c ON c.id = ch.category_id
+              WHERE ch.name LIKE ? OR c.name LIKE ?',
+            [$like, $like]
+        )['c'] ?? 0);
+    }
+
     public static function create(array $d): int
     {
         db_run(

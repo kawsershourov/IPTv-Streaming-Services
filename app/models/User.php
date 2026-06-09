@@ -28,6 +28,34 @@ class User
         return db_all('SELECT * FROM users ORDER BY created_at DESC');
     }
 
+    /** Paginated search across name / email / role. */
+    public static function searchPaged(string $q, int $limit, int $offset): array
+    {
+        $limit  = max(1, $limit);
+        $offset = max(0, $offset);
+        if ($q === '') {
+            return db_all("SELECT * FROM users ORDER BY created_at DESC LIMIT $limit OFFSET $offset");
+        }
+        $like = '%' . $q . '%';
+        return db_all(
+            "SELECT * FROM users WHERE name LIKE ? OR email LIKE ? OR role LIKE ?
+             ORDER BY created_at DESC LIMIT $limit OFFSET $offset",
+            [$like, $like, $like]
+        );
+    }
+
+    public static function searchCount(string $q): int
+    {
+        if ($q === '') {
+            return self::count();
+        }
+        $like = '%' . $q . '%';
+        return (int) (db_one(
+            'SELECT COUNT(*) AS c FROM users WHERE name LIKE ? OR email LIKE ? OR role LIKE ?',
+            [$like, $like, $like]
+        )['c'] ?? 0);
+    }
+
     public static function updatePassword(int $id, string $passwordHash): void
     {
         db_run('UPDATE users SET password_hash = ? WHERE id = ?', [$passwordHash, $id]);

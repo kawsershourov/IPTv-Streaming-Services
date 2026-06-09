@@ -43,6 +43,15 @@ table.data input[type=checkbox] { width: 17px; height: 17px; accent-color: var(-
 .tag-off { background: rgba(138,147,166,.16); color: var(--muted); }
 .tag-prem { background: var(--premium); color: #3a2c00; }
 
+/* Pagination */
+.pager-wrap { margin-top: 14px; }
+.pager { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.pager .page-link { min-width: 36px; text-align: center; padding: 7px 11px; font-size: 13px; font-weight: 600; color: var(--text); background: var(--panel); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; }
+.pager .page-link:hover { border-color: var(--plex); }
+.pager .page-link.active { background: linear-gradient(90deg, var(--sun), var(--sun-2)); color: #1a1206; border-color: transparent; cursor: default; }
+.pager .page-link.disabled { opacity: .4; pointer-events: none; }
+.pager .page-gap { color: var(--muted); padding: 0 2px; }
+
 /* Search box */
 .search-box { display: flex; align-items: center; gap: 6px; }
 .search-box input[type=search] { padding: 7px 12px; font-size: 14px; background: var(--bg-2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; min-width: 200px; }

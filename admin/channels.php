@@ -155,17 +155,21 @@ if ($action === 'new' || $action === 'edit') {
 }
 
 // ---- list ----
-$q = trim((string) ($_GET['q'] ?? ''));
-$channels = Channel::allWithCategory();
-if ($q !== '') {
-    $needle = mb_strtolower($q);
-    $channels = array_values(array_filter($channels, static fn ($c) =>
-        mb_strpos(mb_strtolower($c['name'] . ' ' . $c['category_name']), $needle) !== false));
-}
+$q        = trim((string) ($_GET['q'] ?? ''));
+$page     = max(1, (int) ($_GET['page'] ?? 1));
+$perPage  = 20;
+$total    = Channel::searchCount($q);
+$pages    = max(1, (int) ceil($total / $perPage));
+$page     = min($page, $pages);
+$channels = Channel::searchPaged($q, $perPage, ($page - 1) * $perPage);
 
-// AJAX live-search: return only the table rows.
+// AJAX live-search/pagination: return rows + pager as JSON.
 if (isset($_GET['ajax'])) {
+    ob_start();
     require __DIR__ . '/_channels_rows.php';
+    $rows = ob_get_clean();
+    header('Content-Type: application/json');
+    echo json_encode(['rows' => $rows, 'pager' => pager_html($page, $pages, ['q' => $q])]);
     exit;
 }
 
@@ -206,25 +210,40 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
 </div>
+<div id="chPager" class="pager-wrap"><?= pager_html($page, $pages, ['q' => $q]) ?></div>
 <script>
 (function () {
     var all = document.getElementById('selectAllCh');
     if (all) { all.addEventListener('change', function () { document.querySelectorAll('.ch-check').forEach(function (b) { b.checked = all.checked; }); }); }
 
-    // AJAX live search.
+    // AJAX live search + pagination.
     var sform = document.querySelector('.search-box');
     var sinput = sform ? sform.querySelector('input[name=q]') : null;
     var body = document.getElementById('chBody');
+    var pager = document.getElementById('chPager');
     if (sform && sinput && body) {
         var t, base = sform.getAttribute('action');
-        function run() {
+        function load(page) {
             body.style.opacity = '.5';
-            fetch(base + '?q=' + encodeURIComponent(sinput.value) + '&ajax=1', { credentials: 'same-origin' })
-                .then(function (r) { return r.text(); })
-                .then(function (html) { body.innerHTML = html; body.style.opacity = '1'; if (all) all.checked = false; });
+            fetch(base + '?q=' + encodeURIComponent(sinput.value) + '&page=' + (page || 1) + '&ajax=1', { credentials: 'same-origin' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    body.innerHTML = d.rows;
+                    if (pager) pager.innerHTML = d.pager;
+                    body.style.opacity = '1';
+                    if (all) all.checked = false;
+                });
         }
-        sinput.addEventListener('input', function () { clearTimeout(t); t = setTimeout(run, 250); });
-        sform.addEventListener('submit', function (e) { e.preventDefault(); clearTimeout(t); run(); });
+        sinput.addEventListener('input', function () { clearTimeout(t); t = setTimeout(function () { load(1); }, 250); });
+        sform.addEventListener('submit', function (e) { e.preventDefault(); clearTimeout(t); load(1); });
+        if (pager) {
+            pager.addEventListener('click', function (e) {
+                var a = e.target.closest('.page-link');
+                if (!a || a.classList.contains('disabled') || a.classList.contains('active')) { return; }
+                e.preventDefault();
+                load(parseInt(a.getAttribute('data-page'), 10) || 1);
+            });
+        }
     }
 
     var bulk = document.getElementById('bulkChForm');
