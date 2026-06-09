@@ -57,6 +57,7 @@ require_once APP_DIR . '/models/Channel.php';
 require_once APP_DIR . '/models/Plan.php';
 require_once APP_DIR . '/models/Subscription.php';
 require_once APP_DIR . '/models/Setting.php';
+require_once APP_DIR . '/models/Media.php';
 require_once APP_DIR . '/auth.php';
 require_once APP_DIR . '/access.php';
 require_once APP_DIR . '/player.php';

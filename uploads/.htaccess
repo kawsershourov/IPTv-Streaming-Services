@@ -1,0 +1,14 @@
+# Uploaded files are static only — never execute code here.
+php_flag engine off
+<IfModule mod_authz_core.c>
+    <FilesMatch "\.(php|phtml|phar|php\d+|pl|py|cgi|sh|asp|aspx|js\.php)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+    <FilesMatch "\.(php|phtml|phar|php\d+|pl|py|cgi|sh|asp|aspx)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</IfModule>
+Options -Indexes

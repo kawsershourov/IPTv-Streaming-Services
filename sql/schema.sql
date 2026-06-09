@@ -111,6 +111,22 @@ CREATE TABLE `settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------------
+-- media (admin media library)
+-- ---------------------------------------------------------------------------
+DROP TABLE IF EXISTS `media`;
+CREATE TABLE `media` (
+  `id`          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `filename`    VARCHAR(255) NOT NULL,
+  `url`         VARCHAR(255) NOT NULL,
+  `mime`        VARCHAR(100) NOT NULL,
+  `size`        INT UNSIGNED NOT NULL DEFAULT 0,
+  `uploaded_by` INT UNSIGNED NULL,
+  `created_at`  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_media_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------------
 -- login_attempts (brute-force throttling)
 -- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS `login_attempts`;

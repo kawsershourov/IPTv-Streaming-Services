@@ -7,6 +7,8 @@
 # --- User uploads (keep folder structure, ignore uploaded files) ---
 /uploads/logos/*
 !/uploads/logos/.gitkeep
+/uploads/media/*
+!/uploads/media/.gitkeep
 
 # --- Raw UVP plugin source & distributable zip (only /player subset is tracked) ---
 /Ultimate Video Player v11.0 Latest Version/
