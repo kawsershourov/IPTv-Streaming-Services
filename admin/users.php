@@ -6,7 +6,30 @@ $me = current_user();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
-    $op     = $_POST['op'] ?? '';
+    $op = $_POST['op'] ?? '';
+
+    // Create a new user (no target row).
+    if ($op === 'create') {
+        $name     = trim($_POST['name'] ?? '');
+        $email    = strtolower(trim($_POST['email'] ?? ''));
+        $password = $_POST['password'] ?? '';
+        $role     = in_array($_POST['role'] ?? '', ['user', 'editor', 'admin'], true) ? $_POST['role'] : 'user';
+
+        if ($name === '' || $email === '' || $password === '') {
+            flash('error', 'Name, email and password are required.');
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            flash('error', 'Please enter a valid email address.');
+        } elseif (strlen($password) < 6) {
+            flash('error', 'Password must be at least 6 characters.');
+        } elseif (User::findByEmail($email)) {
+            flash('error', 'An account with that email already exists.');
+        } else {
+            User::create($name, $email, password_hash($password, PASSWORD_BCRYPT), $role);
+            flash('success', $name . ' created as ' . $role . '.');
+        }
+        redirect('admin/users.php');
+    }
+
     $userId = (int) ($_POST['id'] ?? 0);
     $target = User::find($userId);
 
@@ -54,7 +77,37 @@ $adminTitle = 'Users';
 $activeNav  = 'users';
 require __DIR__ . '/includes/header.php';
 ?>
-<h1>Users</h1>
+<div class="toolbar">
+    <h1 style="margin:0;">Users</h1>
+    <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('newUser').style.display='block';this.style.display='none';">+ New user</button>
+</div>
+
+<div class="admin-form" id="newUser" style="display:none;margin-bottom:18px;">
+    <h2 style="font-size:16px;margin:0 0 12px;">Create user</h2>
+    <form method="post" action="<?= e(url('admin/users.php')) ?>" class="form">
+        <?= csrf_field() ?>
+        <input type="hidden" name="op" value="create">
+        <div class="row2">
+            <label>Name <input type="text" name="name" required></label>
+            <label>Email <input type="email" name="email" required></label>
+        </div>
+        <div class="row2">
+            <label>Password <input type="password" name="password" required minlength="6"></label>
+            <label>Role
+                <select name="role">
+                    <option value="user">user</option>
+                    <option value="editor">editor</option>
+                    <option value="admin">admin</option>
+                </select>
+            </label>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary">Create user</button>
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('newUser').style.display='none';">Cancel</button>
+        </div>
+    </form>
+</div>
+
 <div class="table-wrap">
     <table class="data">
         <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Subscription</th><th>Assign plan</th><th></th></tr></thead>
