@@ -123,6 +123,14 @@ select-all queries `.user-check`/`.ch-check` live. **Pagination** (20/page): SQL
 `User/Channel::searchPaged()` + `searchCount()` (LIMIT/OFFSET inlined as ints to avoid PDO bind
 issues); `pager_html()` helper; AJAX now returns JSON `{rows,pager}` and JS updates both #…Body and
 #…Pager; page links + search combine.
+**Production / security** (for cPanel deploy, domain root + HTTPS, URLs unchanged): hardened
+sessions (HttpOnly/Secure-on-HTTPS/SameSite=Lax, strict mode) + prod error hiding in bootstrap;
+`.htaccess` security headers + gzip + 1-year asset cache + blocks .md/.sql/.sample/etc; brute-force
+throttling (`login_attempts` table, `attempt_login()` locks 6 fails/15min per IP-or-email); SQLi
+audit clean (all bound params). Deploy build: `build-deploy.sh` generates **`ready-for-deploy/`**
+(gitignored) = full copy + production `.htaccess` (forces HTTPS + HSTS, from `deploy/htaccess-production`)
++ `app/config.php` from `deploy/config.production.php` (debug off, base_url '', random app_key); dev
+docs excluded. Guide: `DEPLOY.md`. Zip the folder's contents → upload to public_html.
 
 ### 2026-06-08 — Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):

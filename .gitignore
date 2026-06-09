@@ -1,6 +1,9 @@
 # --- Local secrets / config ---
 /app/config.php
 
+# --- Generated production build (regenerate with build-deploy.sh) ---
+/ready-for-deploy/
+
 # --- User uploads (keep folder structure, ignore uploaded files) ---
 /uploads/logos/*
 !/uploads/logos/.gitkeep
