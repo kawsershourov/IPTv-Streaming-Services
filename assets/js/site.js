@@ -87,4 +87,79 @@
             }
         }, { passive: false });
     });
+
+    /* ---------- Media picker ---------- */
+    // Buttons with data-media-target="<selector>" + data-media-url open the picker;
+    // choosing an item sets that input's value (or uploads a new file first).
+    document.addEventListener('click', function (e) {
+        var trigger = e.target.closest('[data-media-target]');
+        if (!trigger) { return; }
+        e.preventDefault();
+        var input = document.querySelector(trigger.getAttribute('data-media-target'));
+        var endpoint = trigger.getAttribute('data-media-url');
+        if (input && endpoint) { openMediaPicker(input, endpoint); }
+    });
+
+    function openMediaPicker(input, endpoint) {
+        var overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML =
+            '<div class="modal mp-modal" role="dialog" aria-modal="true">' +
+            '<div class="mp-head"><strong>Media library</strong>' +
+            '<button type="button" class="mp-close btn btn-ghost btn-sm" aria-label="Close">&times;</button></div>' +
+            '<div class="mp-upload">' +
+            '<input type="file" class="mp-file" multiple accept="image/*,video/mp4,video/webm,audio/mpeg,.pdf">' +
+            '<button type="button" class="btn btn-primary btn-sm mp-upload-btn">Upload new</button>' +
+            '<span class="muted" style="font-size:12px;">or pick an existing file below</span>' +
+            '</div>' +
+            '<div class="mp-body"><p class="empty" style="padding:24px;">Loading…</p></div>' +
+            '</div>';
+        document.body.appendChild(overlay);
+        requestAnimationFrame(function () { overlay.classList.add('show'); });
+
+        var body = overlay.querySelector('.mp-body');
+        function close() { overlay.classList.remove('show'); setTimeout(function () { overlay.remove(); }, 200); document.removeEventListener('keydown', onKey); }
+        function onKey(ev) { if (ev.key === 'Escape') { close(); } }
+        document.addEventListener('keydown', onKey);
+
+        function loadGrid(page) {
+            body.innerHTML = '<p class="empty" style="padding:24px;">Loading…</p>';
+            fetch(endpoint + '?picker=1&page=' + (page || 1), { credentials: 'same-origin' })
+                .then(function (r) { return r.text(); })
+                .then(function (html) { body.innerHTML = html; });
+        }
+        loadGrid(1);
+
+        overlay.addEventListener('click', function (ev) {
+            if (ev.target === overlay || ev.target.closest('.mp-close')) { close(); return; }
+            var item = ev.target.closest('.mp-item');
+            if (item) {
+                input.value = item.getAttribute('data-url');
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+                close();
+                return;
+            }
+            var pg = ev.target.closest('.page-link');
+            if (pg && !pg.classList.contains('disabled') && !pg.classList.contains('active')) {
+                ev.preventDefault();
+                loadGrid(parseInt(pg.getAttribute('data-page'), 10) || 1);
+            }
+        });
+
+        overlay.querySelector('.mp-upload-btn').addEventListener('click', function () {
+            var fileInput = overlay.querySelector('.mp-file');
+            if (!fileInput.files.length) { alert('Choose file(s) to upload.'); return; }
+            var fd = new FormData();
+            fd.append('op', 'upload');
+            fd.append('ajax', '1');
+            var csrf = document.querySelector('input[name=_csrf]');
+            if (csrf) { fd.append('_csrf', csrf.value); }
+            for (var i = 0; i < fileInput.files.length; i++) { fd.append('files[]', fileInput.files[i]); }
+            var self = this; self.textContent = 'Uploading…'; self.disabled = true;
+            fetch(endpoint, { method: 'POST', body: fd, credentials: 'same-origin' })
+                .then(function (r) { return r.json(); })
+                .then(function () { self.textContent = 'Upload new'; self.disabled = false; fileInput.value = ''; loadGrid(1); })
+                .catch(function () { self.textContent = 'Upload new'; self.disabled = false; });
+        });
+    }
 })();

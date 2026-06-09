@@ -64,6 +64,22 @@ table.data input[type=checkbox] { width: 17px; height: 17px; accent-color: var(-
 .media-actions { display: flex; gap: 6px; }
 .media-actions .btn { flex: 1; }
 
+/* Media picker modal */
+.mp-modal { max-width: 760px; text-align: left; padding: 0; overflow: hidden; }
+.mp-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.mp-upload { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 18px; border-bottom: 1px solid var(--border); background: var(--bg-2); }
+.mp-upload .mp-file { flex: 1; min-width: 180px; }
+.mp-body { padding: 14px 18px; max-height: 60vh; overflow-y: auto; }
+.mp-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+.mp-item { aspect-ratio: 1; padding: 6px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.mp-item:hover { border-color: var(--plex); }
+.mp-item img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.mp-item .media-icon { font-size: 32px; }
+
+/* Field + media-picker button row */
+.media-field { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.media-field input[type=text] { flex: 1; min-width: 180px; }
+
 /* Search box */
 .search-box { display: flex; align-items: center; gap: 6px; }
 .search-box input[type=search] { padding: 7px 12px; font-size: 14px; background: var(--bg-2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; min-width: 200px; }

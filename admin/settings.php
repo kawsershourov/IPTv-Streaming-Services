@@ -10,17 +10,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     Setting::set('guest_access',          isset($_POST['guest_access']) ? '1' : '0');
     Setting::set('subscriptions_enabled', isset($_POST['subscriptions_enabled']) ? '1' : '0');
 
-    // Site logo: remove, or upload a new one.
+    // Site logo: remove, pick from Media (URL), or upload a new file.
     if (isset($_POST['remove_logo'])) {
         Setting::set('site_logo', '');
+    } elseif (trim($_POST['site_logo_url'] ?? '') !== '') {
+        Setting::set('site_logo', trim($_POST['site_logo_url']));
     } elseif ($logo = upload_image('site_logo_file', 'site')) {
         Setting::set('site_logo', $logo);
     }
     Setting::set('site_logo_width', (string) max(40, min(400, (int) ($_POST['site_logo_width'] ?? 160))));
 
-    // Site icon (favicon): remove, or upload a new one.
+    // Site icon (favicon): remove, pick from Media (URL), or upload a new file.
     if (isset($_POST['remove_icon'])) {
         Setting::set('site_icon', '');
+    } elseif (trim($_POST['site_icon_url'] ?? '') !== '') {
+        Setting::set('site_icon', trim($_POST['site_icon_url']));
     } elseif ($icon = upload_image('site_icon_file', 'icon')) {
         Setting::set('site_icon', $icon);
     }
@@ -45,7 +49,12 @@ require __DIR__ . '/includes/header.php';
         <label>Tagline <input type="text" name="site_tagline" value="<?= e(Setting::get('site_tagline', '')) ?>"></label>
 
         <?php $siteLogo = Setting::get('site_logo', ''); ?>
-        <label>Site logo (header) <input type="file" name="site_logo_file" accept="image/*,.ico,.svg"></label>
+        <label>Site logo (header)</label>
+        <span class="media-field" style="margin-bottom:12px;">
+            <input type="text" id="siteLogoUrl" name="site_logo_url" value="" placeholder="Pick from Media or paste a URL">
+            <button type="button" class="btn btn-outline btn-sm" data-media-target="#siteLogoUrl" data-media-url="<?= e(url('admin/media.php')) ?>">📁 Media</button>
+        </span>
+        <label>…or upload a logo file <input type="file" name="site_logo_file" accept="image/*,.ico,.svg"></label>
         <?php if ($siteLogo): ?>
             <p class="muted" style="margin:-8px 0 6px;">Current logo:
                 <img src="<?= e($siteLogo) ?>" alt="logo" style="max-width:<?= (int) Setting::get('site_logo_width', '160') ?>px;max-height:46px;vertical-align:middle;background:#11151f;padding:3px 6px;border-radius:6px;">
@@ -58,7 +67,12 @@ require __DIR__ . '/includes/header.php';
         <p class="muted" style="margin:-8px 0 16px;font-size:12px;">The logo scales to this width and always fits the header height.</p>
 
         <?php $siteIcon = Setting::get('site_icon', ''); ?>
-        <label>Site icon / favicon <input type="file" name="site_icon_file" accept="image/*,.ico,.svg"></label>
+        <label>Site icon / favicon</label>
+        <span class="media-field" style="margin-bottom:12px;">
+            <input type="text" id="siteIconUrl" name="site_icon_url" value="" placeholder="Pick from Media or paste a URL">
+            <button type="button" class="btn btn-outline btn-sm" data-media-target="#siteIconUrl" data-media-url="<?= e(url('admin/media.php')) ?>">📁 Media</button>
+        </span>
+        <label>…or upload an icon file <input type="file" name="site_icon_file" accept="image/*,.ico,.svg"></label>
         <?php if ($siteIcon): ?>
             <p class="muted" style="margin:-8px 0 6px;">Current icon:
                 <img src="<?= e($siteIcon) ?>" alt="icon" style="height:24px;vertical-align:middle;background:#11151f;padding:3px;border-radius:6px;">

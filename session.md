@@ -131,6 +131,15 @@ audit clean (all bound params). Deploy build: `build-deploy.sh` generates **`rea
 (gitignored) = full copy + production `.htaccess` (forces HTTPS + HSTS, from `deploy/htaccess-production`)
 + `app/config.php` from `deploy/config.production.php` (debug off, base_url '', random app_key); dev
 docs excluded. Guide: `DEPLOY.md`. Zip the folder's contents → upload to public_html.
+**Media Library** (`admin/media.php`, staff): media table + Media model; multi-file upload
+(images/MP4/WEBM/MP3/PDF) to `/uploads/media/` (random names, ext-validated), grid + Copy-URL +
+delete/bulk-delete + pagination. `uploads/.htaccess` disables PHP execution (verified 403).
+**Media picker**: `?picker=1` returns a rows-only grid + AJAX upload (`op=upload&ajax=1` → JSON);
+`spMediaPicker` modal in site.js bound to buttons `[data-media-target][data-media-url]`. Wired into
+channel logo (`#chLogoInput`) and Settings logo/icon (`site_logo_url`/`site_icon_url`, which the save
+logic prefers over file upload). Local file upload still available as fallback.
+NOTE: `deploy/htaccess-production` + `deploy/config.production.php` were lost (not in HEAD) — recreate
+them before re-running build-deploy.sh.
 
 ### 2026-06-08 — Session 2 (home = live-TV player)
 **Done:** Replaced the home grid with a **full UVP player** (the sunplex.live live-TV layout):

@@ -131,8 +131,13 @@ if ($action === 'new' || $action === 'edit') {
                 </label>
                 <label>Sort order <input type="number" name="sort_order" value="<?= (int) ($ch['sort_order'] ?? 0) ?>"></label>
             </div>
-            <label>Logo URL <input type="text" name="logo" value="<?= e($ch['logo'] ?? '') ?>" placeholder="https://… or upload below"></label>
-            <label>Upload logo <input type="file" name="logo_file" accept="image/*"></label>
+            <label>Logo
+                <span class="media-field">
+                    <input type="text" id="chLogoInput" name="logo" value="<?= e($ch['logo'] ?? '') ?>" placeholder="Pick from Media, paste a URL, or upload below">
+                    <button type="button" class="btn btn-outline btn-sm" data-media-target="#chLogoInput" data-media-url="<?= e(url('admin/media.php')) ?>">📁 Media</button>
+                </span>
+            </label>
+            <label>…or upload a new logo <input type="file" name="logo_file" accept="image/*"></label>
             <?php if (!empty($ch['logo'])): ?><p class="muted">Current: <?= e($ch['logo']) ?></p><?php endif; ?>
 
             <label class="check"><input type="checkbox" name="is_live" <?= (int) ($ch['is_live'] ?? 1) ? 'checked' : '' ?>> Live channel</label>

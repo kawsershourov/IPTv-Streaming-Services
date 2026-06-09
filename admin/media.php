@@ -74,12 +74,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
+        if (isset($_POST['ajax'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['added' => $added, 'errors' => $errors]);
+            exit;
+        }
         flash($added ? 'success' : 'error', $added ? "Uploaded {$added} file(s)." : 'No files uploaded.');
         foreach (array_slice($errors, 0, 5) as $err) {
             flash('error', 'Skipped: ' . $err);
         }
         redirect('admin/media.php');
     }
+}
+
+/** Grid kind (img/video/audio/file) from a URL's extension. */
+function media_kind(string $url): string
+{
+    $ext = strtolower(pathinfo(parse_url($url, PHP_URL_PATH) ?: $url, PATHINFO_EXTENSION));
+    return media_allowed()[$ext] ?? 'file';
+}
+
+// ---- Picker mode: grid for the media-picker modal ----
+if (isset($_GET['picker'])) {
+    $page    = max(1, (int) ($_GET['page'] ?? 1));
+    $perPage = 18;
+    $total   = Media::count();
+    $pages   = max(1, (int) ceil($total / $perPage));
+    $page    = min($page, $pages);
+    $items   = Media::paged($perPage, ($page - 1) * $perPage);
+    require __DIR__ . '/_media_picker.php';
+    exit;
 }
 
 // ---- list ----
