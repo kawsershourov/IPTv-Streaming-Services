@@ -15,7 +15,7 @@ mkdir -p "$OUT"
 INCLUDE=(
   index.php watch.php category.php login.php register.php logout.php
   forgot-password.php reset-password.php account.php plans.php subscribe.php
-  app admin assets player sql uploads DEPLOY.md
+  stats-data.php app admin assets player sql uploads DEPLOY.md
 )
 for item in "${INCLUDE[@]}"; do
   [ -e "$item" ] && cp -r "$item" "$OUT/$item"
