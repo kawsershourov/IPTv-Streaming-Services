@@ -126,9 +126,12 @@ require __DIR__ . '/includes/header.php';
             ⚠️ Turn this ON <em>only</em> if you actually use Cloudflare, a load balancer, or an ngrok-style tunnel. On direct hosting it must stay OFF, otherwise visitors could spoof an allowed IP. If your real IP shows as a Cloudflare/tunnel address above, turn this ON.
         </p>
 
-        <label>Allowed countries — ISO codes, comma separated (e.g. <code>BD,IN</code>). Leave empty for no country filter.
+        <label>Allowed countries — ISO codes, comma separated (e.g. <code>BD,IN</code>).
             <input type="text" name="geo_allowed_countries" value="<?= e(Setting::get('geo_allowed_countries', '')) ?>">
         </label>
+        <p class="muted" style="margin:-8px 0 16px;font-size:12px;">
+            Leave this <strong>empty</strong> and fill the IP list below to run <strong>ISP-only mode</strong>: only your listed IP ranges get in, everyone else (including other Bangladesh ISPs) is blocked. Set a country here to instead allow a whole country.
+        </p>
 
         <label>Allowed IPs / ranges — one per line or semicolon-separated; supports CIDR (e.g. <code>103.118.78.0/24</code>). These always pass.
             <textarea name="geo_allowed_ips" rows="5" style="font-family:monospace;font-size:13px;"><?= e(Setting::get('geo_allowed_ips', '')) ?></textarea>

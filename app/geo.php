@@ -222,23 +222,29 @@ function geo_guard(): void
     if (ip_in_list($ip, (string) Setting::get('geo_blocked_ips', ''))) {
         geo_block();
     }
+    // An explicit IP allow-list entry always passes.
     if (ip_in_list($ip, (string) Setting::get('geo_allowed_ips', ''))) {
         return;
     }
 
-    $allowed = array_filter(preg_split('/[\s,;]+/', strtoupper((string) Setting::get('geo_allowed_countries', ''))));
+    $hasIpAllow = trim((string) Setting::get('geo_allowed_ips', '')) !== '';
+    $allowed    = array_filter(preg_split('/[\s,;]+/', strtoupper((string) Setting::get('geo_allowed_countries', ''))));
+
     if ($allowed) {
+        // Country mode: allow listed countries.
         $country = detect_country($ip);
-        if ($country === null) {
-            if (Setting::get('geo_block_unknown', '0') === '1') {
-                geo_block();
-            }
-            return; // unknown location → allow unless block_unknown is on
+        if ($country !== null && in_array($country, $allowed, true)) {
+            return;
         }
-        if (!in_array($country, $allowed, true)) {
-            geo_block();
+        if ($country === null && Setting::get('geo_block_unknown', '0') !== '1') {
+            return; // unknown location allowed unless block_unknown is on
         }
+        geo_block();
+    } elseif ($hasIpAllow) {
+        // Strict IP allow-list mode (no country filter): only listed IPs/ranges pass.
+        geo_block();
     }
+    // else: restriction enabled but nothing configured → allow (don't lock out the site)
 }
 
 /**
@@ -260,19 +266,25 @@ function geo_evaluate(string $ip): array
     if (ip_in_list($ip, (string) Setting::get('geo_allowed_ips', ''))) {
         return ['allowed' => true, 'reason' => 'IP is in the allowed list.', 'country' => detect_country($ip)];
     }
-    $allowed = array_filter(preg_split('/[\s,;]+/', strtoupper((string) Setting::get('geo_allowed_countries', ''))));
-    $country = detect_country($ip);
+    $hasIpAllow = trim((string) Setting::get('geo_allowed_ips', '')) !== '';
+    $allowed    = array_filter(preg_split('/[\s,;]+/', strtoupper((string) Setting::get('geo_allowed_countries', ''))));
+    $country    = detect_country($ip);
+
     if ($allowed) {
+        if ($country !== null && in_array($country, $allowed, true)) {
+            return ['allowed' => true, 'reason' => "Country {$country} is in the allowed list.", 'country' => $country];
+        }
         if ($country === null) {
             return Setting::get('geo_block_unknown', '0') === '1'
                 ? ['allowed' => false, 'reason' => 'Country could not be determined and "block unknown" is ON.', 'country' => null]
                 : ['allowed' => true, 'reason' => 'Country unknown, but "block unknown" is OFF.', 'country' => null];
         }
-        return in_array($country, $allowed, true)
-            ? ['allowed' => true, 'reason' => "Country {$country} is in the allowed list.", 'country' => $country]
-            : ['allowed' => false, 'reason' => "Country {$country} is not in the allowed list.", 'country' => $country];
+        return ['allowed' => false, 'reason' => "Country {$country} is not in the allowed list.", 'country' => $country];
     }
-    return ['allowed' => true, 'reason' => 'No country filter set.', 'country' => $country];
+    if ($hasIpAllow) {
+        return ['allowed' => false, 'reason' => 'Not in the allowed IP list (ISP-only mode).', 'country' => $country];
+    }
+    return ['allowed' => true, 'reason' => 'No restriction configured (allow-lists are empty).', 'country' => $country];
 }
 
 /** Render the standalone "access restricted" page (403) and stop. */
