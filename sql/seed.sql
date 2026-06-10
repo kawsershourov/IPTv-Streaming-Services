@@ -158,4 +158,16 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('player_selector_text_selected', '#1a1206'),
 ('player_preloader_bg',           '#000000'),
 ('player_preloader_fill',         '#ff8a00'),
-('player_thumb_disabled_bg',      '#241a1a');
+('player_thumb_disabled_bg',      '#241a1a'),
+-- Geo / access control (managed in Admin > Access)
+('geo_enabled',           '0'),
+('geo_allowed_countries', ''),
+('geo_allowed_ips',       ''),
+('geo_blocked_ips',       ''),
+('geo_block_message',     'Access to this service is available only on our network. Please connect through your ISP provider to continue.'),
+('geo_block_unknown',     '0'),
+('geo_use_api',           '0'),
+('geo_apply_admin',       '0'),
+('geo_block_vpn',         '0'),
+('geo_block_datacenter',  '0'),
+('trust_proxy',           '0');

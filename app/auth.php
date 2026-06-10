@@ -58,17 +58,32 @@ function is_staff(): bool
 const LOGIN_MAX_ATTEMPTS = 6;   // failures allowed per IP or email …
 const LOGIN_WINDOW_MIN   = 15;  // … within this many minutes
 
-/** Best-effort client IP (first hop of X-Forwarded-For, else REMOTE_ADDR). */
+/**
+ * Real client IP. Uses REMOTE_ADDR (the actual TCP peer — cannot be spoofed) by
+ * default. Forwarded headers (Cloudflare CF-Connecting-IP, X-Forwarded-For) are
+ * client-controlled on direct hosting, so they are ONLY trusted when the site is
+ * explicitly marked as behind a proxy/CDN via the 'trust_proxy' setting.
+ * Without this, anyone could send X-Forwarded-For to spoof an allowed IP.
+ */
 function client_ip(): string
 {
-    $xff = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '';
-    if ($xff !== '') {
-        $first = trim(explode(',', $xff)[0]);
-        if (filter_var($first, FILTER_VALIDATE_IP)) {
-            return $first;
+    $remote = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+    if (class_exists('Setting') && Setting::get('trust_proxy', '0') === '1') {
+        if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])
+            && filter_var($_SERVER['HTTP_CF_CONNECTING_IP'], FILTER_VALIDATE_IP)) {
+            return $_SERVER['HTTP_CF_CONNECTING_IP'];
+        }
+        $xff = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '';
+        if ($xff !== '') {
+            $first = trim(explode(',', $xff)[0]);
+            if (filter_var($first, FILTER_VALIDATE_IP)) {
+                return $first;
+            }
         }
     }
-    return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+    return $remote;
 }
 
 /** Are logins currently throttled for this IP or email? */

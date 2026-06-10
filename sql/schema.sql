@@ -169,4 +169,18 @@ CREATE TABLE `password_resets` (
   KEY `idx_resets_token` (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ---------------------------------------------------------------------------
+-- geo_cache (IP → country code + VPN/proxy detection cache for ip-api.com lookups)
+-- ---------------------------------------------------------------------------
+DROP TABLE IF EXISTS `geo_cache`;
+CREATE TABLE `geo_cache` (
+  `ip`          VARCHAR(45)  NOT NULL,
+  `country`     VARCHAR(2)   NOT NULL DEFAULT '',
+  `is_proxy`    TINYINT(1)   NOT NULL DEFAULT 0,
+  `is_hosting`  TINYINT(1)   NOT NULL DEFAULT 0,
+  `checked_at`  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ip`),
+  KEY `idx_geo_checked` (`checked_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;
