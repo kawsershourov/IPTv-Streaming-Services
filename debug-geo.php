@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/app/bootstrap.php';
+require_admin(); // diagnostics only — never expose the geo config publicly
 
 $ip = client_ip();
 $country = detect_country($ip);

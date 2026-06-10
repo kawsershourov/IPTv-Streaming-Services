@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/app/bootstrap.php';
+require_admin(); // diagnostics only — never expose the geo config publicly
 
 echo "=== GEO-BLOCKING DIAGNOSTIC ===\n\n";
 
