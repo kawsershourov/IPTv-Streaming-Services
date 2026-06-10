@@ -241,6 +241,40 @@ function geo_guard(): void
     }
 }
 
+/**
+ * Evaluate (without enforcing) what the geo rules would decide for an IP.
+ * Returns ['allowed' => bool, 'reason' => string, 'country' => ?string].
+ * Used by the admin "test an IP" tool.
+ */
+function geo_evaluate(string $ip): array
+{
+    if (Setting::get('geo_enabled', '0') !== '1') {
+        return ['allowed' => true, 'reason' => 'Geo restriction is OFF.', 'country' => detect_country($ip)];
+    }
+    if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+        return ['allowed' => true, 'reason' => 'Private / localhost IP — always allowed.', 'country' => null];
+    }
+    if (ip_in_list($ip, (string) Setting::get('geo_blocked_ips', ''))) {
+        return ['allowed' => false, 'reason' => 'IP is in the blocked list.', 'country' => detect_country($ip)];
+    }
+    if (ip_in_list($ip, (string) Setting::get('geo_allowed_ips', ''))) {
+        return ['allowed' => true, 'reason' => 'IP is in the allowed list.', 'country' => detect_country($ip)];
+    }
+    $allowed = array_filter(preg_split('/[\s,;]+/', strtoupper((string) Setting::get('geo_allowed_countries', ''))));
+    $country = detect_country($ip);
+    if ($allowed) {
+        if ($country === null) {
+            return Setting::get('geo_block_unknown', '0') === '1'
+                ? ['allowed' => false, 'reason' => 'Country could not be determined and "block unknown" is ON.', 'country' => null]
+                : ['allowed' => true, 'reason' => 'Country unknown, but "block unknown" is OFF.', 'country' => null];
+        }
+        return in_array($country, $allowed, true)
+            ? ['allowed' => true, 'reason' => "Country {$country} is in the allowed list.", 'country' => $country]
+            : ['allowed' => false, 'reason' => "Country {$country} is not in the allowed list.", 'country' => $country];
+    }
+    return ['allowed' => true, 'reason' => 'No country filter set.', 'country' => $country];
+}
+
 /** Render the standalone "access restricted" page (403) and stop. */
 function geo_block(string $reason = null): void
 {

@@ -39,6 +39,11 @@ $myCountry = detect_country($myIp);
 $isPrivate = !filter_var($myIp, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
 $db        = geo_db_status();
 
+// --- "Test an IP" tool ---
+$testIp     = trim($_GET['test_ip'] ?? '');
+$testResult = ($testIp !== '' && filter_var($testIp, FILTER_VALIDATE_IP)) ? geo_evaluate($testIp) : null;
+$testError  = ($testIp !== '' && $testResult === null) ? 'Not a valid IP address.' : '';
+
 $adminTitle = 'Access';
 $activeNav  = 'access';
 require __DIR__ . '/includes/header.php';
@@ -52,8 +57,35 @@ require __DIR__ . '/includes/header.php';
         <div><span class="muted">Detected country</span><br><strong><?= $myCountry ? e($myCountry) : '—' ?></strong></div>
         <div><span class="muted">Geo restriction</span><br><strong><?= Setting::get('geo_enabled', '0') === '1' ? 'ON' : 'OFF' ?></strong></div>
     </div>
-    <?php if (Setting::get('geo_enabled', '0') === '1' && !$myCountry && !$isPrivate && !$db['installed']): ?>
+    <?php if ($isPrivate): ?>
+        <p class="muted" style="margin:12px 0 0;font-size:13px;">You're on a local/private address, which has no country — that's why "Detected country" shows “—”. Use the <strong>Test an IP</strong> box below to check any public IP.</p>
+    <?php elseif (Setting::get('geo_enabled', '0') === '1' && !$myCountry && !$db['installed']): ?>
         <p class="flash flash-error" style="margin:12px 0 0;">No GeoLite2 database is installed, so country can't be detected. The <strong>country allow-list won't work</strong> until you upload one below (or sit behind Cloudflare). Your <strong>IP allow-list still works</strong>.</p>
+    <?php endif; ?>
+</div>
+
+<!-- Test an IP ---------------------------------------------------------- -->
+<div class="card" style="margin-bottom:18px;">
+    <h2 style="margin:0 0 10px;font-size:16px;">Test an IP</h2>
+    <form method="get" action="<?= e(url('admin/access.php')) ?>" class="form" style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+        <label style="flex:1;min-width:220px;margin:0;">IP address (IPv4 or IPv6)
+            <input type="text" name="test_ip" value="<?= e($testIp) ?>" placeholder="e.g. 103.31.176.1 or 8.8.8.8">
+        </label>
+        <button class="btn btn-primary">Check</button>
+    </form>
+    <?php if ($testError): ?>
+        <p class="flash flash-error" style="margin:12px 0 0;"><?= e($testError) ?></p>
+    <?php elseif ($testResult): ?>
+        <div style="margin-top:14px;display:flex;gap:24px;flex-wrap:wrap;align-items:center;font-size:14px;">
+            <div><span class="muted">IP</span><br><strong><?= e($testIp) ?></strong></div>
+            <div><span class="muted">Country</span><br><strong><?= $testResult['country'] ? e($testResult['country']) : '—' ?></strong></div>
+            <div><span class="muted">Result</span><br>
+                <strong style="color:<?= $testResult['allowed'] ? '#1e9e54' : '#d23f3f' ?>;">
+                    <?= $testResult['allowed'] ? '✓ ALLOWED' : '✗ BLOCKED' ?>
+                </strong>
+            </div>
+            <div style="flex:1;min-width:200px;"><span class="muted">Why</span><br><?= e($testResult['reason']) ?></div>
+        </div>
     <?php endif; ?>
 </div>
 
