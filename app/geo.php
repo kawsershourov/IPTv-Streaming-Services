@@ -73,17 +73,24 @@ function detect_country(string $ip): ?string
     return null;
 }
 
-/** ip-api.com lookup, cached per IP for 7 days. Returns [country, is_proxy, is_hosting] */
+/** ip-api.com lookup, cached per IP for 7 days. Returns [country, is_proxy, is_hosting].
+ *  Fail-safe: any DB error (e.g. geo_cache not migrated) degrades to [null,false,false]
+ *  instead of throwing — geo_guard runs on every request, so it must never 500 the site. */
 function geo_api_lookup(string $ip): array
 {
-    $row = db_one('SELECT country, is_proxy, is_hosting, checked_at FROM geo_cache WHERE ip = ?', [$ip]);
-    if ($row && strtotime((string) $row['checked_at']) > time() - 604800) {
-        return [
-            $row['country'] !== '' ? $row['country'] : null,
-            (int) $row['is_proxy'] === 1,
-            (int) $row['is_hosting'] === 1
-        ];
+    try {
+        $row = db_one('SELECT country, is_proxy, is_hosting, checked_at FROM geo_cache WHERE ip = ?', [$ip]);
+        if ($row && strtotime((string) $row['checked_at']) > time() - 604800) {
+            return [
+                $row['country'] !== '' ? $row['country'] : null,
+                (int) $row['is_proxy'] === 1,
+                (int) $row['is_hosting'] === 1,
+            ];
+        }
+    } catch (\Throwable $e) {
+        return [null, false, false];
     }
+
     $country = '';
     $is_proxy = false;
     $is_hosting = false;
@@ -97,10 +104,15 @@ function geo_api_lookup(string $ip): array
         $is_proxy = !empty($d['proxy']);
         $is_hosting = !empty($d['hosting']);
     }
-    db_run(
-        'INSERT INTO geo_cache (ip, country, is_proxy, is_hosting) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE country = VALUES(country), is_proxy = VALUES(is_proxy), is_hosting = VALUES(is_hosting), checked_at = NOW()',
-        [$ip, $country, $is_proxy ? 1 : 0, $is_hosting ? 1 : 0]
-    );
+    try {
+        db_run(
+            'INSERT INTO geo_cache (ip, country, is_proxy, is_hosting) VALUES (?, ?, ?, ?)
+             ON DUPLICATE KEY UPDATE country = VALUES(country), is_proxy = VALUES(is_proxy), is_hosting = VALUES(is_hosting), checked_at = NOW()',
+            [$ip, $country, $is_proxy ? 1 : 0, $is_hosting ? 1 : 0]
+        );
+    } catch (\Throwable $e) {
+        // cache write failed (e.g. unmigrated table) — ignore, detection still returns a value
+    }
     return [$country !== '' ? $country : null, $is_proxy, $is_hosting];
 }
 
