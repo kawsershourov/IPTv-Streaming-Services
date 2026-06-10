@@ -2,6 +2,23 @@
 require __DIR__ . '/../app/bootstrap.php';
 require_admin();
 
+// --- GeoLite2 database upload -------------------------------------------
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'upload_db') {
+    csrf_verify();
+    if (!empty($_FILES['geo_db']) && $_FILES['geo_db']['error'] === UPLOAD_ERR_OK) {
+        $res = geo_db_install($_FILES['geo_db']['tmp_name'], (string) $_FILES['geo_db']['name']);
+        flash($res['ok'] ? 'success' : 'error', $res['msg']);
+    } else {
+        $err  = $_FILES['geo_db']['error'] ?? UPLOAD_ERR_NO_FILE;
+        $tooBig = in_array($err, [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true);
+        flash('error', $tooBig
+            ? 'File too large for this server\'s upload limit. Raise upload_max_filesize / post_max_size, or upload the raw .mmdb.'
+            : 'No file received. Choose a GeoLite2 .tar.gz or .mmdb file.');
+    }
+    redirect('admin/access.php');
+}
+
+// --- Settings save -------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
     Setting::set('geo_enabled',           isset($_POST['geo_enabled']) ? '1' : '0');
@@ -12,9 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     Setting::set('geo_blocked_ips',       trim($_POST['geo_blocked_ips'] ?? ''));
     Setting::set('geo_block_unknown',     isset($_POST['geo_block_unknown']) ? '1' : '0');
     Setting::set('geo_block_message',     trim($_POST['geo_block_message'] ?? ''));
-    Setting::set('geo_use_api',           isset($_POST['geo_use_api']) ? '1' : '0');
-    Setting::set('geo_block_vpn',         isset($_POST['geo_block_vpn']) ? '1' : '0');
-    Setting::set('geo_block_datacenter',  isset($_POST['geo_block_datacenter']) ? '1' : '0');
     flash('success', 'Access settings saved.');
     redirect('admin/access.php');
 }
@@ -23,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $myIp      = client_ip();
 $myCountry = detect_country($myIp);
 $isPrivate = !filter_var($myIp, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
+$db        = geo_db_status();
 
 $adminTitle = 'Access';
 $activeNav  = 'access';
@@ -37,11 +52,36 @@ require __DIR__ . '/includes/header.php';
         <div><span class="muted">Detected country</span><br><strong><?= $myCountry ? e($myCountry) : '—' ?></strong></div>
         <div><span class="muted">Geo restriction</span><br><strong><?= Setting::get('geo_enabled', '0') === '1' ? 'ON' : 'OFF' ?></strong></div>
     </div>
-    <?php if (Setting::get('geo_enabled', '0') === '1' && !$myCountry && Setting::get('geo_use_api', '0') !== '1'): ?>
-        <p class="flash flash-error" style="margin:12px 0 0;">Country can't be detected on this server (no Cloudflare header / GeoIP module). The <strong>country allow-list won't work</strong> unless you enable “Use IP-API lookup” below, or put your site behind Cloudflare. Your <strong>IP allow-list still works</strong>.</p>
+    <?php if (Setting::get('geo_enabled', '0') === '1' && !$myCountry && !$isPrivate && !$db['installed']): ?>
+        <p class="flash flash-error" style="margin:12px 0 0;">No GeoLite2 database is installed, so country can't be detected. The <strong>country allow-list won't work</strong> until you upload one below (or sit behind Cloudflare). Your <strong>IP allow-list still works</strong>.</p>
     <?php endif; ?>
 </div>
 
+<!-- GeoLite2 database --------------------------------------------------- -->
+<div class="card" style="margin-bottom:18px;">
+    <h2 style="margin:0 0 10px;font-size:16px;">Country database (MaxMind GeoLite2)</h2>
+    <?php if (!empty($db['installed']) && empty($db['error'])): ?>
+        <p style="margin:0 0 12px;font-size:14px;">
+            <span class="tag tag-on">Installed</span>
+            <strong><?= e($db['type']) ?></strong> · built <?= e($db['build']) ?> ·
+            IPv<?= (int) $db['ip_version'] ?> · <?= number_format($db['size'] / 1048576, 1) ?> MB
+        </p>
+    <?php elseif (!empty($db['error'])): ?>
+        <p class="flash flash-error" style="margin:0 0 12px;">Installed file is not readable: <?= e($db['error']) ?></p>
+    <?php else: ?>
+        <p class="muted" style="margin:0 0 12px;font-size:14px;">No database installed yet. Download <code>GeoLite2-Country</code> from your MaxMind account and upload the <code>.tar.gz</code> here.</p>
+    <?php endif; ?>
+    <form method="post" enctype="multipart/form-data" action="<?= e(url('admin/access.php')) ?>" class="form">
+        <?= csrf_field() ?>
+        <input type="hidden" name="action" value="upload_db">
+        <label>Upload GeoLite2-Country database (<code>.tar.gz</code>, <code>.mmdb</code>, or <code>.mmdb.gz</code>)
+            <input type="file" name="geo_db" accept=".tar.gz,.tgz,.mmdb,.gz" required>
+        </label>
+        <div class="form-actions"><button class="btn btn-primary">Upload database</button></div>
+    </form>
+</div>
+
+<!-- Rules --------------------------------------------------------------- -->
 <div class="admin-form" style="max-width:720px;">
     <form method="post" action="<?= e(url('admin/access.php')) ?>" class="form">
         <?= csrf_field() ?>
@@ -51,7 +91,7 @@ require __DIR__ . '/includes/header.php';
 
         <label class="check"><input type="checkbox" name="trust_proxy" <?= Setting::get('trust_proxy', '0') === '1' ? 'checked' : '' ?>> Site is behind <strong>Cloudflare / a proxy</strong> (read the real visitor IP from CF-Connecting-IP / X-Forwarded-For)</label>
         <p class="muted" style="margin:-8px 0 16px;font-size:12px;">
-            ⚠️ Turn this ON <em>only</em> if you actually use Cloudflare or a load balancer. On direct hosting it must stay OFF, otherwise visitors could spoof an allowed IP. If your real IP shows as a Cloudflare address above, turn this ON.
+            ⚠️ Turn this ON <em>only</em> if you actually use Cloudflare, a load balancer, or an ngrok-style tunnel. On direct hosting it must stay OFF, otherwise visitors could spoof an allowed IP. If your real IP shows as a Cloudflare/tunnel address above, turn this ON.
         </p>
 
         <label>Allowed countries — ISO codes, comma separated (e.g. <code>BD,IN</code>). Leave empty for no country filter.
@@ -71,11 +111,6 @@ require __DIR__ . '/includes/header.php';
         <label>Block message (shown on the restricted page)
             <textarea name="geo_block_message" rows="4"><?= e(Setting::get('geo_block_message', '')) ?></textarea>
         </label>
-
-        <h2 style="font-size:15px;margin:18px 0 10px;">Country detection (optional)</h2>
-        <label class="check"><input type="checkbox" name="geo_use_api" <?= Setting::get('geo_use_api', '0') === '1' ? 'checked' : '' ?>> Use IP-API.com lookups (enables country + VPN/datacenter detection when not behind Cloudflare; results cached per IP for 7 days)</label>
-        <label class="check"><input type="checkbox" name="geo_block_vpn" <?= Setting::get('geo_block_vpn', '0') === '1' ? 'checked' : '' ?>> Block VPN / proxy users (needs IP-API)</label>
-        <label class="check"><input type="checkbox" name="geo_block_datacenter" <?= Setting::get('geo_block_datacenter', '0') === '1' ? 'checked' : '' ?>> Block datacenter / hosting IPs (needs IP-API)</label>
 
         <div class="form-actions"><button class="btn btn-primary">Save access settings</button></div>
     </form>

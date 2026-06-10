@@ -6,10 +6,19 @@ declare(strict_types=1);
  * Restrict the site to specific countries and/or IP ranges; block IPs; show a
  * custom "restricted" page to everyone else. Configured in Admin → Access.
  *
- * Country detection order: Cloudflare CF-IPCountry header → Apache GeoIP env →
- * optional cached ip-api.com lookup. Private/localhost IPs and (optionally) the
- * admin area are exempt so you can't lock yourself out.
+ * Country detection: Cloudflare CF-IPCountry header when present, otherwise a
+ * local MaxMind GeoLite2-Country database (uploaded in Admin → Access). No
+ * external API. Private/localhost IPs and (optionally) the admin area are exempt
+ * so you can't lock yourself out.
  */
+
+require_once APP_DIR . '/lib/MmdbReader.php';
+
+/** Absolute path to the uploaded GeoLite2-Country database. */
+function geo_db_path(): string
+{
+    return APP_DIR . '/data/GeoLite2-Country.mmdb';
+}
 
 /** Does an IP match a single rule (exact IP or CIDR, IPv4/IPv6)? */
 function ip_matches(string $ip, string $rule): bool
@@ -53,74 +62,138 @@ function ip_in_list(string $ip, string $listText): bool
     return false;
 }
 
+/** Shared GeoLite2 reader for this request (or null if no/invalid database). */
+function geo_reader(): ?MmdbReader
+{
+    static $reader = false; // false = not yet attempted
+    if ($reader !== false) {
+        return $reader;
+    }
+    $path = geo_db_path();
+    if (!is_file($path)) {
+        return $reader = null;
+    }
+    try {
+        return $reader = new MmdbReader($path);
+    } catch (\Throwable $e) {
+        return $reader = null;
+    }
+}
+
 /** Best-effort ISO country code for an IP, or null if unknown. */
 function detect_country(string $ip): ?string
 {
+    // Cloudflare provides the country directly — fastest + reliable when present.
     if (!empty($_SERVER['HTTP_CF_IPCOUNTRY'])) {
         $c = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY']));
         if ($c !== '' && $c !== 'XX' && $c !== 'T1') {
             return $c;
         }
     }
-    foreach (['GEOIP_COUNTRY_CODE', 'HTTP_X_COUNTRY_CODE', 'HTTP_X_GEOIP_COUNTRY'] as $k) {
-        if (!empty($_SERVER[$k])) {
-            return strtoupper(trim((string) $_SERVER[$k]));
+    // Local GeoLite2-Country database.
+    $reader = geo_reader();
+    if ($reader) {
+        try {
+            $c = $reader->country($ip);
+            if ($c) {
+                return $c;
+            }
+        } catch (\Throwable $e) {
+            // unreadable record — fall through
         }
-    }
-    if (Setting::get('geo_use_api', '0') === '1') {
-        return geo_api_country($ip);
     }
     return null;
 }
 
-/** ip-api.com lookup, cached per IP for 7 days. Returns [country, is_proxy, is_hosting].
- *  Fail-safe: any DB error (e.g. geo_cache not migrated) degrades to [null,false,false]
- *  instead of throwing — geo_guard runs on every request, so it must never 500 the site. */
-function geo_api_lookup(string $ip): array
+/** Status of the installed GeoLite2 database, for the admin page. */
+function geo_db_status(): array
 {
-    try {
-        $row = db_one('SELECT country, is_proxy, is_hosting, checked_at FROM geo_cache WHERE ip = ?', [$ip]);
-        if ($row && strtotime((string) $row['checked_at']) > time() - 604800) {
-            return [
-                $row['country'] !== '' ? $row['country'] : null,
-                (int) $row['is_proxy'] === 1,
-                (int) $row['is_hosting'] === 1,
-            ];
-        }
-    } catch (\Throwable $e) {
-        return [null, false, false];
-    }
-
-    $country = '';
-    $is_proxy = false;
-    $is_hosting = false;
-    $ctx = stream_context_create(['http' => ['timeout' => 2, 'ignore_errors' => true]]);
-    $resp = @file_get_contents('http://ip-api.com/json/' . urlencode($ip) . '?fields=countryCode,proxy,hosting', false, $ctx);
-    if ($resp) {
-        $d = json_decode($resp, true);
-        if (!empty($d['countryCode'])) {
-            $country = strtoupper($d['countryCode']);
-        }
-        $is_proxy = !empty($d['proxy']);
-        $is_hosting = !empty($d['hosting']);
+    $path = geo_db_path();
+    if (!is_file($path)) {
+        return ['installed' => false];
     }
     try {
-        db_run(
-            'INSERT INTO geo_cache (ip, country, is_proxy, is_hosting) VALUES (?, ?, ?, ?)
-             ON DUPLICATE KEY UPDATE country = VALUES(country), is_proxy = VALUES(is_proxy), is_hosting = VALUES(is_hosting), checked_at = NOW()',
-            [$ip, $country, $is_proxy ? 1 : 0, $is_hosting ? 1 : 0]
-        );
+        $meta = (new MmdbReader($path))->metadata();
+        return [
+            'installed'  => true,
+            'type'       => (string) ($meta['database_type'] ?? 'unknown'),
+            'build'      => isset($meta['build_epoch']) ? date('Y-m-d', (int) $meta['build_epoch']) : '?',
+            'ip_version' => (int) ($meta['ip_version'] ?? 0),
+            'size'       => (int) (filesize($path) ?: 0),
+        ];
     } catch (\Throwable $e) {
-        // cache write failed (e.g. unmigrated table) — ignore, detection still returns a value
+        return ['installed' => true, 'error' => $e->getMessage()];
     }
-    return [$country !== '' ? $country : null, $is_proxy, $is_hosting];
 }
 
-/** Legacy wrapper for backward compatibility */
-function geo_api_country(string $ip): ?string
+/**
+ * Install an uploaded GeoLite2 database. Accepts a raw .mmdb, a MaxMind
+ * .tar.gz/.tgz (the .mmdb is extracted), or a gzip-compressed .mmdb.gz.
+ * Returns ['ok' => bool, 'msg' => string].
+ */
+function geo_db_install(string $tmpPath, string $origName): array
 {
-    [$country] = geo_api_lookup($ip);
-    return $country;
+    $dest = geo_db_path();
+    @mkdir(dirname($dest), 0775, true);
+    $name = strtolower($origName);
+
+    try {
+        if (substr($name, -5) === '.mmdb') {
+            if (!@copy($tmpPath, $dest)) {
+                return ['ok' => false, 'msg' => 'Could not save the .mmdb file (check folder permissions).'];
+            }
+        } elseif (preg_match('/\.(tar\.gz|tgz)$/', $name)) {
+            if (!class_exists('PharData')) {
+                return ['ok' => false, 'msg' => 'PHP Phar extension is unavailable — upload the raw .mmdb instead.'];
+            }
+            $work = sys_get_temp_dir() . '/geodb_' . uniqid('', true) . '.tar.gz';
+            if (!@copy($tmpPath, $work)) {
+                return ['ok' => false, 'msg' => 'Could not stage the archive for extraction.'];
+            }
+            $found = null;
+            foreach (new RecursiveIteratorIterator(new PharData($work)) as $f) {
+                if (strtolower(substr($f->getFilename(), -5)) === '.mmdb') {
+                    $found = $f->getPathname();
+                    break;
+                }
+            }
+            if ($found === null) {
+                @unlink($work);
+                return ['ok' => false, 'msg' => 'No .mmdb file found inside the archive.'];
+            }
+            $copied = @copy($found, $dest);
+            @unlink($work);
+            if (!$copied) {
+                return ['ok' => false, 'msg' => 'Extracted the archive but could not save the database.'];
+            }
+        } elseif (substr($name, -3) === '.gz') {
+            $in  = @gzopen($tmpPath, 'rb');
+            $out = @fopen($dest, 'wb');
+            if (!$in || !$out) {
+                return ['ok' => false, 'msg' => 'Could not decompress the .gz file.'];
+            }
+            while (!gzeof($in)) {
+                fwrite($out, gzread($in, 262144));
+            }
+            gzclose($in);
+            fclose($out);
+        } else {
+            return ['ok' => false, 'msg' => 'Unsupported file. Upload a GeoLite2 .tar.gz, a .mmdb, or a .mmdb.gz.'];
+        }
+    } catch (\Throwable $e) {
+        return ['ok' => false, 'msg' => 'Extraction failed: ' . $e->getMessage()];
+    }
+
+    // Validate the result is a real MMDB.
+    try {
+        $meta  = (new MmdbReader($dest))->metadata();
+        $type  = (string) ($meta['database_type'] ?? '');
+        $built = isset($meta['build_epoch']) ? date('Y-m-d', (int) $meta['build_epoch']) : '?';
+        return ['ok' => true, 'msg' => "Installed: {$type} (built {$built})."];
+    } catch (\Throwable $e) {
+        @unlink($dest);
+        return ['ok' => false, 'msg' => 'The uploaded file is not a valid MMDB database.'];
+    }
 }
 
 /** Enforce access rules; renders the restricted page and exits when blocked. */
@@ -153,21 +226,7 @@ function geo_guard(): void
         return;
     }
 
-    // Check VPN/Proxy/Datacenter if enabled
-    if (Setting::get('geo_block_vpn', '0') === '1' || Setting::get('geo_block_datacenter', '0') === '1') {
-        if (Setting::get('geo_use_api', '0') === '1') {
-            [$country, $is_proxy, $is_hosting] = geo_api_lookup($ip);
-            
-            if (Setting::get('geo_block_vpn', '0') === '1' && $is_proxy) {
-                geo_block('VPN/Proxy detected');
-            }
-            if (Setting::get('geo_block_datacenter', '0') === '1' && $is_hosting) {
-                geo_block('Datacenter/Hosting provider detected');
-            }
-        }
-    }
-
-    $allowed = array_filter(preg_split('/[\s,]+/', strtoupper((string) Setting::get('geo_allowed_countries', ''))));
+    $allowed = array_filter(preg_split('/[\s,;]+/', strtoupper((string) Setting::get('geo_allowed_countries', ''))));
     if ($allowed) {
         $country = detect_country($ip);
         if ($country === null) {
@@ -187,9 +246,9 @@ function geo_block(string $reason = null): void
 {
     http_response_code(403);
     header('Content-Type: text/html; charset=utf-8');
-    $site    = e((string) Setting::get('site_name', 'SunPlex'));
-    $logo    = (string) Setting::get('site_logo', '');
-    $msg     = trim((string) Setting::get('geo_block_message', ''));
+    $site = e((string) Setting::get('site_name', 'SunPlex'));
+    $logo = (string) Setting::get('site_logo', '');
+    $msg  = trim((string) Setting::get('geo_block_message', ''));
     if ($msg === '') {
         $msg = 'Access to this service is available only on our network. Please connect through your ISP provider to continue.';
     }
@@ -199,14 +258,14 @@ function geo_block(string $reason = null): void
     $ip      = e(client_ip());
     $country = detect_country(client_ip());
     $cc      = $country ? e($country) : '';
-    
+
     $logoHtml = '';
     if ($logo !== '') {
-        $logoUrl = e(asset_url($logo));
+        $logoUrl   = e(asset_url($logo));
         $logoWidth = (int) Setting::get('site_logo_width', '160');
-        $logoHtml = '<img src="' . $logoUrl . '" alt="' . $site . '" style="max-width:' . $logoWidth . 'px;max-height:64px;margin-bottom:20px;">';
+        $logoHtml  = '<div class="logo"><img src="' . $logoUrl . '" alt="' . $site . '" style="max-width:' . $logoWidth . 'px;max-height:64px;"></div>';
     }
-    
+
     $msgHtml = e($msg);
 
     echo <<<HTML
@@ -254,21 +313,17 @@ body::after{
   border-radius:0 0 3px 3px;
 }
 .logo{margin:0 auto 16px}
-.logo img{display:block;max-width:100%;height:auto}
+.logo img{display:block;max-width:100%;height:auto;margin:0 auto}
 .shield{margin:0 auto 18px;width:64px;height:64px;animation:pulse 2.5s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px rgba(255,94,58,.3))}50%{transform:scale(1.06);filter:drop-shadow(0 0 16px rgba(255,94,58,.5))}}
 h1{font-size:24px;font-weight:800;margin:0 0 12px;letter-spacing:-.3px}
 .msg{color:#8a93a6;line-height:1.7;font-size:15px;margin:0 0 24px;white-space:pre-wrap}
 .info-row{
-  display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin:0 0 28px;
+  display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin:0 0 8px;
 }
 .info-item{display:flex;flex-direction:column;gap:2px}
 .info-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#5a6378}
 .info-val{font-size:13px;font-weight:600;font-family:"Cascadia Code","Fira Code",monospace;color:#c0c8d8}
-.brand{font-weight:800;font-size:20px;letter-spacing:.3px}
-.brand b{background:linear-gradient(90deg,#ff8a00,#ff5e3a);-webkit-background-clip:text;background-clip:text;color:transparent}
-.brand span{color:#2b8bff}
-.help{margin-top:20px;font-size:12px;color:#5a6378}
 @media(max-width:480px){
   .card{padding:36px 22px 30px;border-radius:16px}
   h1{font-size:20px}
@@ -288,7 +343,6 @@ h1{font-size:24px;font-weight:800;margin:0 0 12px;letter-spacing:-.3px}
         </linearGradient>
       </defs>
       <path d="M32 4L8 16v16c0 14.4 10.24 27.84 24 32 13.76-4.16 24-17.6 24-32V16L32 4z" fill="url(#sg)" opacity=".15" stroke="url(#sg)" stroke-width="2"/>
-      <path d="M22 32l6 6 14-14" stroke="url(#sg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".8"/>
       <line x1="18" y1="18" x2="46" y2="46" stroke="#ff5e3a" stroke-width="2.5" stroke-linecap="round" opacity=".9"/>
     </svg>
   </div>
@@ -305,8 +359,6 @@ HTML;
     }
     echo <<<HTML
   </div>
-  <!-- <div class="brand"><b>Sun</b><span>Plex</span></div>
-  <p class="help">If you believe this is an error, contact your service provider.</p> -->
 </div>
 </body>
 </html>

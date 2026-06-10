@@ -10,6 +10,9 @@
 /uploads/media/*
 !/uploads/media/.gitkeep
 
+# --- GeoLite2 country database (MaxMind-licensed; uploaded via admin) ---
+/app/data/*.mmdb
+
 # --- Raw UVP plugin source & distributable zip (only /player subset is tracked) ---
 /Ultimate Video Player v11.0 Latest Version/
 /Ultimate Video Player v11.0 Latest Version.zip

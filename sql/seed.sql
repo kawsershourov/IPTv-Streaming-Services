@@ -166,8 +166,5 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('geo_blocked_ips',       ''),
 ('geo_block_message',     'Access to this service is available only on our network. Please connect through your ISP provider to continue.'),
 ('geo_block_unknown',     '0'),
-('geo_use_api',           '0'),
 ('geo_apply_admin',       '0'),
-('geo_block_vpn',         '0'),
-('geo_block_datacenter',  '0'),
 ('trust_proxy',           '0');
