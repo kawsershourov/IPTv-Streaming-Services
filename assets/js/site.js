@@ -78,6 +78,32 @@
         });
     }
 
+    // Live visitor stats — poll the feed and update the numbers without a reload.
+    var statsBar = document.querySelector('.site-stats[data-feed]');
+    if (statsBar && window.fetch) {
+        var feed = statsBar.getAttribute('data-feed');
+        var refreshStats = function () {
+            if (document.hidden) { return; }
+            fetch(feed, { credentials: 'same-origin' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    statsBar.querySelectorAll('[data-stat]').forEach(function (el) {
+                        var key = el.getAttribute('data-stat');
+                        if (d[key] == null) { return; }
+                        var val = Number(d[key]).toLocaleString();
+                        if (el.textContent !== val) {
+                            el.textContent = val;
+                            el.classList.add('stat-bump');
+                            setTimeout(function () { el.classList.remove('stat-bump'); }, 700);
+                        }
+                    });
+                })
+                .catch(function () {});
+        };
+        setInterval(refreshStats, 15000);
+        document.addEventListener('visibilitychange', function () { if (!document.hidden) { refreshStats(); } });
+    }
+
     // Let horizontal card scrollers respond to vertical mouse wheel.
     document.querySelectorAll('.card-scroller').forEach(function (row) {
         row.addEventListener('wheel', function (e) {
