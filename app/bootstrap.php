@@ -62,7 +62,17 @@ require_once APP_DIR . '/auth.php';
 require_once APP_DIR . '/access.php';
 require_once APP_DIR . '/player.php';
 require_once APP_DIR . '/stats.php';
+require_once APP_DIR . '/mailer.php';
+require_once APP_DIR . '/health.php';
 require_once APP_DIR . '/geo.php';
+
+// Email the admin about fatal errors (throttled, production only — see notify_site_error).
+register_shutdown_function(static function (): void {
+    $e = error_get_last();
+    if ($e && in_array($e['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR], true)) {
+        notify_site_error($e);
+    }
+});
 
 // --- Geo / IP access control (no-op unless enabled in Admin → Access) ----
 geo_guard();

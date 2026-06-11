@@ -13,6 +13,7 @@ $nav = [
     'plans'      => ['Plans',      'plans.php',     'admin'],
     'player'     => ['Player',     'player.php',    'admin'],
     'access'     => ['Access',     'access.php',    'admin'],
+    'notifications' => ['Notifications', 'notifications.php', 'admin'],
     'settings'   => ['Settings',   'settings.php',  'admin'],
 ];
 $isAdminUser = is_admin();

@@ -167,4 +167,21 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('geo_block_message',     'Access to this service is available only on our network. Please connect through your ISP provider to continue.'),
 ('geo_block_unknown',     '0'),
 ('geo_apply_admin',       '0'),
-('trust_proxy',           '0');
+('trust_proxy',           '0'),
+-- Email (SMTP) + notifications (managed in Admin > Notifications)
+('smtp_host',             ''),
+('smtp_port',             '465'),
+('smtp_secure',           'ssl'),
+('smtp_user',             ''),
+('smtp_pass',             ''),
+('smtp_from',             ''),
+('smtp_from_name',        ''),
+('notify_email',          ''),
+('notify_errors',         '0'),
+('error_notify_last',     '0'),
+-- Channel health checks
+('health_enabled',        '0'),
+('health_auto_hide',      '1'),
+('health_notify',         '1'),
+('health_fail_threshold', '2'),
+('health_cron_token',     '');
