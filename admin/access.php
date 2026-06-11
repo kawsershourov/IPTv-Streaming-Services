@@ -2,6 +2,18 @@
 require __DIR__ . '/../app/bootstrap.php';
 require_admin();
 
+// A POST larger than the server's post_max_size arrives with empty $_POST/$_FILES
+// (PHP discards the body), which otherwise surfaces as a confusing CSRF error.
+if ($_SERVER['REQUEST_METHOD'] === 'POST'
+    && empty($_POST) && empty($_FILES)
+    && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
+    flash('error', 'The upload was larger than this server allows (post_max_size / upload_max_filesize). '
+        . 'Raise those limits via cPanel → MultiPHP INI Editor (the bundled .user.ini sets 32M), '
+        . 'or copy the .mmdb straight into app/data/ with File Manager. '
+        . 'Note: the GeoLite2 database ships with your deploy, so you usually don’t need to upload it.');
+    redirect('admin/access.php');
+}
+
 // --- GeoLite2 database upload -------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'upload_db') {
     csrf_verify();
