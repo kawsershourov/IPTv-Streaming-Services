@@ -74,5 +74,10 @@ register_shutdown_function(static function (): void {
     }
 });
 
+// Learn the public site URL once (used for absolute links/logo in emails sent from cron).
+if (!empty($_SERVER['HTTP_HOST']) && (string) Setting::get('site_url', '') === '') {
+    Setting::set('site_url', ($https ? 'https://' : 'http://') . $_SERVER['HTTP_HOST']);
+}
+
 // --- Geo / IP access control (no-op unless enabled in Admin → Access) ----
 geo_guard();

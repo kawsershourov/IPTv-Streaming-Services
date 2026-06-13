@@ -205,23 +205,24 @@ function health_send_email(array $down, array $restored): bool
 {
     $body = '';
     if ($down) {
-        $body .= '<p style="color:#ff8ea0;font-weight:700;margin:0 0 8px">Channels down:</p><ul style="color:#e8ecf3;line-height:1.7;padding-left:18px">';
+        $body .= '<p style="color:#c0392b;font-weight:700;margin:0 0 8px;">Channels down:</p><ul style="color:#1a2030;line-height:1.7;padding-left:18px;margin:0 0 8px;">';
         foreach ($down as $d) {
-            $tag = $d['hidden'] ? ' <span style="color:#ffb74d">(hidden from playlist)</span>' : '';
+            $tag = $d['hidden'] ? ' <span style="color:#b26a00;">(hidden from playlist)</span>' : '';
             $why = $d['error'] !== '' ? e($d['error']) : ('HTTP ' . (int) $d['code']);
             $body .= '<li><strong>' . e($d['name']) . '</strong> — ' . $why . $tag . '</li>';
         }
         $body .= '</ul>';
     }
     if ($restored) {
-        $body .= '<p style="color:#76e39a;font-weight:700;margin:16px 0 8px">Back online (restored):</p><ul style="color:#e8ecf3;line-height:1.7;padding-left:18px">';
+        $body .= '<p style="color:#1e9e54;font-weight:700;margin:16px 0 8px;">Back online (restored):</p><ul style="color:#1a2030;line-height:1.7;padding-left:18px;margin:0 0 8px;">';
         foreach ($restored as $r) {
             $body .= '<li><strong>' . e($r['name']) . '</strong></li>';
         }
         $body .= '</ul>';
     }
-    $body .= '<p style="margin-top:16px"><a href="' . e(rtrim((string) config('site.base_url', ''), '/') . '/admin/channels.php')
-        . '" style="color:#2b8bff">Open channels in admin →</a></p>';
+    $base = function_exists('mail_site_url') ? mail_site_url() : rtrim((string) config('site.base_url', ''), '/');
+    $body .= '<p style="margin:18px 0 0;"><a href="' . e($base . '/admin/channels.php')
+        . '" style="display:inline-block;background:#ff8a00;color:#ffffff;text-decoration:none;padding:9px 16px;border-radius:6px;font-weight:600;">Open channels in admin →</a></p>';
 
     $count   = count($down);
     $subject = $count > 0

@@ -30,9 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash('error', 'Enter a recipient (or set a notification email).');
         } else {
             $err = null;
-            $ok  = send_mail($to, 'SunPlex test email', mail_template('It works! ✅',
-                '<p style="color:#8a93a6">Your SMTP settings are correct. Alerts will be delivered here.</p>'), $err);
-            flash($ok ? 'success' : 'error', $ok ? "Test email sent to {$to}." : "Send failed: {$err}");
+            $ok  = send_mail($to, ((string) Setting::get('site_name', 'SunPlex')) . ' — test email', mail_template('Your email is working ✅',
+                '<p style="margin:0;">Your SMTP settings are correct, so channel-down alerts and website notifications will be delivered here.</p>'), $err);
+            $n   = count(mail_parse_recipients($to));
+            flash($ok ? 'success' : 'error', $ok ? "Test email sent to {$n} recipient(s)." : "Send failed: {$err}");
         }
         redirect('admin/notifications.php');
     }
@@ -107,7 +108,10 @@ require __DIR__ . '/includes/header.php';
             <label style="flex:1;min-width:220px;">From address <input type="text" name="smtp_from" value="<?= e(Setting::get('smtp_from', '')) ?>" placeholder="defaults to username"></label>
             <label style="flex:1;min-width:220px;">From name <input type="text" name="smtp_from_name" value="<?= e(Setting::get('smtp_from_name', '')) ?>" placeholder="SunPlex"></label>
         </div>
-        <label>Send alerts to (notification email) <input type="text" name="notify_email" value="<?= e(Setting::get('notify_email', '')) ?>" placeholder="your-inbox@gmail.com"></label>
+        <label>Send alerts to (notification email)
+            <input type="text" name="notify_email" value="<?= e(Setting::get('notify_email', '')) ?>" placeholder="you@gmail.com, ops@yourcompany.com">
+        </label>
+        <p class="muted" style="margin:-8px 0 16px;font-size:12px;">Separate multiple recipients with commas — every alert goes to all of them.</p>
         <label class="check"><input type="checkbox" name="notify_errors" <?= Setting::get('notify_errors', '0') === '1' ? 'checked' : '' ?>> Email me when the website hits a fatal error (throttled to once / 30 min)</label>
         <div class="form-actions"><button class="btn btn-primary">Save email settings</button></div>
     </form>

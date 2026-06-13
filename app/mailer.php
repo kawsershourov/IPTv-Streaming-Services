@@ -32,16 +32,38 @@ function mailer_configured(): bool
     return $s['host'] !== '' && $s['user'] !== '' && $s['pass'] !== '' && $s['from'] !== '';
 }
 
-/** Send an HTML email. Returns true on success; sets $error on failure. */
-function send_mail(string $to, string $subject, string $html, ?string &$error = null): bool
+/** Parse a comma/semicolon separated address string into a list of valid emails. */
+function mail_parse_recipients($to): array
+{
+    $list = is_array($to) ? $to : preg_split('/[,;]+/', (string) $to);
+    $out  = [];
+    foreach ($list as $addr) {
+        $addr = trim((string) $addr);
+        if ($addr !== '' && filter_var($addr, FILTER_VALIDATE_EMAIL)) {
+            $out[] = $addr;
+        }
+    }
+    return array_values(array_unique($out));
+}
+
+/**
+ * Send an HTML email. $to may be a single address or a comma/semicolon separated
+ * list. Returns true on success; sets $error on failure.
+ */
+function send_mail($to, string $subject, string $html, ?string &$error = null): bool
 {
     $s = smtp_settings();
     if ($s['host'] === '' || $s['from'] === '') {
         $error = 'SMTP is not configured (Admin → Notifications).';
         return false;
     }
+    $recipients = mail_parse_recipients($to);
+    if (!$recipients) {
+        $error = 'No valid recipient email address.';
+        return false;
+    }
     try {
-        (new SmtpMailer($s))->send($to, $subject, $html);
+        (new SmtpMailer($s))->send($recipients, $subject, $html);
         return true;
     } catch (\Throwable $e) {
         $error = $e->getMessage();
@@ -61,18 +83,77 @@ function notify_admin(string $subject, string $html, ?string &$error = null): bo
     return send_mail($to, $subject, $html, $error);
 }
 
-/** Wrap content in a simple branded HTML email shell. */
+/** Absolute public base URL of the site (for links/images in emails sent from cron). */
+function mail_site_url(): string
+{
+    $stored = trim((string) Setting::get('site_url', ''));
+    if ($stored !== '') {
+        return rtrim($stored, '/');
+    }
+    if (!empty($_SERVER['HTTP_HOST'])) {
+        $https = (($_SERVER['HTTPS'] ?? '') !== '' && $_SERVER['HTTPS'] !== 'off')
+              || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+        return ($https ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
+    }
+    // Last resort: derive from the From address domain (e.g. admin@sunplex.live → https://sunplex.live).
+    $from = smtp_settings()['from'];
+    if (strpos($from, '@') !== false) {
+        return 'https://' . ltrim(strrchr($from, '@'), '@');
+    }
+    return '';
+}
+
+/** Absolute URL of the site logo for use in emails, or '' if none/unknown. */
+function mail_logo_url(): string
+{
+    $logo = trim((string) Setting::get('site_logo', ''));
+    if ($logo === '') {
+        return '';
+    }
+    // Most email clients (Gmail, Outlook) don't render SVG — fall back to text branding.
+    if (preg_match('#\.svg($|\?)#i', $logo)) {
+        return '';
+    }
+    if (preg_match('#^https?://#i', $logo)) {
+        return $logo;
+    }
+    $path = asset_url($logo); // re-anchored path or full URL
+    if (preg_match('#^https?://#i', $path)) {
+        return $path;
+    }
+    $base = mail_site_url();
+    return $base !== '' ? $base . '/' . ltrim($path, '/') : '';
+}
+
+/** Wrap content in a professional, email-client-safe HTML shell with a logo header. */
 function mail_template(string $heading, string $bodyHtml): string
 {
-    $site = e((string) Setting::get('site_name', 'SunPlex'));
-    return '<div style="font-family:Segoe UI,Roboto,Arial,sans-serif;background:#0b0e14;padding:24px;color:#e8ecf3">'
-        . '<div style="max-width:560px;margin:0 auto;background:#161b27;border:1px solid #283041;border-radius:14px;overflow:hidden">'
-        . '<div style="padding:18px 24px;border-bottom:1px solid #283041;font-weight:800;font-size:18px">'
-        . '<span style="color:#ff8a00">' . $site . '</span> <span style="color:#8a93a6;font-weight:600">notifications</span></div>'
-        . '<div style="padding:24px"><h2 style="margin:0 0 12px;font-size:18px">' . e($heading) . '</h2>'
-        . $bodyHtml . '</div>'
-        . '<div style="padding:14px 24px;border-top:1px solid #283041;color:#5a6378;font-size:12px">'
-        . 'Automated message from ' . $site . '.</div></div></div>';
+    $site    = e((string) Setting::get('site_name', 'SunPlex'));
+    $siteUrl = mail_site_url();
+    $logoUrl = mail_logo_url();
+    $font    = 'font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;';
+
+    $header = $logoUrl !== ''
+        ? '<img src="' . e($logoUrl) . '" alt="' . $site . '" height="42" style="height:42px;max-height:42px;width:auto;border:0;display:inline-block;">'
+        : '<span style="font-size:22px;font-weight:800;color:#ff8a00;' . $font . '">' . $site . '</span>';
+
+    $brandLink = $siteUrl !== ''
+        ? '<a href="' . e($siteUrl) . '" style="color:#ff8a00;text-decoration:none;">' . $site . '</a>'
+        : $site;
+
+    return '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
+        . '<body style="margin:0;padding:0;background:#f4f6f9;">'
+        . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;padding:24px 12px;">'
+        . '<tr><td align="center">'
+        . '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid #e6e9ef;border-radius:12px;overflow:hidden;">'
+        . '<tr><td align="center" style="padding:22px 24px;background:#0b0e14;border-bottom:3px solid #ff8a00;">' . $header . '</td></tr>'
+        . '<tr><td style="padding:30px 30px 10px;">'
+        . '<h1 style="margin:0 0 14px;font-size:20px;color:#1a2030;' . $font . '">' . e($heading) . '</h1>'
+        . '<div style="font-size:14px;color:#3a4252;line-height:1.65;' . $font . '">' . $bodyHtml . '</div>'
+        . '</td></tr>'
+        . '<tr><td style="padding:18px 30px 26px;border-top:1px solid #eef1f5;color:#9aa3b2;font-size:12px;' . $font . '">'
+        . 'This is an automated message from ' . $brandLink . '. &copy; ' . date('Y') . '</td></tr>'
+        . '</table></td></tr></table></body></html>';
 }
 
 /**
@@ -95,11 +176,11 @@ function notify_site_error(array $err): void
         Setting::set('error_notify_last', (string) time());
 
         $uri  = (string) ($_SERVER['REQUEST_URI'] ?? 'CLI');
-        $body = '<p style="color:#8a93a6;line-height:1.6">A fatal error occurred on your website:</p>'
-            . '<pre style="background:#0b0e14;border:1px solid #283041;border-radius:8px;padding:12px;'
-            . 'white-space:pre-wrap;word-break:break-word;color:#ff8ea0;font-size:13px">'
+        $body = '<p style="margin:0 0 12px;">A fatal error occurred on your website:</p>'
+            . '<pre style="background:#f8f9fb;border:1px solid #e6e9ef;border-radius:8px;padding:12px;'
+            . 'white-space:pre-wrap;word-break:break-word;color:#c0392b;font-size:13px;margin:0 0 12px;">'
             . e(($err['message'] ?? '') . "\n" . ($err['file'] ?? '') . ':' . ($err['line'] ?? '')) . '</pre>'
-            . '<p style="color:#8a93a6;font-size:13px">Page: ' . e($uri) . '</p>';
+            . '<p style="margin:0;color:#6b7280;font-size:13px;">Page: ' . e($uri) . '</p>';
         notify_admin('⚠️ Website error on ' . (string) Setting::get('site_name', 'SunPlex'), mail_template('Website error', $body));
     } catch (\Throwable $e) {
         // never let error reporting cause more errors
@@ -118,8 +199,9 @@ class SmtpMailer
         $this->cfg = $cfg;
     }
 
-    public function send(string $to, string $subject, string $html): void
+    public function send($to, string $subject, string $html): void
     {
+        $recipients = is_array($to) ? array_values($to) : [$to];
         $host   = $this->cfg['host'];
         $port   = (int) $this->cfg['port'];
         $secure = $this->cfg['secure'];
@@ -155,10 +237,12 @@ class SmtpMailer
 
         $from = $this->cfg['from'];
         $this->cmd("MAIL FROM:<{$from}>", '250');
-        $this->cmd("RCPT TO:<{$to}>", '250');
+        foreach ($recipients as $rcpt) {
+            $this->cmd("RCPT TO:<{$rcpt}>", '250');
+        }
         $this->cmd('DATA', '354');
 
-        $message = $this->buildMessage($to, $subject, $html);
+        $message = $this->buildMessage($recipients, $subject, $html);
         $message = preg_replace('/^\./m', '..', $message); // dot-stuffing
         $this->write($message . "\r\n.");
         $this->expect('250');
@@ -167,12 +251,13 @@ class SmtpMailer
         fclose($this->conn);
     }
 
-    private function buildMessage(string $to, string $subject, string $html): string
+    private function buildMessage(array $recipients, string $subject, string $html): string
     {
+        $toHeader = implode(', ', array_map(static fn ($r) => '<' . $r . '>', $recipients));
         $headers = [
             'Date: ' . date('r'),
             'From: ' . $this->encodeHeader($this->cfg['from_name']) . ' <' . $this->cfg['from'] . '>',
-            'To: <' . $to . '>',
+            'To: ' . $toHeader,
             'Subject: ' . $this->encodeHeader($subject),
             'MIME-Version: 1.0',
             'Content-Type: text/html; charset=UTF-8',
