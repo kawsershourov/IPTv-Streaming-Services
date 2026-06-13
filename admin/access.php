@@ -50,6 +50,24 @@ $myIp      = client_ip();
 $myCountry = detect_country($myIp);
 $isPrivate = !filter_var($myIp, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
 $db        = geo_db_status();
+$myIsp     = function_exists('detect_isp') ? detect_isp($myIp) : null;
+
+// Every IP-bearing header the server actually received (to see what's available
+// from each device — e.g. whether a CGNAT/internal IP arrives in any header).
+$ipHeaders = [];
+foreach ([
+    'REMOTE_ADDR'           => 'REMOTE_ADDR (direct connection)',
+    'HTTP_CF_CONNECTING_IP' => 'CF-Connecting-IP',
+    'HTTP_X_FORWARDED_FOR'  => 'X-Forwarded-For',
+    'HTTP_X_REAL_IP'        => 'X-Real-IP',
+    'HTTP_TRUE_CLIENT_IP'   => 'True-Client-IP',
+    'HTTP_X_CLIENT_IP'      => 'X-Client-IP',
+    'HTTP_FORWARDED'        => 'Forwarded',
+] as $k => $label) {
+    if (!empty($_SERVER[$k])) {
+        $ipHeaders[$label] = (string) $_SERVER[$k];
+    }
+}
 
 // --- "Test an IP" tool ---
 $testIp     = trim($_GET['test_ip'] ?? '');
@@ -67,8 +85,26 @@ require __DIR__ . '/includes/header.php';
     <div style="display:flex;gap:24px;flex-wrap:wrap;font-size:14px;">
         <div><span class="muted">Your IP</span><br><strong><?= e($myIp) ?></strong> <?= $isPrivate ? '<span class="tag tag-off">private</span>' : '' ?></div>
         <div><span class="muted">Detected country</span><br><strong><?= $myCountry ? e($myCountry) : '—' ?></strong></div>
+        <div><span class="muted">ISP</span><br><strong><?= $myIsp ? e($myIsp) : '—' ?></strong></div>
         <div><span class="muted">Geo restriction</span><br><strong><?= Setting::get('geo_enabled', '0') === '1' ? 'ON' : 'OFF' ?></strong></div>
     </div>
+
+    <details style="margin-top:14px;">
+        <summary style="cursor:pointer;font-size:13px;color:#8a93a6;">Raw IP data the server received from this device</summary>
+        <table style="margin-top:10px;font-size:12.5px;border-collapse:collapse;">
+            <?php foreach ($ipHeaders as $label => $val): ?>
+                <tr>
+                    <td style="padding:3px 14px 3px 0;color:#8a93a6;white-space:nowrap;"><?= e($label) ?></td>
+                    <td style="padding:3px 0;font-family:monospace;color:#c0c8d8;"><?= e($val) ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+        <p class="muted" style="margin:10px 0 0;font-size:12px;max-width:640px;">
+            <strong>client_ip()</strong> uses <code><?= Setting::get('trust_proxy', '0') === '1' ? 'CF-Connecting-IP / X-Forwarded-For (proxy mode on)' : 'REMOTE_ADDR (direct)' ?></code>.
+            A device behind your ISP's CGNAT (e.g. a <code>10.x</code> internal IP) only reaches here as the shared public NAT IP —
+            the internal IP isn't in any header unless your gateway is configured to add one. PPPoE / real-IP users arrive with their own public IP.
+        </p>
+    </details>
     <?php if ($isPrivate): ?>
         <p class="muted" style="margin:12px 0 0;font-size:13px;">You're on a local/private address, which has no country — that's why "Detected country" shows “—”. Use the <strong>Test an IP</strong> box below to check any public IP.</p>
     <?php elseif (Setting::get('geo_enabled', '0') === '1' && !$myCountry && !$db['installed']): ?>
