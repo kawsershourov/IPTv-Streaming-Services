@@ -23,6 +23,23 @@ if (Setting::get('show_visitor_stats', '1') === '1'):
     </div>
 </footer>
 
+<script>
+/* Report the visitor's TRUE external public IP once per session. The browser asks
+ * an external IP-echo API (so the request exits via the ISP's edge NAT and returns
+ * the real "what is my IP" address), then sends it to the site. Display-only. */
+(function () {
+    if (!window.fetch) { return; }
+    try { if (sessionStorage.getItem('sp_pubip')) { return; } } catch (e) { return; }
+    fetch('https://api64.ipify.org?format=json')
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+            if (!d || !d.ip) { return; }
+            try { sessionStorage.setItem('sp_pubip', d.ip); } catch (e) {}
+            fetch(<?= json_encode(url('stats-data.php')) ?> + '?reportip=' + encodeURIComponent(d.ip), { credentials: 'same-origin' });
+        })
+        .catch(function () {});
+})();
+</script>
 <script src="<?= e(asset('js/site.js')) ?>"></script>
 <?= Setting::get('footer_code', '') // trusted admin-entered code ?>
 </body>

@@ -25,8 +25,14 @@ foreach ($rDaily as $row) {
         $rPeak = $row;
     }
 }
-$rRecent = db_all('SELECT created_at, last_seen, ip FROM visits ORDER BY id DESC LIMIT 60');
-$rIsp    = function_exists('ip_isp_batch') ? ip_isp_batch(array_column($rRecent, 'ip')) : [];
+$rRecent = db_all('SELECT created_at, last_seen, ip, public_ip FROM visits ORDER BY id DESC LIMIT 60');
+// Prefer the browser-reported external public IP (matches "what is my IP"); fall
+// back to the server-seen IP when not reported.
+foreach ($rRecent as &$_v) {
+    $_v['show_ip'] = !empty($_v['public_ip']) ? $_v['public_ip'] : (string) $_v['ip'];
+}
+unset($_v);
+$rIsp = function_exists('ip_isp_batch') ? ip_isp_batch(array_column($rRecent, 'show_ip')) : [];
 
 $rFmtDur = static function (int $s): string {
     if ($s < 60) {
@@ -166,10 +172,11 @@ $rThSticky = 'position:sticky;top:0;background:#1b2230;z-index:1;';
                 </tr></thead>
                 <tbody>
                 <?php foreach ($rRecent as $v):
-                    $from = strtotime((string) $v['created_at']);
-                    $to   = strtotime((string) $v['last_seen']);
-                    $cc   = $rCountry((string) $v['ip']);
-                    $isp  = $rIsp[(string) $v['ip']] ?? null;
+                    $from   = strtotime((string) $v['created_at']);
+                    $to     = strtotime((string) $v['last_seen']);
+                    $showIp = (string) $v['show_ip'];
+                    $cc     = $rCountry($showIp);
+                    $isp    = $rIsp[$showIp] ?? null;
                 ?>
                     <tr style="text-align:center;">
                         <td><?= e(date('M j, Y', $from)) ?></td>
@@ -177,7 +184,7 @@ $rThSticky = 'position:sticky;top:0;background:#1b2230;z-index:1;';
                         <td style="font-weight:600;"><?= e(date('g:i A', $to)) ?></td>
                         <td class="muted"><?= e($rFmtDur(max(0, $to - $from))) ?></td>
                         <td><?= $cc === '—' ? '<span class="muted">—</span>' : ($cc === 'Local' ? '<span class="muted">Local</span>' : e($cc)) ?></td>
-                        <td class="muted" style="font-family:monospace;"><?= e((string) $v['ip']) ?></td>
+                        <td class="muted" style="font-family:monospace;"><?= e($showIp) ?></td>
                         <td class="muted" style="font-size:12px;text-align:left;"><?= $isp ? e($isp) : '<span style="opacity:.5">—</span>' ?></td>
                     </tr>
                 <?php endforeach; ?>
