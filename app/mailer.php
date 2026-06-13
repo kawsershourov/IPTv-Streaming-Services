@@ -62,14 +62,23 @@ function send_mail($to, string $subject, string $html, ?string &$error = null): 
         $error = 'No valid recipient email address.';
         return false;
     }
-    try {
-        (new SmtpMailer($s))->send($recipients, $subject, $html);
-        return true;
-    } catch (\Throwable $e) {
-        $error = $e->getMessage();
-        error_log('[SunPlex mail] ' . $error);
-        return false;
+    // Retry a few times — mail servers occasionally reject a login transiently
+    // (rate-limit / hiccup), and we don't want to lose an alert to a one-off blip.
+    for ($attempt = 1; $attempt <= 3; $attempt++) {
+        try {
+            (new SmtpMailer($s))->send($recipients, $subject, $html);
+            return true;
+        } catch (\Throwable $e) {
+            $error = $e->getMessage();
+            if ($attempt < 3) {
+                usleep(800000); // wait 0.8s, then retry
+                continue;
+            }
+            error_log('[SunPlex mail] ' . $error . ' (after ' . $attempt . ' attempts)');
+            return false;
+        }
     }
+    return false;
 }
 
 /** Send an alert to the configured notification address. */
