@@ -42,4 +42,13 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
 </div>
+
+<div style="margin-top:28px;"></div>
+<?php
+// Mirror the visitor report onto the dashboard (last 30 days, no range switch).
+$days            = 30;
+$reportShowRange = false;
+$reportHeading   = 'Visitor analytics';
+require __DIR__ . '/includes/visitor_report.php';
+?>
 <?php require __DIR__ . '/includes/footer.php'; ?>
