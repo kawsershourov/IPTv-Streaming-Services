@@ -2,6 +2,14 @@
 require __DIR__ . '/../app/bootstrap.php';
 require_staff();
 
+// Live counts for the AJAX auto-refresh.
+if (($_GET['ajax'] ?? '') === 'counts') {
+    header('Content-Type: application/json');
+    header('Cache-Control: no-store');
+    echo json_encode(stats_report_counts());
+    exit;
+}
+
 $allowed = [7, 30, 90, 180];
 $days    = (int) ($_GET['days'] ?? 30);
 if (!in_array($days, $allowed, true)) {
@@ -48,12 +56,12 @@ $fmtDur = static function (int $s): string {
 };
 
 $cards = [
-    ['Online now', $counts['online'], '#1e9e54'],
-    ['Today',      $counts['today'], '#ff8a00'],
-    ['Yesterday',  $counts['yesterday'], '#2b8bff'],
-    ['Last 7 days', $counts['last7'], '#7c5cff'],
-    ['Last 30 days', $counts['last30'], '#e0529c'],
-    ['Total visits', $counts['total'], '#5a6378'],
+    ['online',    'Online now',    $counts['online'],    '#1e9e54'],
+    ['today',     'Today',         $counts['today'],     '#ff8a00'],
+    ['yesterday', 'Yesterday',     $counts['yesterday'], '#2b8bff'],
+    ['last7',     'Last 7 days',   $counts['last7'],     '#7c5cff'],
+    ['last30',    'Last 30 days',  $counts['last30'],    '#e0529c'],
+    ['total',     'Total visits',  $counts['total'],     '#5a6378'],
 ];
 
 $adminTitle = 'Reports';
@@ -74,10 +82,12 @@ require __DIR__ . '/includes/header.php';
 
 <!-- Summary cards -->
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0;">
-    <?php foreach ($cards as [$label, $value, $color]): ?>
+    <?php foreach ($cards as [$key, $label, $value, $color]): ?>
         <div class="card" style="padding:16px 18px;">
-            <div class="muted" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px;"><?= e($label) ?></div>
-            <div style="font-size:28px;font-weight:800;color:<?= $color ?>;line-height:1.2;margin-top:4px;"><?= number_format($value) ?></div>
+            <div class="muted" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px;"><?= e($label) ?>
+                <?php if ($key === 'online'): ?><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#1e9e54;margin-left:4px;animation:statbump 1.6s ease-in-out infinite;"></span><?php endif; ?>
+            </div>
+            <div style="font-size:28px;font-weight:800;color:<?= $color ?>;line-height:1.2;margin-top:4px;" data-stat="<?= $key ?>"><?= number_format($value) ?></div>
         </div>
     <?php endforeach; ?>
 </div>
@@ -109,19 +119,19 @@ require __DIR__ . '/includes/header.php';
     <div class="card" style="flex:1 1 360px;min-width:300px;margin:0;display:flex;flex-direction:column;">
         <h2 style="margin:0 0 12px;font-size:16px;">Day by day</h2>
         <div style="max-height:480px;overflow-y:auto;border:1px solid #283041;border-radius:8px;">
-            <table class="table" style="width:100%;font-size:13px;margin:0;">
-                <thead><tr>
-                    <th style="<?= $thSticky ?>">Date</th>
-                    <th style="<?= $thSticky ?>">Day</th>
-                    <th style="<?= $thSticky ?>text-align:right;">Visitors</th>
-                    <th style="<?= $thSticky ?>width:38%;">&nbsp;</th>
+            <table class="table" style="width:100%;font-size:13px;margin:0; text-align:center;">
+                <thead><tr style="text-align:center !important;">
+                    <th style="<?= $thSticky ?> width:15%;">Date</th>
+                    <th style="<?= $thSticky ?>width:10%;">Day</th>
+                    <th style="<?= $thSticky ?>width:12%;">Visitors</th>
+                    <th style="<?= $thSticky ?>">&nbsp;</th>
                 </tr></thead>
                 <tbody>
                 <?php foreach (array_reverse($daily) as $row): $w = (int) round($row['count'] / $max * 100); ?>
                     <tr>
                         <td><?= e(date('M j, Y', strtotime($row['date']))) ?></td>
                         <td class="muted"><?= e(date('D', strtotime($row['date']))) ?></td>
-                        <td style="text-align:right;font-weight:700;"><?= number_format($row['count']) ?></td>
+                        <td style="text-align:center;font-weight:700;"><?= number_format($row['count']) ?></td>
                         <td>
                             <div style="background:#1d2433;border-radius:4px;height:10px;overflow:hidden;">
                                 <div style="width:<?= $w ?>%;height:100%;background:linear-gradient(90deg,#ff8a00,#ff5e3a);"></div>
@@ -172,4 +182,32 @@ require __DIR__ . '/includes/header.php';
     </div>
 
 </div>
+
+<script>
+(function () {
+    var feed = <?= json_encode(url('admin/reports.php?ajax=counts')) ?>;
+    function tick() {
+        if (document.hidden) return;
+        fetch(feed, { credentials: 'same-origin', headers: { 'X-Requested-With': 'fetch' } })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (d) {
+                if (!d) return;
+                document.querySelectorAll('[data-stat]').forEach(function (el) {
+                    var k = el.getAttribute('data-stat');
+                    if (d[k] === undefined || d[k] === null) return;
+                    var v = Number(d[k]).toLocaleString();
+                    if (el.textContent !== v) {
+                        el.textContent = v;
+                        el.classList.remove('stat-bump');
+                        void el.offsetWidth;          // restart the animation
+                        el.classList.add('stat-bump');
+                    }
+                });
+            })
+            .catch(function () {});
+    }
+    setInterval(tick, 15000); // refresh every 15s
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
+})();
+</script>
 <?php require __DIR__ . '/includes/footer.php'; ?>

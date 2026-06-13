@@ -124,7 +124,7 @@ require __DIR__ . '/includes/header.php';
 <h1>Player settings</h1>
 <p class="muted" style="margin-top:-8px;">These control the FWD Ultimate Video Player on the home page and watch pages.</p>
 
-<div class="admin-form" style="max-width:760px;">
+<div class="admin-form" style="max-width:1080px;">
     <form method="post" action="<?= e(url('admin/player.php')) ?>" class="form">
         <?= csrf_field() ?>
 

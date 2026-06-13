@@ -79,7 +79,7 @@ require __DIR__ . '/includes/header.php';
 <h1>Notifications &amp; channel health</h1>
 
 <!-- SMTP / email -------------------------------------------------------- -->
-<div class="card" style="margin-bottom:18px;max-width:720px;">
+<div class="card" style="margin-bottom:18px;max-width:1080px;">
     <h2 style="margin:0 0 12px;font-size:16px;">Email (SMTP)</h2>
     <p class="muted" style="margin:0 0 14px;font-size:13px;">
         For Gmail: Host <code>smtp.gmail.com</code>, Port <code>465</code>, Security <code>SSL</code>, Username your full Gmail
@@ -129,7 +129,7 @@ require __DIR__ . '/includes/header.php';
 </div>
 
 <!-- Channel health ------------------------------------------------------ -->
-<div class="card" style="margin-bottom:18px;max-width:720px;">
+<div class="card" style="margin-bottom:18px;max-width:1080px;">
     <h2 style="margin:0 0 12px;font-size:16px;">Channel health</h2>
     <form method="post" action="<?= e(url('admin/notifications.php')) ?>" class="form">
         <?= csrf_field() ?>

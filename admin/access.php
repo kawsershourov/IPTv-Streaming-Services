@@ -126,7 +126,7 @@ require __DIR__ . '/includes/header.php';
 </div>
 
 <!-- Rules --------------------------------------------------------------- -->
-<div class="admin-form" style="max-width:720px;">
+<div class="admin-form" style="max-width:1080px;">
     <form method="post" action="<?= e(url('admin/access.php')) ?>" class="form">
         <?= csrf_field() ?>
 
