@@ -78,10 +78,35 @@
         });
     }
 
-    // Front-end visitor stats are SERVER-RENDERED on each page load. The live AJAX
-    // polling was removed: repeated background requests from every visitor tripped
-    // the host's flood/firewall protection (intermittent 403 Forbidden). The numbers
-    // still update whenever the page is loaded/refreshed.
+    // Live visitor stats — AJAX-refresh the numbers every 15s (the proven-safe
+    // interval; the 1s version tripped the host firewall). Auto-stops if the host
+    // ever rejects a request, so it can't keep hammering a flood filter.
+    var statsBar = document.querySelector('.site-stats[data-feed]');
+    if (statsBar && window.fetch) {
+        var feed = statsBar.getAttribute('data-feed');
+        var sFails = 0, sTimer = null;
+        var refreshStats = function () {
+            if (document.hidden) { return; }
+            fetch(feed, { credentials: 'same-origin' })
+                .then(function (r) { if (!r.ok) { throw 0; } return r.json(); })
+                .then(function (d) {
+                    sFails = 0;
+                    statsBar.querySelectorAll('[data-stat]').forEach(function (el) {
+                        var key = el.getAttribute('data-stat');
+                        if (d[key] == null) { return; }
+                        var val = Number(d[key]).toLocaleString();
+                        if (el.textContent !== val) {
+                            el.textContent = val;
+                            el.classList.add('stat-bump');
+                            setTimeout(function () { el.classList.remove('stat-bump'); }, 700);
+                        }
+                    });
+                })
+                .catch(function () { if (++sFails >= 3 && sTimer) { clearInterval(sTimer); sTimer = null; } });
+        };
+        sTimer = setInterval(refreshStats, 15000);
+        document.addEventListener('visibilitychange', function () { if (!document.hidden && sTimer) { refreshStats(); } });
+    }
 
     // Let horizontal card scrollers respond to vertical mouse wheel.
     document.querySelectorAll('.card-scroller').forEach(function (row) {
