@@ -16,6 +16,12 @@ if ($reportIp !== '' && filter_var($reportIp, FILTER_VALIDATE_IP) && !empty($_SE
     db_run('UPDATE visits SET public_ip = ? WHERE id = ?', [$reportIp, (int) $_SESSION['visit_id']]);
 }
 
+// Release the session lock now — the rest is read-only — so this poll never blocks
+// the same visitor's other requests (page loads) under concurrency.
+if (session_status() === PHP_SESSION_ACTIVE) {
+    session_write_close();
+}
+
 header('Content-Type: application/json');
 header('Cache-Control: no-store');
 echo json_encode(stats_summary());

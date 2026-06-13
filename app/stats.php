@@ -34,14 +34,20 @@ function track_visit(): void
     }
 }
 
-/** Visitor/site counts, cached in settings for 60s to stay cheap under traffic. */
+/**
+ * Visitor/site counts, cached for STATS_CACHE_TTL seconds so the COUNT queries run
+ * at most a few times a minute no matter how many visitors are polling. The cache
+ * (data + timestamp together) lives in a single settings row to minimise writes
+ * under a traffic spike.
+ */
 function stats_summary(): array
 {
-    $cached     = Setting::get('stats_cache', '');
-    $cachedTime = (int) Setting::get('stats_cache_time', '0');
-    if ($cached !== '' && (time() - $cachedTime) < 2) {
+    $ttl    = 10;
+    $cached = Setting::get('stats_cache', '');
+    if ($cached !== '') {
         $d = json_decode($cached, true);
-        if (is_array($d)) {
+        if (is_array($d) && isset($d['_t']) && (time() - (int) $d['_t']) < $ttl) {
+            unset($d['_t']);
             return $d;
         }
     }
@@ -53,8 +59,7 @@ function stats_summary(): array
         'members'  => User::count(),
         'channels' => Channel::count(),
     ];
-    Setting::set('stats_cache', json_encode($d));
-    Setting::set('stats_cache_time', (string) time());
+    Setting::set('stats_cache', json_encode($d + ['_t' => time()])); // one write, not two
     return $d;
 }
 
