@@ -16,13 +16,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $op = $_POST['op'] ?? '';
 
     if ($op === 'reorder') {
-        // Drag-and-drop reorder: assign sort_order by visual position.
-        $ids  = array_map('intval', (array) ($_POST['ids'] ?? []));
-        $base = max(0, (int) ($_POST['base'] ?? 0));
-        foreach ($ids as $i => $cid) {
-            if ($cid > 0) {
-                db_run('UPDATE channels SET sort_order = ? WHERE id = ?', [$base + $i, $cid]);
+        // Drag-and-drop reorder. sort_order is assigned PER CATEGORY by position,
+        // because the front-end orders channels within each category — so the new
+        // order matches what the site shows.
+        $ids      = array_map('intval', (array) ($_POST['ids'] ?? []));
+        $counters = [];
+        foreach ($ids as $cid) {
+            if ($cid <= 0) {
+                continue;
             }
+            $row = db_one('SELECT category_id FROM channels WHERE id = ?', [$cid]);
+            if (!$row) {
+                continue;
+            }
+            $cat = (int) $row['category_id'];
+            $n   = $counters[$cat] ?? 0;
+            db_run('UPDATE channels SET sort_order = ? WHERE id = ?', [$n, $cid]);
+            $counters[$cat] = $n + 1;
         }
         header('Content-Type: application/json');
         echo json_encode(['ok' => true, 'count' => count($ids)]);
@@ -174,11 +184,14 @@ if ($action === 'new' || $action === 'edit') {
 }
 
 // ---- list ----
+// "Show all" mode loads every channel on one page so drag-reorder can move a
+// channel anywhere within its category. Normal mode stays paginated (20/page).
 $q        = trim((string) ($_GET['q'] ?? ''));
-$page     = max(1, (int) ($_GET['page'] ?? 1));
-$perPage  = 20;
+$showAll  = isset($_GET['all']);
+$perPage  = $showAll ? 100000 : 20;
+$page     = $showAll ? 1 : max(1, (int) ($_GET['page'] ?? 1));
 $total    = Channel::searchCount($q);
-$pages    = max(1, (int) ceil($total / $perPage));
+$pages    = $showAll ? 1 : max(1, (int) ceil($total / $perPage));
 $page     = min($page, $pages);
 $channels = Channel::searchPaged($q, $perPage, ($page - 1) * $perPage);
 
@@ -188,7 +201,7 @@ if (isset($_GET['ajax'])) {
     require __DIR__ . '/_channels_rows.php';
     $rows = ob_get_clean();
     header('Content-Type: application/json');
-    echo json_encode(['rows' => $rows, 'pager' => pager_html($page, $pages, ['q' => $q])]);
+    echo json_encode(['rows' => $rows, 'pager' => $showAll ? '' : pager_html($page, $pages, ['q' => $q])]);
     exit;
 }
 
@@ -202,6 +215,11 @@ require __DIR__ . '/includes/header.php';
             <button class="btn btn-outline btn-sm">Search</button>
             <?php if ($q !== ''): ?><a href="<?= e(url('admin/channels.php')) ?>" class="btn btn-ghost btn-sm">Clear</a><?php endif; ?>
         </form>
+        <?php if ($showAll): ?>
+            <a href="<?= e(url('admin/channels.php')) ?>" class="btn btn-outline btn-sm">Show paginated</a>
+        <?php else: ?>
+            <a href="<?= e(url('admin/channels.php?all=1')) ?>" class="btn btn-outline btn-sm">↕ Show all (reorder)</a>
+        <?php endif; ?>
         <a href="<?= e(url('admin/channels_import.php')) ?>" class="btn btn-outline btn-sm">Import CSV/Excel</a>
         <a href="<?= e(url('admin/channels.php?action=new')) ?>" class="btn btn-primary btn-sm">+ New channel</a>
     </div>
@@ -218,7 +236,11 @@ require __DIR__ . '/includes/header.php';
     <button type="submit" name="op" value="bulk_delete" class="btn btn-danger btn-sm">Delete selected</button>
 </form>
 
-<p class="muted" style="margin:0 0 8px;font-size:13px;"><strong>Tip:</strong> drag the <span style="letter-spacing:-2px;">⠿</span> handle to reorder channels — the order is reflected on the site (within each category). Drag is off while searching.</p>
+<?php if ($showAll): ?>
+    <p class="muted" style="margin:0 0 8px;font-size:13px;"><strong>Drag the <span style="letter-spacing:-2px;">⠿</span> handle</strong> to reorder a channel within its category — the new order shows on the site. (To move a channel above another category, reorder the categories, or change the channel’s category.)</p>
+<?php else: ?>
+    <p class="muted" style="margin:0 0 8px;font-size:13px;">Showing 20 per page. Click <strong>“↕ Show all (reorder)”</strong> above to drag-and-drop channels into the order you want.</p>
+<?php endif; ?>
 <div class="table-wrap">
     <table class="data">
         <thead><tr>
@@ -226,7 +248,7 @@ require __DIR__ . '/includes/header.php';
             <th style="width:34px;"><input type="checkbox" id="selectAllCh" title="Select all"></th>
             <th>Name</th><th>Category</th><th>Type</th><th>Live</th><th>Premium</th><th>Status</th><th></th>
         </tr></thead>
-        <tbody id="chBody" data-reorder="<?= $q === '' ? '1' : '0' ?>" data-base="<?= (int) (($page - 1) * $perPage) ?>">
+        <tbody id="chBody" data-reorder="<?= ($showAll && $q === '') ? '1' : '0' ?>">
         <?php require __DIR__ . '/_channels_rows.php'; ?>
         </tbody>
     </table>
@@ -234,6 +256,7 @@ require __DIR__ . '/includes/header.php';
 <div id="chPager" class="pager-wrap"><?= pager_html($page, $pages, ['q' => $q]) ?></div>
 <script>
 (function () {
+    var showAll = <?= $showAll ? 'true' : 'false' ?>;
     var all = document.getElementById('selectAllCh');
     if (all) { all.addEventListener('change', function () { document.querySelectorAll('.ch-check').forEach(function (b) { b.checked = all.checked; }); }); }
 
@@ -246,13 +269,12 @@ require __DIR__ . '/includes/header.php';
         var t, base = sform.getAttribute('action');
         function load(page) {
             body.style.opacity = '.5';
-            fetch(base + '?q=' + encodeURIComponent(sinput.value) + '&page=' + (page || 1) + '&ajax=1', { credentials: 'same-origin' })
+            fetch(base + '?q=' + encodeURIComponent(sinput.value) + '&page=' + (page || 1) + (showAll ? '&all=1' : '') + '&ajax=1', { credentials: 'same-origin' })
                 .then(function (r) { return r.json(); })
                 .then(function (d) {
                     body.innerHTML = d.rows;
                     if (pager) pager.innerHTML = d.pager;
-                    body.dataset.base = String(((page || 1) - 1) * 20);
-                    body.dataset.reorder = sinput.value.trim() === '' ? '1' : '0';
+                    body.dataset.reorder = (showAll && sinput.value.trim() === '') ? '1' : '0';
                     body.style.opacity = '1';
                     if (all) all.checked = false;
                 });
@@ -289,6 +311,7 @@ require __DIR__ . '/includes/header.php';
             e.preventDefault();
             var tr = e.target.closest('tr.ch-row');
             if (!tr || tr === dragEl) { return; }
+            if (tr.dataset.cat !== dragEl.dataset.cat) { return; } // keep it within its own category
             var rect = tr.getBoundingClientRect();
             var after = (e.clientY - rect.top) > rect.height / 2;
             chBody.insertBefore(dragEl, after ? tr.nextSibling : tr);
@@ -304,7 +327,6 @@ require __DIR__ . '/includes/header.php';
             var fd = new FormData();
             fd.append('op', 'reorder');
             fd.append('_csrf', tokenEl ? tokenEl.value : '');
-            fd.append('base', chBody.dataset.base || '0');
             chBody.querySelectorAll('tr.ch-row').forEach(function (tr) { fd.append('ids[]', tr.dataset.id); });
             chBody.style.opacity = '.6';
             fetch(reorderUrl, { method: 'POST', body: fd, credentials: 'same-origin' })

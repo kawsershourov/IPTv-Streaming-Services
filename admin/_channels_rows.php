@@ -3,7 +3,7 @@
  *  Expects $channels and $q in scope. */
 ?>
 <?php foreach ($channels as $c): ?>
-    <tr class="ch-row" draggable="true" data-id="<?= (int) $c['id'] ?>">
+    <tr class="ch-row" draggable="true" data-id="<?= (int) $c['id'] ?>" data-cat="<?= (int) $c['category_id'] ?>">
         <td class="drag-handle" title="Drag to reorder">⠿</td>
         <td><input type="checkbox" class="ch-check" name="ids[]" value="<?= (int) $c['id'] ?>" form="bulkChForm"></td>
         <td><?= e($c['name']) ?></td>

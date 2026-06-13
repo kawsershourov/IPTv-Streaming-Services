@@ -139,3 +139,4 @@ table.data input[type=checkbox] { width: 17px; height: 17px; accent-color: var(-
 .drag-handle { cursor: grab; text-align: center; color: var(--muted); user-select: none; font-size: 15px; }
 .data tr.dragging { opacity: .5; background: var(--bg-2); }
 .data tr:hover .drag-handle { color: var(--text); }
+tbody[data-reorder="0"] .drag-handle { opacity: .25; cursor: default; }
