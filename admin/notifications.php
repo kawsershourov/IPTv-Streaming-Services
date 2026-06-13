@@ -4,6 +4,16 @@ require_admin();
 
 $action = $_POST['action'] ?? '';
 
+// Channel-health features need the notifications migration (extra channels
+// columns). Detect it so the page degrades gracefully instead of 500-ing if the
+// migration wasn't run after deploy.
+$healthReady = true;
+try {
+    db_one('SELECT auto_hidden FROM channels LIMIT 1');
+} catch (\Throwable $e) {
+    $healthReady = false;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
 
@@ -51,6 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($action === 'run_health') {
+        if (!$healthReady) {
+            flash('error', 'Run sql/migrate-notifications.sql first — the channel-health columns are missing.');
+            redirect('admin/notifications.php');
+        }
+        @set_time_limit(0); // checking many channels can take a while
         $r     = run_health_check();
         $nf    = count($r['failing']);
         $names = implode(', ', array_map(static fn ($x) => $x['name'], array_slice($r['failing'], 0, 10)));
@@ -70,13 +85,22 @@ if ((string) Setting::get('health_cron_token', '') === '') {
 
 $cronToken = (string) Setting::get('health_cron_token', '');
 $cronUrl   = rtrim((string) config('site.base_url', ''), '/') . '/cron/health-check.php?token=' . $cronToken;
-$downList  = db_all("SELECT name, stream_type, health_status, fail_count, last_checked_at, auto_hidden, status FROM channels WHERE health_status = 'down' OR auto_hidden = 1 ORDER BY last_checked_at DESC");
+$downList  = $healthReady
+    ? db_all("SELECT name, stream_type, health_status, fail_count, last_checked_at, auto_hidden, status FROM channels WHERE health_status = 'down' OR auto_hidden = 1 ORDER BY last_checked_at DESC")
+    : [];
 
 $adminTitle = 'Notifications';
 $activeNav  = 'notifications';
 require __DIR__ . '/includes/header.php';
 ?>
 <h1>Notifications &amp; channel health</h1>
+<?php if (!$healthReady): ?>
+    <div class="flash flash-error" style="margin-bottom:16px;">
+        Channel-health features are disabled because the database hasn’t been migrated.
+        Run <code>sql/migrate-notifications.sql</code> in cPanel → phpMyAdmin (adds the channel
+        health columns + settings), then reload this page. Email settings below still work.
+    </div>
+<?php endif; ?>
 
 <!-- SMTP / email -------------------------------------------------------- -->
 <div class="card" style="margin-bottom:18px;max-width:1080px;">
