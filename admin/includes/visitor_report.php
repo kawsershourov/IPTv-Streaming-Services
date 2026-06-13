@@ -212,7 +212,7 @@ $rThSticky = 'position:sticky;top:0;background:#1b2230;z-index:1;';
             })
             .catch(function () {});
     }
-    setInterval(tick, 1000);
+    setInterval(tick, 10000);
     document.addEventListener('visibilitychange', function () { if (!document.hidden) { tick(); } });
 })();
 </script>
