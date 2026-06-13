@@ -98,6 +98,7 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('guest_access',          '0'),
 ('subscriptions_enabled', '1'),
 ('show_visitor_stats',    '1'),
+('stats_refresh',         '30'),
 ('stats_cache',           ''),
 ('stats_cache_time',      '0'),
 ('head_code',             ''),

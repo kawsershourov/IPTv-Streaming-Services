@@ -5,7 +5,7 @@ track_visit();
 if (Setting::get('show_visitor_stats', '1') === '1'):
     $sp_stats = stats_summary();
 ?>
-<section class="site-stats" data-feed="<?= e(url('stats-data.php')) ?>">
+<section class="site-stats" data-feed="<?= e(url('stats-data.php')) ?>" data-refresh="<?= (int) Setting::get('stats_refresh', '30') ?>">
     <div class="wrap stats-inner">
         <div class="stat-item"><span class="stat-dot"></span><span class="stat-num" data-stat="online"><?= number_format($sp_stats['online']) ?></span><span class="stat-label">Online now</span></div>
         <div class="stat-item"><span class="stat-num" data-stat="today"><?= number_format($sp_stats['today']) ?></span><span class="stat-label">Today</span></div>

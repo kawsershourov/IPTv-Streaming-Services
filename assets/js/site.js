@@ -82,8 +82,12 @@
     // interval; the 1s version tripped the host firewall). Auto-stops if the host
     // ever rejects a request, so it can't keep hammering a flood filter.
     var statsBar = document.querySelector('.site-stats[data-feed]');
-    if (statsBar && window.fetch) {
+    var refreshSec = statsBar ? parseInt(statsBar.getAttribute('data-refresh') || '0', 10) : 0;
+    // refresh = 0 → no polling (server-rendered on each page load); otherwise poll
+    // at the admin-configured interval (clamped to >= 15s to stay light under load).
+    if (statsBar && window.fetch && refreshSec > 0) {
         var feed = statsBar.getAttribute('data-feed');
+        var interval = Math.max(15, refreshSec) * 1000;
         var sFails = 0, sTimer = null;
         var refreshStats = function () {
             if (document.hidden) { return; }
@@ -104,7 +108,7 @@
                 })
                 .catch(function () { if (++sFails >= 3 && sTimer) { clearInterval(sTimer); sTimer = null; } });
         };
-        sTimer = setInterval(refreshStats, 15000);
+        sTimer = setInterval(refreshStats, interval);
         document.addEventListener('visibilitychange', function () { if (!document.hidden && sTimer) { refreshStats(); } });
     }
 

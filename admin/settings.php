@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     Setting::set('guest_access',          isset($_POST['guest_access']) ? '1' : '0');
     Setting::set('subscriptions_enabled', isset($_POST['subscriptions_enabled']) ? '1' : '0');
     Setting::set('show_visitor_stats',    isset($_POST['show_visitor_stats']) ? '1' : '0');
+    Setting::set('stats_refresh',         (string) max(0, min(600, (int) ($_POST['stats_refresh'] ?? 30))));
 
     // Site logo: remove, pick from Media (URL), or upload a new file.
     if (isset($_POST['remove_logo'])) {
@@ -107,6 +108,13 @@ require __DIR__ . '/includes/header.php';
             <input type="checkbox" name="show_visitor_stats" <?= Setting::get('show_visitor_stats', '1') === '1' ? 'checked' : '' ?>>
             Show the visitor stats bar on the public site (online / today / total visitors)
         </label>
+        <label>Front-end stats auto-refresh (seconds) — <code>0</code> = update on page load only
+            <input type="number" name="stats_refresh" min="0" max="600" value="<?= e(Setting::get('stats_refresh', '30')) ?>">
+        </label>
+        <p class="muted" style="margin:-8px 0 16px;font-size:12px;">
+            How often each visitor's stats bar refreshes itself. Lower = more "live" but more requests.
+            For big match/event traffic, set <strong>60</strong> (or <strong>0</strong> to stop visitor polling entirely). The admin reports always stay live. Minimum effective value is 15s.
+        </p>
 
         <p class="muted" style="font-size:13px;">Player appearance and controls are managed on the
             <a href="<?= e(url('admin/player.php')) ?>">Player</a> page.</p>
