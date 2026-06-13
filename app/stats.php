@@ -80,6 +80,28 @@ function stats_report_counts(): array
 }
 
 /**
+ * Delete visit rows older than the configured retention (visits_retention_days;
+ * 0 = keep forever). Batched + capped per call so a large backlog is cleared over
+ * several cron runs instead of one long-locking delete. Returns rows deleted.
+ */
+function prune_old_visits(): int
+{
+    $days = (int) Setting::get('visits_retention_days', '0');
+    if ($days < 1) {
+        return 0; // keep forever
+    }
+    $total = 0;
+    for ($i = 0; $i < 25; $i++) { // up to 25 × 2000 = 50k rows per run
+        $n = db_run('DELETE FROM visits WHERE created_at < (NOW() - INTERVAL ' . $days . ' DAY) LIMIT 2000');
+        $total += $n;
+        if ($n < 2000) {
+            break;
+        }
+    }
+    return $total;
+}
+
+/**
  * Visitors per day for the last $days days (oldest → newest), with zero-filled
  * gaps. Returns [['date' => 'Y-m-d', 'count' => int], ...].
  */

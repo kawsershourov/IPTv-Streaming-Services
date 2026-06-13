@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     Setting::set('subscriptions_enabled', isset($_POST['subscriptions_enabled']) ? '1' : '0');
     Setting::set('show_visitor_stats',    isset($_POST['show_visitor_stats']) ? '1' : '0');
     Setting::set('stats_refresh',         (string) max(0, min(600, (int) ($_POST['stats_refresh'] ?? 30))));
+    Setting::set('visits_retention_days', (string) max(0, min(3650, (int) ($_POST['visits_retention_days'] ?? 0))));
 
     // Site logo: remove, pick from Media (URL), or upload a new file.
     if (isset($_POST['remove_logo'])) {
@@ -114,6 +115,13 @@ require __DIR__ . '/includes/header.php';
         <p class="muted" style="margin:-8px 0 16px;font-size:12px;">
             How often each visitor's stats bar refreshes itself. Lower = more "live" but more requests.
             For big match/event traffic, set <strong>60</strong> (or <strong>0</strong> to stop visitor polling entirely). The admin reports always stay live. Minimum effective value is 15s.
+        </p>
+
+        <label>Keep visitor history for (days) — <code>0</code> = keep forever
+            <input type="number" name="visits_retention_days" min="0" max="3650" value="<?= e(Setting::get('visits_retention_days', '0')) ?>">
+        </label>
+        <p class="muted" style="margin:-8px 0 16px;font-size:12px;">
+            The cron job auto-deletes visit rows older than this, keeping the stats fast as traffic grows. <strong>0 keeps everything</strong> (default). E.g. <strong>365</strong> keeps one year.
         </p>
 
         <p class="muted" style="font-size:13px;">Player appearance and controls are managed on the

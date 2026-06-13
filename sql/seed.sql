@@ -99,6 +99,7 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('subscriptions_enabled', '1'),
 ('show_visitor_stats',    '1'),
 ('stats_refresh',         '30'),
+('visits_retention_days', '0'),
 ('stats_cache',           ''),
 ('stats_cache_time',      '0'),
 ('head_code',             ''),

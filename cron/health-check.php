@@ -34,3 +34,9 @@ printf(
 foreach ($r['failing'] as $f) {
     printf("  DOWN  %s — %s (strike %d)\n", $f['name'], $f['error'], $f['fails']);
 }
+
+// Housekeeping: trim old visit rows so COUNT stays fast (no-op unless enabled).
+$pruned = prune_old_visits();
+if ($pruned > 0) {
+    printf("Pruned %d old visit row(s).\n", $pruned);
+}
