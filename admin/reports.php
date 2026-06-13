@@ -98,17 +98,30 @@ require __DIR__ . '/includes/header.php';
         <h2 style="margin:0;font-size:16px;">Visitors per day — last <?= (int) $days ?> days</h2>
         <span class="muted" style="font-size:13px;">Total <?= number_format($sum) ?> · avg <?= $avg ?>/day · peak <?= number_format($peak['count']) ?> (<?= e(date('M j', strtotime($peak['date']))) ?>)</span>
     </div>
-    <div style="display:flex;align-items:flex-end;gap:<?= $days > 60 ? 1 : 3 ?>px;height:170px;border-bottom:1px solid #283041;padding-bottom:2px;overflow:hidden;">
-        <?php foreach ($daily as $row): $h = (int) round($row['count'] / $max * 150) + 2; ?>
-            <div title="<?= e(date('D, M j', strtotime($row['date']))) ?>: <?= (int) $row['count'] ?> visitors"
-                 style="flex:1;min-width:2px;height:<?= $h ?>px;border-radius:3px 3px 0 0;
-                        background:linear-gradient(180deg,#ff8a00,#ff5e3a);opacity:<?= $row['count'] ? 1 : .25 ?>;"></div>
-        <?php endforeach; ?>
+    <div style="overflow-x:auto;overflow-y:hidden;padding-bottom:2px;">
+        <div style="display:flex;gap:2px;min-width:100%;">
+            <?php foreach ($daily as $i => $row):
+                $h  = (int) round($row['count'] / $max * 140) + 2;
+                $ts = strtotime($row['date']);
+                $showMonth = ($i === 0 || (int) date('j', $ts) === 1);
+            ?>
+                <div title="<?= e(date('D, M j', $ts)) ?>: <?= (int) $row['count'] ?> visitors"
+                     style="flex:1 0 <?= $days > 7 ? '22px' : '0' ?>;min-width:6px;text-align:center;">
+                    <?php if ($days <= 31): ?>
+                        <div style="font-size:10px;font-weight:700;color:#c0c8d8;height:14px;"><?= $row['count'] ? (int) $row['count'] : '' ?></div>
+                    <?php endif; ?>
+                    <div style="height:150px;display:flex;align-items:flex-end;justify-content:center;">
+                        <div style="width:72%;max-width:24px;min-width:5px;height:<?= $h ?>px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#ff8a00,#ff5e3a);opacity:<?= $row['count'] ? 1 : .3 ?>;"></div>
+                    </div>
+                    <div style="font-size:9px;color:#8a93a6;margin-top:5px;line-height:1.15;white-space:nowrap;">
+                        <?= (int) date('j', $ts) ?>
+                        <?php if ($showMonth): ?><br><span style="color:#ff8a00;font-weight:700;"><?= e(date('M', $ts)) ?></span><?php endif; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
-    <div style="display:flex;justify-content:space-between;margin-top:6px;" class="muted">
-        <span style="font-size:11px;"><?= e(date('M j', strtotime($daily[0]['date']))) ?></span>
-        <span style="font-size:11px;"><?= e(date('M j', strtotime($daily[count($daily) - 1]['date']))) ?></span>
-    </div>
+    <p class="muted" style="font-size:11px;margin:8px 0 0;">Each bar is one day (<?= e(date('M j', strtotime($daily[0]['date']))) ?> → <?= e(date('M j', strtotime($daily[count($daily) - 1]['date']))) ?>). Scroll sideways to see every date · hover a bar for the exact count.</p>
 </div>
 
 <?php $thSticky = 'position:sticky;top:0;background:#1b2230;z-index:1;'; ?>
