@@ -18,7 +18,7 @@ body.admin { background: var(--bg); }
 .admin-side a:hover { background: var(--panel); color: var(--text); }
 .admin-side a.active { background: linear-gradient(90deg, rgba(255,138,0,.18), rgba(43,139,255,.14)); color: var(--text); }
 
-.admin-main { flex: 1; padding: 24px 28px; max-width: 1100px; }
+.admin-main { flex: 1; padding: 24px 32px; max-width: 1600px; width: 100%; }
 .admin-main h1 { margin: 0 0 18px; font-size: 24px; }
 
 /* Stat cards */
