@@ -174,7 +174,17 @@ CREATE TABLE `password_resets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Note: country detection uses a local MaxMind GeoLite2-Country database
--- (uploaded via Admin → Access and stored at app/data/GeoLite2-Country.mmdb),
--- so no geo cache table is needed.
+-- (uploaded via Admin → Access and stored at app/data/GeoLite2-Country.mmdb).
+
+-- ---------------------------------------------------------------------------
+-- ip_info (cached ISP / org lookups from ip-api.com — one row per IP)
+-- ---------------------------------------------------------------------------
+DROP TABLE IF EXISTS `ip_info`;
+CREATE TABLE `ip_info` (
+  `ip`         VARCHAR(45)  NOT NULL,
+  `isp`        VARCHAR(190) NOT NULL DEFAULT '',
+  `checked_at` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ip`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;

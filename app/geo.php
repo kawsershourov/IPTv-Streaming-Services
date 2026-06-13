@@ -20,6 +20,12 @@ function geo_db_path(): string
     return APP_DIR . '/data/GeoLite2-Country.mmdb';
 }
 
+/** Absolute path to the uploaded GeoLite2-ASN database (ISP / network names). */
+function geo_isp_db_path(): string
+{
+    return APP_DIR . '/data/GeoLite2-ASN.mmdb';
+}
+
 /** Does an IP match a single rule (exact IP or CIDR, IPv4/IPv6)? */
 function ip_matches(string $ip, string $rule): bool
 {
@@ -105,10 +111,122 @@ function detect_country(string $ip): ?string
     return null;
 }
 
-/** Status of the installed GeoLite2 database, for the admin page. */
-function geo_db_status(): array
+/** Shared GeoLite2-ASN reader for this request (or null if no/invalid database). */
+function geo_isp_reader(): ?MmdbReader
 {
-    $path = geo_db_path();
+    static $reader = false;
+    if ($reader !== false) {
+        return $reader;
+    }
+    $path = geo_isp_db_path();
+    if (!is_file($path)) {
+        return $reader = null;
+    }
+    try {
+        return $reader = new MmdbReader($path);
+    } catch (\Throwable $e) {
+        return $reader = null;
+    }
+}
+
+/** Best-effort ISP / network organisation name for an IP, or null. */
+function detect_isp(string $ip): ?string
+{
+    // Local GeoLite2-ASN database first (if one was uploaded) — fast, no network.
+    $reader = geo_isp_reader();
+    if ($reader) {
+        try {
+            $rec = $reader->get($ip);
+            if (is_array($rec) && !empty($rec['autonomous_system_organization'])) {
+                return (string) $rec['autonomous_system_organization'];
+            }
+        } catch (\Throwable $e) {
+            // fall through to the API
+        }
+    }
+    $r = ip_isp_batch([$ip]);
+    return $r[$ip] ?? null;
+}
+
+/**
+ * Resolve ISP/organisation names for many IPs at once via ip-api.com's batch
+ * endpoint, cached in the `ip_info` table (so each IP is looked up once). Returns
+ * [ip => isp_name|null]. Private/invalid IPs return null without a lookup.
+ */
+function ip_isp_batch(array $ips): array
+{
+    $out  = [];
+    $need = [];
+    foreach (array_unique($ips) as $ip) {
+        $ip = trim((string) $ip);
+        $out[$ip] = null;
+        if ($ip === ''
+            || !filter_var($ip, FILTER_VALIDATE_IP)
+            || !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+            continue; // private/reserved/invalid — no ISP lookup
+        }
+        $need[$ip] = true;
+    }
+    if (!$need) {
+        return $out;
+    }
+
+    // 1) Cache hits (kept for 30 days — ISP rarely changes).
+    try {
+        $keys  = array_keys($need);
+        $place = implode(',', array_fill(0, count($keys), '?'));
+        foreach (db_all("SELECT ip, isp, checked_at FROM ip_info WHERE ip IN ($place)", $keys) as $r) {
+            if (strtotime((string) $r['checked_at']) > time() - 2592000) {
+                $out[$r['ip']] = $r['isp'] !== '' ? $r['isp'] : null;
+                unset($need[$r['ip']]);
+            }
+        }
+    } catch (\Throwable $e) {
+        // ip_info table missing — skip cache, just hit the API
+    }
+    if (!$need) {
+        return $out;
+    }
+
+    // 2) Look up the misses in one batch request per 100 IPs.
+    foreach (array_chunk(array_keys($need), 100) as $chunk) {
+        $payload = json_encode(array_map(static fn ($ip) => ['query' => $ip, 'fields' => 'query,isp,org,status'], $chunk));
+        $ctx = stream_context_create(['http' => [
+            'method'        => 'POST',
+            'timeout'       => 5,
+            'ignore_errors' => true,
+            'header'        => "Content-Type: application/json\r\n",
+            'content'       => $payload,
+        ]]);
+        $resp = @file_get_contents('http://ip-api.com/batch', false, $ctx);
+        if (!$resp) {
+            continue;
+        }
+        $data = json_decode($resp, true);
+        if (!is_array($data)) {
+            continue;
+        }
+        foreach ($data as $row) {
+            $ip = (string) ($row['query'] ?? '');
+            if ($ip === '') {
+                continue;
+            }
+            $isp = trim((string) ($row['isp'] ?? ($row['org'] ?? '')));
+            $out[$ip] = $isp !== '' ? $isp : null;
+            try {
+                db_run('INSERT INTO ip_info (ip, isp) VALUES (?, ?) ON DUPLICATE KEY UPDATE isp = VALUES(isp), checked_at = NOW()', [$ip, $isp]);
+            } catch (\Throwable $e) {
+                // cache write failed (table missing) — ignore
+            }
+        }
+    }
+    return $out;
+}
+
+/** Status of an installed GeoLite2 database (Country by default), for the admin page. */
+function geo_db_status(?string $path = null): array
+{
+    $path = $path ?: geo_db_path();
     if (!is_file($path)) {
         return ['installed' => false];
     }
@@ -131,9 +249,9 @@ function geo_db_status(): array
  * .tar.gz/.tgz (the .mmdb is extracted), or a gzip-compressed .mmdb.gz.
  * Returns ['ok' => bool, 'msg' => string].
  */
-function geo_db_install(string $tmpPath, string $origName): array
+function geo_db_install(string $tmpPath, string $origName, ?string $dest = null): array
 {
-    $dest = geo_db_path();
+    $dest = $dest ?: geo_db_path();
     @mkdir(dirname($dest), 0775, true);
     $name = strtolower($origName);
 

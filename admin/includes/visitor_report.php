@@ -26,6 +26,7 @@ foreach ($rDaily as $row) {
     }
 }
 $rRecent = db_all('SELECT created_at, last_seen, ip FROM visits ORDER BY id DESC LIMIT 60');
+$rIsp    = function_exists('ip_isp_batch') ? ip_isp_batch(array_column($rRecent, 'ip')) : [];
 
 $rFmtDur = static function (int $s): string {
     if ($s < 60) {
@@ -159,7 +160,7 @@ $rThSticky = 'position:sticky;top:0;background:#1b2230;z-index:1;';
         <div style="max-height:480px;overflow-y:auto;border:1px solid #283041;border-radius:8px;">
             <table class="table" style="width:100%;font-size:13px;margin:0;">
                 <thead><tr>
-                    <?php foreach (['Date', 'From', 'To', 'Duration', 'Country', 'IP'] as $h): ?>
+                    <?php foreach (['Date', 'From', 'To', 'Duration', 'Country', 'IP', 'ISP'] as $h): ?>
                         <th style="<?= $rThSticky ?>"><?= e($h) ?></th>
                     <?php endforeach; ?>
                 </tr></thead>
@@ -168,6 +169,7 @@ $rThSticky = 'position:sticky;top:0;background:#1b2230;z-index:1;';
                     $from = strtotime((string) $v['created_at']);
                     $to   = strtotime((string) $v['last_seen']);
                     $cc   = $rCountry((string) $v['ip']);
+                    $isp  = $rIsp[(string) $v['ip']] ?? null;
                 ?>
                     <tr style="text-align:center;">
                         <td><?= e(date('M j, Y', $from)) ?></td>
@@ -176,6 +178,7 @@ $rThSticky = 'position:sticky;top:0;background:#1b2230;z-index:1;';
                         <td class="muted"><?= e($rFmtDur(max(0, $to - $from))) ?></td>
                         <td><?= $cc === '—' ? '<span class="muted">—</span>' : ($cc === 'Local' ? '<span class="muted">Local</span>' : e($cc)) ?></td>
                         <td class="muted" style="font-family:monospace;"><?= e((string) $v['ip']) ?></td>
+                        <td class="muted" style="font-size:12px;text-align:left;"><?= $isp ? e($isp) : '<span style="opacity:.5">—</span>' ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
