@@ -84,7 +84,8 @@ if ((string) Setting::get('health_cron_token', '') === '') {
 }
 
 $cronToken = (string) Setting::get('health_cron_token', '');
-$cronUrl   = rtrim((string) config('site.base_url', ''), '/') . '/cron/health-check.php?token=' . $cronToken;
+$cronBase  = function_exists('mail_site_url') ? mail_site_url() : rtrim((string) config('site.base_url', ''), '/');
+$cronUrl   = $cronBase . '/cron/health-check.php?token=' . $cronToken;
 $downList  = $healthReady
     ? db_all("SELECT name, stream_type, health_status, fail_count, last_checked_at, auto_hidden, status FROM channels WHERE health_status = 'down' OR auto_hidden = 1 ORDER BY last_checked_at DESC")
     : [];
