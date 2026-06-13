@@ -70,10 +70,13 @@ function client_ip(): string
     $remote = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 
     if (class_exists('Setting') && Setting::get('trust_proxy', '0') === '1') {
-        if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])
-            && filter_var($_SERVER['HTTP_CF_CONNECTING_IP'], FILTER_VALIDATE_IP)) {
-            return $_SERVER['HTTP_CF_CONNECTING_IP'];
+        // Single-value headers a CDN or ISP gateway/BNG may set with the client IP.
+        foreach (['HTTP_CF_CONNECTING_IP', 'HTTP_X_REAL_IP', 'HTTP_TRUE_CLIENT_IP', 'HTTP_X_CLIENT_IP'] as $h) {
+            if (!empty($_SERVER[$h]) && filter_var($_SERVER[$h], FILTER_VALIDATE_IP)) {
+                return $_SERVER[$h];
+            }
         }
+        // X-Forwarded-For: the first hop = the original client / internal address.
         $xff = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '';
         if ($xff !== '') {
             $first = trim(explode(',', $xff)[0]);
