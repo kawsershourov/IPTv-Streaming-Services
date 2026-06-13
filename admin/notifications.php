@@ -90,11 +90,31 @@ $downList  = $healthReady
     ? db_all("SELECT name, stream_type, health_status, fail_count, last_checked_at, auto_hidden, status FROM channels WHERE health_status = 'down' OR auto_hidden = 1 ORDER BY last_checked_at DESC")
     : [];
 
+// When did the health check last run? (Used to confirm the cron is firing.)
+$lastCheck = $healthReady ? (db_one('SELECT MAX(last_checked_at) AS t FROM channels')['t'] ?? null) : null;
+$lastAgo   = null;
+if ($lastCheck) {
+    $secs = max(0, time() - strtotime((string) $lastCheck));
+    $lastAgo = $secs < 90 ? $secs . ' sec ago'
+        : ($secs < 5400 ? round($secs / 60) . ' min ago' : round($secs / 3600, 1) . ' hr ago');
+}
+
 $adminTitle = 'Notifications';
 $activeNav  = 'notifications';
 require __DIR__ . '/includes/header.php';
 ?>
 <h1>Notifications &amp; channel health</h1>
+<?php if ($healthReady): ?>
+    <div class="card" style="margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+        <div>
+            <span class="muted" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px;">Last health check ran</span><br>
+            <strong style="font-size:16px;"><?= $lastCheck ? e(date('M j, g:i:s A', strtotime((string) $lastCheck))) . ' (' . e($lastAgo) . ')' : 'never' ?></strong>
+        </div>
+        <div class="muted" style="font-size:12px;max-width:520px;">
+            ✅ <strong>To verify your cron job:</strong> this time should update to “a few min ago” on its own every 15 minutes — <em>without</em> you clicking “Run now”. Reload this page in 15–20 min; if it advanced, the cron is working.
+        </div>
+    </div>
+<?php endif; ?>
 <?php if (!$healthReady): ?>
     <div class="flash flash-error" style="margin-bottom:16px;">
         Channel-health features are disabled because the database hasn’t been migrated.
