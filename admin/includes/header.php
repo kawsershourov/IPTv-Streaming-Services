@@ -9,6 +9,7 @@ $nav = [
     'categories' => ['Categories', 'categories.php', 'staff'],
     'channels'   => ['Channels',   'channels.php',  'staff'],
     'media'      => ['Media',      'media.php',     'staff'],
+    'reports'    => ['Reports',    'reports.php',   'staff'],
     'users'      => ['Users',      'users.php',     'admin'],
     'plans'      => ['Plans',      'plans.php',     'admin'],
     'player'     => ['Player',     'player.php',    'admin'],

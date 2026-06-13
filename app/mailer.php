@@ -152,7 +152,7 @@ function mail_template(string $heading, string $bodyHtml): string
         . '<div style="font-size:14px;color:#3a4252;line-height:1.65;' . $font . '">' . $bodyHtml . '</div>'
         . '</td></tr>'
         . '<tr><td style="padding:18px 30px 26px;border-top:1px solid #eef1f5;color:#9aa3b2;font-size:12px;' . $font . '">'
-        . 'This is an automated message from ' . $brandLink . '. &copy; ' . date('Y') . '</td></tr>'
+        . 'This is an automated message from <a href="' . e($siteUrl) . '" style="color:#ff8a00;text-decoration:none;">Sunplex.live</a>. &copy; ' . date('Y') . '</td></tr>'
         . '</table></td></tr></table></body></html>';
 }
 

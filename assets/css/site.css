@@ -230,7 +230,7 @@ body.page-home main.site-main { max-width: var(--container); padding-top: 14px; 
 /* ---------- Visitor stats band ---------- */
 .site-stats { border-top: 1px solid var(--border); background: var(--bg-2); margin-top: 40px; }
 .stats-inner { display: flex; flex-wrap: wrap; gap: 14px 32px; justify-content: center; padding: 22px var(--gutter); }
-.stat-item { display: flex; flex-direction: column; align-items: center; min-width: 84px; }
+.stat-item { display: flex; justify-content: flex-end; flex-direction: column; align-items: center; min-width: 84px; }
 .stat-num { font-size: 24px; font-weight: 800; line-height: 1.1; background: linear-gradient(90deg, var(--sun), var(--plex)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-top: 4px; }
 .stat-num.stat-bump { animation: stat-bump .7s ease; }
