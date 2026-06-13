@@ -189,30 +189,6 @@ $rThSticky = 'position:sticky;top:0;background:#1b2230;z-index:1;';
 
 </div>
 
-<script>
-(function () {
-    var feed = <?= json_encode(url('admin/reports.php?ajax=counts')) ?>;
-    function tick() {
-        if (document.hidden) { return; }
-        fetch(feed, { credentials: 'same-origin', headers: { 'X-Requested-With': 'fetch' } })
-            .then(function (r) { return r.ok ? r.json() : null; })
-            .then(function (d) {
-                if (!d) { return; }
-                document.querySelectorAll('[data-stat]').forEach(function (el) {
-                    var k = el.getAttribute('data-stat');
-                    if (d[k] === undefined || d[k] === null) { return; }
-                    var v = Number(d[k]).toLocaleString();
-                    if (el.textContent !== v) {
-                        el.textContent = v;
-                        el.classList.remove('stat-bump');
-                        void el.offsetWidth;
-                        el.classList.add('stat-bump');
-                    }
-                });
-            })
-            .catch(function () {});
-    }
-    setInterval(tick, 10000);
-    document.addEventListener('visibilitychange', function () { if (!document.hidden) { tick(); } });
-})();
-</script>
+<?php /* Live AJAX polling removed — repeated background requests tripped the host's
+        flood/firewall protection (intermittent 403). The numbers are rendered on
+        each page load instead. */ ?>

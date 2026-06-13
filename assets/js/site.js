@@ -78,31 +78,10 @@
         });
     }
 
-    // Live visitor stats — poll the feed and update the numbers without a reload.
-    var statsBar = document.querySelector('.site-stats[data-feed]');
-    if (statsBar && window.fetch) {
-        var feed = statsBar.getAttribute('data-feed');
-        var refreshStats = function () {
-            if (document.hidden) { return; }
-            fetch(feed, { credentials: 'same-origin' })
-                .then(function (r) { return r.json(); })
-                .then(function (d) {
-                    statsBar.querySelectorAll('[data-stat]').forEach(function (el) {
-                        var key = el.getAttribute('data-stat');
-                        if (d[key] == null) { return; }
-                        var val = Number(d[key]).toLocaleString();
-                        if (el.textContent !== val) {
-                            el.textContent = val;
-                            el.classList.add('stat-bump');
-                            setTimeout(function () { el.classList.remove('stat-bump'); }, 700);
-                        }
-                    });
-                })
-                .catch(function () {});
-        };
-        setInterval(refreshStats, 10000);
-        document.addEventListener('visibilitychange', function () { if (!document.hidden) { refreshStats(); } });
-    }
+    // Front-end visitor stats are SERVER-RENDERED on each page load. The live AJAX
+    // polling was removed: repeated background requests from every visitor tripped
+    // the host's flood/firewall protection (intermittent 403 Forbidden). The numbers
+    // still update whenever the page is loaded/refreshed.
 
     // Let horizontal card scrollers respond to vertical mouse wheel.
     document.querySelectorAll('.card-scroller').forEach(function (row) {
