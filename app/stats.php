@@ -39,7 +39,7 @@ function stats_summary(): array
 {
     $cached     = Setting::get('stats_cache', '');
     $cachedTime = (int) Setting::get('stats_cache_time', '0');
-    if ($cached !== '' && (time() - $cachedTime) < 15) {
+    if ($cached !== '' && (time() - $cachedTime) < 2) {
         $d = json_decode($cached, true);
         if (is_array($d)) {
             return $d;

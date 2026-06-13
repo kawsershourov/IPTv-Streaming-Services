@@ -206,7 +206,7 @@ require __DIR__ . '/includes/header.php';
             })
             .catch(function () {});
     }
-    setInterval(tick, 15000); // refresh every 15s
+    setInterval(tick, 1000); // refresh every 1s
     document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
 })();
 </script>

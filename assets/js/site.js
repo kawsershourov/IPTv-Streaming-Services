@@ -100,7 +100,7 @@
                 })
                 .catch(function () {});
         };
-        setInterval(refreshStats, 15000);
+        setInterval(refreshStats, 1000);
         document.addEventListener('visibilitychange', function () { if (!document.hidden) { refreshStats(); } });
     }
 
