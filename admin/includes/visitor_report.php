@@ -189,6 +189,37 @@ $rThSticky = 'position:sticky;top:0;background:#1b2230;z-index:1;';
 
 </div>
 
-<?php /* Live AJAX polling removed — repeated background requests tripped the host's
-        flood/firewall protection (intermittent 403). The numbers are rendered on
-        each page load instead. */ ?>
+<script>
+/* Admin-only live refresh of the headline counts. Safe here: it's one logged-in
+ * operator on a light page (unlike the public site, where every visitor polling
+ * the heavy home page tripped the host firewall). 15s keeps requests minimal. */
+(function () {
+    var feed = <?= json_encode(url('admin/reports.php?ajax=counts')) ?>;
+    var fails = 0, timer = null;
+    function tick() {
+        if (document.hidden) { return; }
+        fetch(feed, { credentials: 'same-origin', headers: { 'X-Requested-With': 'fetch' } })
+            .then(function (r) { if (!r.ok) { throw 0; } return r.json(); })
+            .then(function (d) {
+                fails = 0;
+                document.querySelectorAll('[data-stat]').forEach(function (el) {
+                    var k = el.getAttribute('data-stat');
+                    if (d[k] === undefined || d[k] === null) { return; }
+                    var v = Number(d[k]).toLocaleString();
+                    if (el.textContent !== v) {
+                        el.textContent = v;
+                        el.classList.remove('stat-bump');
+                        void el.offsetWidth;
+                        el.classList.add('stat-bump');
+                    }
+                });
+            })
+            .catch(function () {
+                // If the host ever rejects the request, stop so we don't hammer it.
+                if (++fails >= 3 && timer) { clearInterval(timer); timer = null; }
+            });
+    }
+    timer = setInterval(tick, 15000);
+    document.addEventListener('visibilitychange', function () { if (!document.hidden && timer) { tick(); } });
+})();
+</script>
