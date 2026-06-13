@@ -23,10 +23,14 @@ if (PHP_SAPI !== 'cli') {
 $start = microtime(true);
 $r = run_health_check();
 printf(
-    "Checked %d channel(s) in %.1fs — down: %d, restored: %d, email: %s\n",
+    "Checked %d channel(s) in %.1fs — failing: %d, newly hidden: %d, restored: %d, email: %s\n",
     $r['checked'],
     microtime(true) - $start,
-    count($r['down']),
+    count($r['failing']),
+    count($r['hidden']),
     count($r['restored']),
     $r['emailed'] ? 'sent' : 'no'
 );
+foreach ($r['failing'] as $f) {
+    printf("  DOWN  %s — %s (strike %d)\n", $f['name'], $f['error'], $f['fails']);
+}

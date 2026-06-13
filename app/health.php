@@ -10,7 +10,100 @@ declare(strict_types=1);
  */
 
 /**
- * Probe a stream URL. Returns true if it looks reachable/valid.
+ * Low-level HTTP probe: ranged GET of the first $maxBytes. Returns the body
+ * (possibly empty) on any HTTP response, or null on a transport/connection
+ * failure. $code and $err are filled in.
+ */
+function http_probe(string $url, int $maxBytes, ?int &$code = null, ?string &$err = null): ?string
+{
+    $code = 0;
+    $err  = '';
+    if (function_exists('curl_init')) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS      => 5,
+            CURLOPT_CONNECTTIMEOUT => 8,
+            CURLOPT_TIMEOUT        => 15,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_USERAGENT      => 'Mozilla/5.0 (compatible; SunPlexHealthCheck/1.0)',
+            CURLOPT_RANGE          => '0-' . max(0, $maxBytes),
+        ]);
+        $body = curl_exec($ch);
+        $code = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        if (curl_errno($ch)) {
+            $err = curl_error($ch);
+            curl_close($ch);
+            return null;
+        }
+        curl_close($ch);
+        return is_string($body) ? $body : '';
+    }
+
+    $ctx = stream_context_create(['http' => [
+        'timeout'       => 15,
+        'ignore_errors' => true,
+        'header'        => "User-Agent: Mozilla/5.0\r\nRange: bytes=0-" . max(0, $maxBytes) . "\r\n",
+    ]]);
+    $body = @file_get_contents($url, false, $ctx);
+    if (isset($http_response_header[0]) && preg_match('#\s(\d{3})\s#', $http_response_header[0], $m)) {
+        $code = (int) $m[1];
+    }
+    if ($body === false && $code === 0) {
+        $err = 'connection failed';
+        return null;
+    }
+    return $body === false ? '' : $body;
+}
+
+/** First URI line (the first non-comment, non-blank line) in an HLS playlist. */
+function hls_first_uri(string $manifest): ?string
+{
+    foreach (preg_split('/\r\n|\n|\r/', $manifest) as $line) {
+        $line = trim($line);
+        if ($line !== '' && $line[0] !== '#') {
+            return $line;
+        }
+    }
+    return null;
+}
+
+/** Resolve a possibly-relative URL against a base URL. */
+function resolve_url(string $base, string $rel): string
+{
+    if (preg_match('#^https?://#i', $rel)) {
+        return $rel;
+    }
+    $p      = parse_url($base);
+    $scheme = $p['scheme'] ?? 'https';
+    $host   = $p['host'] ?? '';
+    $port   = isset($p['port']) ? ':' . $p['port'] : '';
+    if (str_starts_with($rel, '//')) {
+        return $scheme . ':' . $rel;
+    }
+    if ($rel !== '' && $rel[0] === '/') {
+        return "{$scheme}://{$host}{$port}{$rel}";
+    }
+    $path = $p['path'] ?? '/';
+    $dir  = substr($path, 0, (int) strrpos($path, '/') + 1);
+    $segs = [];
+    foreach (explode('/', $dir . $rel) as $seg) {
+        if ($seg === '..') {
+            array_pop($segs);
+        } elseif ($seg !== '.' && $seg !== '') {
+            $segs[] = $seg;
+        }
+    }
+    return "{$scheme}://{$host}{$port}/" . implode('/', $segs);
+}
+
+/**
+ * Probe a stream URL. Returns true if it looks reachable/playable.
+ * For HLS it requires a real #EXTM3U manifest, and for a master playlist it also
+ * verifies the first variant playlist is reachable — catching the common case
+ * where the manifest URL answers but the stream behind it is dead.
  * $info is filled with ['code' => int, 'error' => string].
  */
 function check_stream_url(string $url, string $type = 'hls', ?array &$info = null): bool
@@ -23,41 +116,36 @@ function check_stream_url(string $url, string $type = 'hls', ?array &$info = nul
         return true;
     }
 
-    if (!function_exists('curl_init')) {
-        $headers = @get_headers($url);
-        $status  = is_array($headers) ? ($headers[0] ?? '') : '';
-        $info['code'] = (int) (preg_match('#\s(\d{3})\s#', (string) $status, $m) ? $m[1] : 0);
-        return $info['code'] >= 200 && $info['code'] < 400;
+    $body = http_probe($url, 16384, $info['code'], $info['error']);
+    if ($body === null) {
+        return false; // connection/transport failure
     }
-
-    $ch = curl_init($url);
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_MAXREDIRS      => 5,
-        CURLOPT_CONNECTTIMEOUT => 8,
-        CURLOPT_TIMEOUT        => 15,
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_SSL_VERIFYHOST => 0,
-        CURLOPT_USERAGENT      => 'Mozilla/5.0 (compatible; SunPlexHealthCheck/1.0)',
-        CURLOPT_RANGE          => '0-4095', // first 4 KB is enough to see a manifest
-    ]);
-    $body = curl_exec($ch);
-    $info['code'] = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-    if (curl_errno($ch)) {
-        $info['error'] = curl_error($ch);
-        curl_close($ch);
-        return false;
-    }
-    curl_close($ch);
-
     if ($info['code'] < 200 || $info['code'] >= 400) {
         return false;
     }
-    // HLS manifests always start with #EXTM3U — this catches "200 but it's an error page".
-    if ($type === 'hls' && is_string($body) && $body !== '' && stripos($body, '#EXTM3U') === false) {
-        $info['error'] = 'HTTP ' . $info['code'] . ' but no #EXTM3U manifest';
-        return false;
+
+    if ($type === 'hls') {
+        if (!is_string($body) || stripos($body, '#EXTM3U') === false) {
+            $info['error'] = 'no #EXTM3U manifest (HTTP ' . $info['code'] . ')';
+            return false;
+        }
+        // Master playlist → verify the first variant playlist is also reachable.
+        if (stripos($body, '#EXT-X-STREAM-INF') !== false) {
+            $variant = hls_first_uri($body);
+            if ($variant !== null) {
+                $vbody = http_probe(resolve_url($url, $variant), 16384, $vcode, $verr);
+                if ($vbody === null || $vcode < 200 || $vcode >= 400) {
+                    $info['code']  = (int) $vcode;
+                    $info['error'] = 'variant unreachable (' . ($verr !== '' ? $verr : 'HTTP ' . (int) $vcode) . ')';
+                    return false;
+                }
+                if (is_string($vbody) && stripos($vbody, '#EXTM3U') === false) {
+                    $info['code']  = (int) $vcode;
+                    $info['error'] = 'variant is not a valid playlist';
+                    return false;
+                }
+            }
+        }
     }
     return true;
 }
@@ -74,7 +162,8 @@ function run_health_check(): array
 
     $rows = db_all("SELECT * FROM channels WHERE status = 'active' OR auto_hidden = 1");
 
-    $down = [];
+    $failing  = []; // everything that failed THIS run (any strike count)
+    $hidden   = []; // newly hidden this run (just crossed the threshold)
     $restored = [];
     foreach ($rows as $ch) {
         $id = (int) $ch['id'];
@@ -89,24 +178,26 @@ function run_health_check(): array
             continue;
         }
 
-        $fails = (int) $ch['fail_count'] + 1;
+        $fails  = (int) $ch['fail_count'] + 1;
+        $reason = $info['error'] !== '' ? $info['error'] : ('HTTP ' . (int) $info['code']);
         db_run('UPDATE channels SET health_status = ?, fail_count = ?, last_checked_at = NOW() WHERE id = ?', ['down', $fails, $id]);
+        $failing[] = ['name' => $ch['name'], 'url' => (string) $ch['stream_url'], 'code' => (int) $info['code'], 'error' => $reason, 'fails' => $fails];
 
-        // Act exactly once, the moment it crosses the threshold.
+        // Hide + alert exactly once, the moment it crosses the threshold.
         if ($fails === $threshold) {
             if ($autoHide && $ch['status'] === 'active') {
                 db_run("UPDATE channels SET status = 'inactive', auto_hidden = 1 WHERE id = ?", [$id]);
             }
-            $down[] = ['name' => $ch['name'], 'url' => (string) $ch['stream_url'], 'code' => $info['code'], 'error' => $info['error'], 'hidden' => $autoHide];
+            $hidden[] = ['name' => $ch['name'], 'url' => (string) $ch['stream_url'], 'code' => (int) $info['code'], 'error' => $reason, 'hidden' => $autoHide];
         }
     }
 
     $emailed = false;
-    if ($notify && ($down || $restored) && function_exists('notify_admin') && mailer_configured()) {
-        $emailed = health_send_email($down, $restored);
+    if ($notify && ($hidden || $restored) && function_exists('notify_admin') && mailer_configured()) {
+        $emailed = health_send_email($hidden, $restored);
     }
 
-    return ['checked' => count($rows), 'down' => $down, 'restored' => $restored, 'emailed' => $emailed];
+    return ['checked' => count($rows), 'failing' => $failing, 'hidden' => $hidden, 'restored' => $restored, 'emailed' => $emailed];
 }
 
 /** Compose + send the health summary email. */

@@ -50,10 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($action === 'run_health') {
-        $r = run_health_check();
-        $msg = "Checked {$r['checked']} channel(s). Down: " . count($r['down']) . ', restored: ' . count($r['restored'])
-            . ($r['emailed'] ? ' — email sent.' : '.');
-        flash(count($r['down']) ? 'error' : 'success', $msg);
+        $r     = run_health_check();
+        $nf    = count($r['failing']);
+        $names = implode(', ', array_map(static fn ($x) => $x['name'], array_slice($r['failing'], 0, 10)));
+        $msg   = "Checked {$r['checked']} channel(s). Failing now: {$nf}"
+            . ($nf ? " — {$names}" : '')
+            . '. Newly hidden: ' . count($r['hidden']) . ', restored: ' . count($r['restored'])
+            . ($r['emailed'] ? ' (email sent).' : '.');
+        flash($nf ? 'error' : 'success', $msg);
         redirect('admin/notifications.php');
     }
 }
