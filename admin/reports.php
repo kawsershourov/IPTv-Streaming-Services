@@ -32,6 +32,21 @@ foreach ($daily as $row) {
     }
 }
 
+// Recent visitor sessions (newest first) with their visit time span.
+$recent = db_all('SELECT created_at, last_seen, ip FROM visits ORDER BY id DESC LIMIT 60');
+$fmtDur = static function (int $s): string {
+    if ($s < 60) {
+        return '<1 min';
+    }
+    $m = intdiv($s, 60);
+    if ($m < 60) {
+        return $m . ' min';
+    }
+    $h = intdiv($m, 60);
+    $m %= 60;
+    return $h . 'h' . ($m ? ' ' . $m . 'm' : '');
+};
+
 $cards = [
     ['Online now', $counts['online'], '#1e9e54'],
     ['Today',      $counts['today'], '#ff8a00'],
@@ -107,5 +122,35 @@ require __DIR__ . '/includes/header.php';
         </tbody>
     </table>
     <p class="muted" style="font-size:12px;margin-top:12px;">A “visitor” is one browser session per day (online = active in the last 5 minutes). Bot/admin views aren’t counted.</p>
+</div>
+
+<!-- Recent visitor sessions (with time span) -->
+<div class="card" style="margin-top:18px;">
+    <h2 style="margin:0 0 4px;font-size:16px;">Recent visitors — time span</h2>
+    <p class="muted" style="margin:0 0 12px;font-size:12px;">From first arrival to last activity. Times are Bangladesh time (Asia/Dhaka, AM/PM).</p>
+    <?php if ($recent): ?>
+    <table class="table" style="width:100%;font-size:13px;">
+        <thead><tr><th>Date</th><th>From</th><th>To</th><th>Duration</th><th>Country</th><th>IP</th></tr></thead>
+        <tbody>
+        <?php foreach ($recent as $v):
+            $from = strtotime((string) $v['created_at']);
+            $to   = strtotime((string) $v['last_seen']);
+            $cc   = function_exists('detect_country') ? detect_country((string) $v['ip']) : null;
+        ?>
+            <tr>
+                <td><?= e(date('M j, Y', $from)) ?></td>
+                <td style="font-weight:600;"><?= e(date('g:i A', $from)) ?></td>
+                <td style="font-weight:600;"><?= e(date('g:i A', $to)) ?></td>
+                <td class="muted"><?= e($fmtDur(max(0, $to - $from))) ?></td>
+                <td><?= $cc ? e($cc) : '<span class="muted">—</span>' ?></td>
+                <td class="muted" style="font-family:monospace;"><?= e((string) $v['ip']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    <p class="muted" style="font-size:12px;margin-top:10px;">Showing the latest <?= count($recent) ?> sessions.</p>
+    <?php else: ?>
+        <p class="muted" style="font-size:13px;">No visits recorded yet.</p>
+    <?php endif; ?>
 </div>
 <?php require __DIR__ . '/includes/footer.php'; ?>

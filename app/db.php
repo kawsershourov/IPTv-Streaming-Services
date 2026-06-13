@@ -24,6 +24,14 @@ function db(): PDO
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES   => false,
             ]);
+            // Align the DB session timezone with the app timezone so NOW(),
+            // CURDATE() and stored timestamps use the site's local (e.g. BD) time.
+            try {
+                $offset = (new DateTime('now', new DateTimeZone((string) config('site.timezone', 'UTC'))))->format('P');
+                $pdo->exec("SET time_zone = '{$offset}'");
+            } catch (\Throwable $e) {
+                // ignore — keep the server's default timezone
+            }
         } catch (PDOException $ex) {
             http_response_code(500);
             if (config('debug')) {

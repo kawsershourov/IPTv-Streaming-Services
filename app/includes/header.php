@@ -39,7 +39,7 @@ $fullTitle = isset($pageTitle) && $pageTitle !== '' ? "$pageTitle — $siteName"
                     <a href="<?= e(url('category.php?cat=' . urlencode($cat['slug']))) ?>"><?= e($cat['name']) ?></a>
                 <?php endforeach; ?>
             </nav>
-            <div class="header-auth">
+            <!-- <div class="header-auth">
                 <?php if ($me): ?>
                     <a href="<?= e(url('account.php')) ?>" class="btn btn-ghost"><?= e($me['name']) ?></a>
                     <?php if ($me['role'] === 'admin'): ?>
@@ -50,7 +50,7 @@ $fullTitle = isset($pageTitle) && $pageTitle !== '' ? "$pageTitle — $siteName"
                     <a href="<?= e(url('login.php')) ?>" class="btn btn-ghost">Login</a>
                     <a href="<?= e(url('register.php')) ?>" class="btn btn-primary">Sign Up</a>
                 <?php endif; ?>
-            </div>
+            </div> -->
         </div>
     </div>
 </header>
