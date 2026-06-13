@@ -129,26 +129,32 @@ require __DIR__ . '/includes/header.php';
     <h2 style="margin:0 0 4px;font-size:16px;">Recent visitors — time span</h2>
     <p class="muted" style="margin:0 0 12px;font-size:12px;">From first arrival to last activity. Times are Bangladesh time (Asia/Dhaka, AM/PM).</p>
     <?php if ($recent): ?>
-    <table class="table" style="width:100%;font-size:13px;">
-        <thead><tr><th>Date</th><th>From</th><th>To</th><th>Duration</th><th>Country</th><th>IP</th></tr></thead>
-        <tbody>
-        <?php foreach ($recent as $v):
-            $from = strtotime((string) $v['created_at']);
-            $to   = strtotime((string) $v['last_seen']);
-            $cc   = function_exists('detect_country') ? detect_country((string) $v['ip']) : null;
-        ?>
-            <tr>
-                <td><?= e(date('M j, Y', $from)) ?></td>
-                <td style="font-weight:600;"><?= e(date('g:i A', $from)) ?></td>
-                <td style="font-weight:600;"><?= e(date('g:i A', $to)) ?></td>
-                <td class="muted"><?= e($fmtDur(max(0, $to - $from))) ?></td>
-                <td><?= $cc ? e($cc) : '<span class="muted">—</span>' ?></td>
-                <td class="muted" style="font-family:monospace;"><?= e((string) $v['ip']) ?></td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
-    <p class="muted" style="font-size:12px;margin-top:10px;">Showing the latest <?= count($recent) ?> sessions.</p>
+    <div style="max-height:560px;overflow-y:auto;border:1px solid #283041;border-radius:8px;">
+        <table class="table" style="width:100%;font-size:13px;margin:0;">
+            <thead><tr>
+                <?php foreach (['Date', 'From', 'To', 'Duration', 'Country', 'IP'] as $h): ?>
+                    <th style="position:sticky;top:0;background:#1b2230;z-index:1;"><?= e($h) ?></th>
+                <?php endforeach; ?>
+            </tr></thead>
+            <tbody>
+            <?php foreach ($recent as $v):
+                $from = strtotime((string) $v['created_at']);
+                $to   = strtotime((string) $v['last_seen']);
+                $cc   = function_exists('detect_country') ? detect_country((string) $v['ip']) : null;
+            ?>
+                <tr>
+                    <td><?= e(date('M j, Y', $from)) ?></td>
+                    <td style="font-weight:600;"><?= e(date('g:i A', $from)) ?></td>
+                    <td style="font-weight:600;"><?= e(date('g:i A', $to)) ?></td>
+                    <td class="muted"><?= e($fmtDur(max(0, $to - $from))) ?></td>
+                    <td><?= $cc ? e($cc) : '<span class="muted">—</span>' ?></td>
+                    <td class="muted" style="font-family:monospace;"><?= e((string) $v['ip']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <p class="muted" style="font-size:12px;margin-top:10px;">Scroll inside the box — latest <?= count($recent) ?> sessions (about 20 visible).</p>
     <?php else: ?>
         <p class="muted" style="font-size:13px;">No visits recorded yet.</p>
     <?php endif; ?>
