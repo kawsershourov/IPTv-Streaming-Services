@@ -15,6 +15,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
     $op = $_POST['op'] ?? '';
 
+    if ($op === 'reorder') {
+        // Drag-and-drop reorder: assign sort_order by visual position.
+        $ids  = array_map('intval', (array) ($_POST['ids'] ?? []));
+        $base = max(0, (int) ($_POST['base'] ?? 0));
+        foreach ($ids as $i => $cid) {
+            if ($cid > 0) {
+                db_run('UPDATE channels SET sort_order = ? WHERE id = ?', [$base + $i, $cid]);
+            }
+        }
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => true, 'count' => count($ids)]);
+        exit;
+    }
+
     if ($op === 'delete') {
         Channel::delete((int) $_POST['id']);
         flash('success', 'Channel deleted.');
@@ -204,13 +218,15 @@ require __DIR__ . '/includes/header.php';
     <button type="submit" name="op" value="bulk_delete" class="btn btn-danger btn-sm">Delete selected</button>
 </form>
 
+<p class="muted" style="margin:0 0 8px;font-size:13px;"><strong>Tip:</strong> drag the <span style="letter-spacing:-2px;">⠿</span> handle to reorder channels — the order is reflected on the site (within each category). Drag is off while searching.</p>
 <div class="table-wrap">
     <table class="data">
         <thead><tr>
+            <th style="width:28px;"></th>
             <th style="width:34px;"><input type="checkbox" id="selectAllCh" title="Select all"></th>
             <th>Name</th><th>Category</th><th>Type</th><th>Live</th><th>Premium</th><th>Status</th><th></th>
         </tr></thead>
-        <tbody id="chBody">
+        <tbody id="chBody" data-reorder="<?= $q === '' ? '1' : '0' ?>" data-base="<?= (int) (($page - 1) * $perPage) ?>">
         <?php require __DIR__ . '/_channels_rows.php'; ?>
         </tbody>
     </table>
@@ -235,6 +251,8 @@ require __DIR__ . '/includes/header.php';
                 .then(function (d) {
                     body.innerHTML = d.rows;
                     if (pager) pager.innerHTML = d.pager;
+                    body.dataset.base = String(((page || 1) - 1) * 20);
+                    body.dataset.reorder = sinput.value.trim() === '' ? '1' : '0';
                     body.style.opacity = '1';
                     if (all) all.checked = false;
                 });
@@ -249,6 +267,51 @@ require __DIR__ . '/includes/header.php';
                 load(parseInt(a.getAttribute('data-page'), 10) || 1);
             });
         }
+    }
+
+    // ---- Drag-and-drop reorder ----
+    var chBody = document.getElementById('chBody');
+    if (chBody) {
+        var dragEl = null;
+        var reorderUrl = <?= json_encode(url('admin/channels.php')) ?>;
+
+        chBody.addEventListener('dragstart', function (e) {
+            var tr = e.target.closest('tr.ch-row');
+            if (!tr || chBody.dataset.reorder !== '1') { e.preventDefault(); return; }
+            dragEl = tr;
+            tr.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            try { e.dataTransfer.setData('text/plain', tr.dataset.id); } catch (_) {}
+        });
+
+        chBody.addEventListener('dragover', function (e) {
+            if (!dragEl) { return; }
+            e.preventDefault();
+            var tr = e.target.closest('tr.ch-row');
+            if (!tr || tr === dragEl) { return; }
+            var rect = tr.getBoundingClientRect();
+            var after = (e.clientY - rect.top) > rect.height / 2;
+            chBody.insertBefore(dragEl, after ? tr.nextSibling : tr);
+        });
+
+        chBody.addEventListener('drop', function (e) { e.preventDefault(); });
+
+        chBody.addEventListener('dragend', function () {
+            if (!dragEl) { return; }
+            dragEl.classList.remove('dragging');
+            dragEl = null;
+            var tokenEl = document.querySelector('#bulkChForm input[name=_csrf]');
+            var fd = new FormData();
+            fd.append('op', 'reorder');
+            fd.append('_csrf', tokenEl ? tokenEl.value : '');
+            fd.append('base', chBody.dataset.base || '0');
+            chBody.querySelectorAll('tr.ch-row').forEach(function (tr) { fd.append('ids[]', tr.dataset.id); });
+            chBody.style.opacity = '.6';
+            fetch(reorderUrl, { method: 'POST', body: fd, credentials: 'same-origin' })
+                .then(function (r) { return r.json(); })
+                .then(function () { chBody.style.opacity = '1'; })
+                .catch(function () { chBody.style.opacity = '1'; });
+        });
     }
 
     var bulk = document.getElementById('bulkChForm');

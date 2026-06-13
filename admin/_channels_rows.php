@@ -3,7 +3,8 @@
  *  Expects $channels and $q in scope. */
 ?>
 <?php foreach ($channels as $c): ?>
-    <tr>
+    <tr class="ch-row" draggable="true" data-id="<?= (int) $c['id'] ?>">
+        <td class="drag-handle" title="Drag to reorder">⠿</td>
         <td><input type="checkbox" class="ch-check" name="ids[]" value="<?= (int) $c['id'] ?>" form="bulkChForm"></td>
         <td><?= e($c['name']) ?></td>
         <td class="muted"><?= e($c['category_name']) ?></td>
@@ -22,4 +23,4 @@
         </div></td>
     </tr>
 <?php endforeach; ?>
-<?php if (!$channels): ?><tr><td colspan="8" class="muted"><?= $q !== '' ? 'No channels match “' . e($q) . '”.' : 'No channels yet.' ?></td></tr><?php endif; ?>
+<?php if (!$channels): ?><tr><td colspan="9" class="muted"><?= $q !== '' ? 'No channels match “' . e($q) . '”.' : 'No channels yet.' ?></td></tr><?php endif; ?>
