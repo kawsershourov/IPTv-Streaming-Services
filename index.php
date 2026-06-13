@@ -7,19 +7,16 @@ require __DIR__ . '/app/bootstrap.php';
 
 $categories = Category::active();
 
-// Build category => channels and a flat, de-duplicated "all" list (category order).
+// Per-category playlists (category dropdown) — grouped by category order.
 $catChannels = [];
-$allChannels = [];
 foreach ($categories as $cat) {
     $chs = Channel::activeByCategory((int) $cat['id']);
     if ($chs) {
         $catChannels[(int) $cat['id']] = ['cat' => $cat, 'channels' => $chs];
-        foreach ($chs as $ch) {
-            $allChannels[(int) $ch['id']] = $ch;
-        }
     }
 }
-$allChannels = array_values($allChannels);
+// Main "All Channels" playlist — flat global order set by channel drag-reorder.
+$allChannels = Channel::playlistActive();
 
 $pageTitle = '';
 $bodyClass = 'page-home';

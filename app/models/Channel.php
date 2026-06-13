@@ -36,14 +36,25 @@ class Channel
         return db_one('SELECT * FROM channels WHERE slug = ?', [$slug]);
     }
 
-    /** All channels with category name (admin listing). */
+    /** All channels with category name (admin listing) — global playlist order. */
     public static function allWithCategory(): array
     {
         return db_all(
             'SELECT ch.*, c.name AS category_name
                FROM channels ch
                JOIN categories c ON c.id = ch.category_id
-           ORDER BY c.sort_order, ch.sort_order, ch.name'
+           ORDER BY ch.sort_order, ch.name'
+        );
+    }
+
+    /** Active channels (in active categories) as one flat list in playlist order. */
+    public static function playlistActive(): array
+    {
+        return db_all(
+            'SELECT ch.* FROM channels ch
+               JOIN categories c ON c.id = ch.category_id
+              WHERE ch.status = "active" AND c.is_active = 1
+           ORDER BY ch.sort_order, ch.name'
         );
     }
 
@@ -53,7 +64,7 @@ class Channel
         $limit  = max(1, $limit);
         $offset = max(0, $offset);
         $base   = 'SELECT ch.*, c.name AS category_name FROM channels ch JOIN categories c ON c.id = ch.category_id';
-        $order  = ' ORDER BY c.sort_order, ch.sort_order, ch.name';
+        $order  = ' ORDER BY ch.sort_order, ch.name';
         if ($q === '') {
             return db_all("$base$order LIMIT $limit OFFSET $offset");
         }

@@ -16,23 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $op = $_POST['op'] ?? '';
 
     if ($op === 'reorder') {
-        // Drag-and-drop reorder. sort_order is assigned PER CATEGORY by position,
-        // because the front-end orders channels within each category — so the new
-        // order matches what the site shows.
-        $ids      = array_map('intval', (array) ($_POST['ids'] ?? []));
-        $counters = [];
-        foreach ($ids as $cid) {
-            if ($cid <= 0) {
-                continue;
+        // Drag-and-drop reorder: one flat global order (independent of category).
+        // sort_order = dropped position, which drives the front-end channel playlist.
+        $ids = array_map('intval', (array) ($_POST['ids'] ?? []));
+        foreach ($ids as $i => $cid) {
+            if ($cid > 0) {
+                db_run('UPDATE channels SET sort_order = ? WHERE id = ?', [$i, $cid]);
             }
-            $row = db_one('SELECT category_id FROM channels WHERE id = ?', [$cid]);
-            if (!$row) {
-                continue;
-            }
-            $cat = (int) $row['category_id'];
-            $n   = $counters[$cat] ?? 0;
-            db_run('UPDATE channels SET sort_order = ? WHERE id = ?', [$n, $cid]);
-            $counters[$cat] = $n + 1;
         }
         header('Content-Type: application/json');
         echo json_encode(['ok' => true, 'count' => count($ids)]);
@@ -237,7 +227,7 @@ require __DIR__ . '/includes/header.php';
 </form>
 
 <?php if ($showAll): ?>
-    <p class="muted" style="margin:0 0 8px;font-size:13px;"><strong>Drag the <span style="letter-spacing:-2px;">⠿</span> handle</strong> to reorder a channel within its category — the new order shows on the site. (To move a channel above another category, reorder the categories, or change the channel’s category.)</p>
+    <p class="muted" style="margin:0 0 8px;font-size:13px;"><strong>Drag the <span style="letter-spacing:-2px;">⠿</span> handle</strong> to set the channel order — this is the exact order of the “All Channels” playlist on the site (independent of categories). Drag to the top to put a channel first.</p>
 <?php else: ?>
     <p class="muted" style="margin:0 0 8px;font-size:13px;">Showing 20 per page. Click <strong>“↕ Show all (reorder)”</strong> above to drag-and-drop channels into the order you want.</p>
 <?php endif; ?>
@@ -311,7 +301,6 @@ require __DIR__ . '/includes/header.php';
             e.preventDefault();
             var tr = e.target.closest('tr.ch-row');
             if (!tr || tr === dragEl) { return; }
-            if (tr.dataset.cat !== dragEl.dataset.cat) { return; } // keep it within its own category
             var rect = tr.getBoundingClientRect();
             var after = (e.clientY - rect.top) > rect.height / 2;
             chBody.insertBefore(dragEl, after ? tr.nextSibling : tr);
