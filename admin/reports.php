@@ -142,7 +142,7 @@ require __DIR__ . '/includes/header.php';
                 $to   = strtotime((string) $v['last_seen']);
                 $cc   = function_exists('detect_country') ? detect_country((string) $v['ip']) : null;
             ?>
-                <tr>
+                <tr style="text-align:center;">
                     <td><?= e(date('M j, Y', $from)) ?></td>
                     <td style="font-weight:600;"><?= e(date('g:i A', $from)) ?></td>
                     <td style="font-weight:600;"><?= e(date('g:i A', $to)) ?></td>
