@@ -135,7 +135,7 @@ table.data input[type=checkbox] { width: 17px; height: 17px; accent-color: var(-
     .admin-form .col2, .color-grid { grid-template-columns: 1fr; }
 }
 
-/* Channel drag-to-reorder */
+/* Drag-to-reorder (channels + categories) */
 .drag-handle { cursor: grab; text-align: center; color: var(--muted); user-select: none; font-size: 15px; }
-.ch-row.dragging { opacity: .5; background: var(--bg-2); }
-.data tr.ch-row:hover .drag-handle { color: var(--text); }
+.data tr.dragging { opacity: .5; background: var(--bg-2); }
+.data tr:hover .drag-handle { color: var(--text); }
